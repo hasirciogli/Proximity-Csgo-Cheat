@@ -10,7 +10,7 @@
 HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 	static bool isSetupped = false;
 	 
-	if (!isSetupped)
+	if (!isSetupped) 
 	{
 		isSetupped = true;
 
