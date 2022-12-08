@@ -4,6 +4,12 @@
 #include "core/helpers/helpers.hpp"
 #include "core/menu/framework.hpp"
 
+#include <d3d9.h>
+#include <d3dx9.h>
+#include "dependencies/imgui/imgui.h"
+#include "dependencies/imgui/imgui_impl_dx9.h"
+#include "dependencies/imgui/imgui_impl_win32.h"
+
 namespace hooks {
 	bool initialize();
 	void release();
@@ -14,6 +20,13 @@ namespace hooks {
 		inline HWND csgo_window;
 		inline WNDPROC original;
 		long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	}
+
+
+	namespace end_scene {
+		typedef HRESULT(__stdcall* EndScene_t)(LPDIRECT3DDEVICE9);
+		inline EndScene_t original = (EndScene_t)NULL;
+		HRESULT __stdcall hook(LPDIRECT3DDEVICE9 pDevice);
 	}
 
 	namespace alloc_key_values_memory {
