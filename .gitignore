@@ -4,3 +4,8 @@
 
 /.vs
 /output/debug
+/compile.sh
+/CMakeLists.txt
+/intermediates
+/intermediates/_IsIncrementalBuild
+/intermediates/vc143.idb
