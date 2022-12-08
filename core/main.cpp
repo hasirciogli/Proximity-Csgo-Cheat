@@ -8,6 +8,7 @@ volatile constexpr const char fuck_skids[] = /* :^) */
 	"https://github.com/r4v10l1/NullHooks or https://github.com/NullHooks/NullHooks";
 
 unsigned long WINAPI initialize(void* instance) {
+	MessageBoxA(0, "included", "", 0);
 	while (!GetModuleHandleA("serverbrowser.dll"))
 		Sleep(200);
 

@@ -8,6 +8,7 @@
 #include <format>
 
 bool hooks::initialize() {
+	const auto end_scene_target = reinterpret_cast<void*>(get_virtual(interfaces::directx, 42));
 	const auto alloc_key_values_target = reinterpret_cast<void*>(get_virtual(interfaces::key_values_system, 2));
 	const auto create_move_target = reinterpret_cast<void*>(get_virtual(interfaces::clientmode, 24));
 	const auto paint_traverse_target = reinterpret_cast<void*>(get_virtual(interfaces::panel, 41));
@@ -57,6 +58,7 @@ bool hooks::initialize() {
 				helpers::console::state_to_console_color( "Hooks", std::string(function_name).append(" initialized!").c_str());
 
 		// @todo - organise order of hooks based on what interface (clientmode, client, engine, surface etc...)
+		MAKE_HOOK(end_scene_target, end_scene::hook, end_scene::original, "end_scene");
 		MAKE_HOOK(alloc_key_values_target, alloc_key_values_memory::hook, alloc_key_values_memory::original, "alloc_key_values_memory");
 		MAKE_HOOK(create_move_target, create_move::proxy, create_move::original, "create_move");
 		MAKE_HOOK(paint_traverse_target, paint_traverse::hook, paint_traverse::original, "paint_traverse");
