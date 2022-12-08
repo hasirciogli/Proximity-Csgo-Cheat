@@ -1,0 +1,2 @@
+cd /d "C:\Users\Mustafa_Owner\Desktop\Proximity\src" &msbuild "NullHooks.vcxproj" /t:sdvViewer /p:configuration="Debug" /p:platform="Win32" /p:SolutionDir="C:\Users\Mustafa_Owner\Desktop\Proximity\src" 
+exit %errorlevel% 

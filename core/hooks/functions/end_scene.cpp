@@ -28,6 +28,10 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 		ImGui::StyleColorsDark();
 
 		//add font's Etc
+
+		ImFont* ff = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Candara.ttf", 13);
+		ImFont* fontVerdana = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Verdana.ttf", 13);
+		io.FontDefault = fontVerdana;
 	}
 
 

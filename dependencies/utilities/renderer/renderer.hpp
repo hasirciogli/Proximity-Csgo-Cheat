@@ -38,6 +38,7 @@ namespace render {
 		inline unsigned long watermark_font = 0;		// Default font used through the cheat
 		inline unsigned long watermark_font_m = 0;		// Medium size
 		inline unsigned long watermark_font_ns = 0;		// No shadow
+		inline unsigned long gill_sans_nova = 0;		// No shadow
 		inline unsigned long playername_font = 0;		// wchar support
 		inline unsigned long weapon_icon_font = 0;		// No worky
 		inline unsigned long dina_font = 0;				// A personal favourite https://www.dcmembers.com/jibsen/download/61/
