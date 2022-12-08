@@ -6,6 +6,7 @@ namespace menu {
 	inline int current_tab{ 1 };
 
 	void render();
+	void renderImguiBasedMenu();
 	void check_toggle();
 	void init_windows();
 };

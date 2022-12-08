@@ -249,7 +249,7 @@ void menu::render() {
 
 // Toggle using IsPressed (GetAsyncKeyState)
 void menu::check_toggle() {
-	if (input::global_input.IsPressed(VK_INSERT))
+	if (input::global_input.IsPressed(VK_XBUTTON2))
 		variables::ui::menu::opened = !variables::ui::menu::opened;
 }
 
@@ -261,4 +261,10 @@ void menu::init_windows() {
 	variables::ui::menu::y = screen_h * 0.2;
 	variables::ui::menu::x = screen_w * 0.2;
 	variables::ui::spectators::y = screen_h * 0.5;		// For smaller screens
+}
+
+
+
+void menu::renderImguiBasedMenu() {
+	ImGui::ShowDemoWindow();
 }
