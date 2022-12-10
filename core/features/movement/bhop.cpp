@@ -17,7 +17,7 @@ void misc::movement::bunny_hop(c_usercmd* cmd) {
 	cmd->buttons &= ~in_jump;
 
 	/* ---------- Autostrafe ---------- */
-	switch (variables::misc::autostrafe_target.idx) {
+	switch (variables::misc::autostrafe_target) {
 		case 1:		legit_strafe(cmd);			break;		// Legit
 		case 2:		forward_rage_strafe(cmd);	break;		// Forward Rage
 		case 3:		multidir_rage_strafe(cmd);	break;		// Multidir Rage

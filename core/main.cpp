@@ -5,14 +5,14 @@
 volatile constexpr const char fuck_skids[] = /* :^) */
 	"Hey! If you are reading this maybe you looked through the source code or maybe you are reversing this DLL! "
 	"Either way you need to know that this project is open source and you can find the code at: "
-	"https://github.com/r4v10l1/NullHooks or https://github.com/NullHooks/NullHooks";
+	"https://github.com/r4v10l1/Rogsoftware or https://github.com/Rogsoftware/Rogsoftware";
 
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll"))
 		Sleep(150);
 
 #ifdef _DEBUG
-	console::initialize("NullHooks console");
+	console::initialize("Rogsoftware console");
 #endif
 
 	try {
@@ -22,7 +22,7 @@ unsigned long WINAPI initialize(void* instance) {
 	}
 
 	catch (const std::runtime_error & error) {
-		MessageBoxA(nullptr, error.what(), "NullHooks error!", MB_OK | MB_ICONERROR);
+		MessageBoxA(nullptr, error.what(), "Rogsoftware error!", MB_OK | MB_ICONERROR);
 		FreeLibraryAndExitThread(static_cast<HMODULE>(instance), 0);
 	}
 
@@ -31,7 +31,7 @@ unsigned long WINAPI initialize(void* instance) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	
 	//close menu so input is restored to user in the hooks::paint_traverse::hook hook.
-	variables::ui::menu::opened = false;
+	variables::Menu_Settings::isOpened = false;
 
 	//wait for paint_traverse::hook to be called and restore input.
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));

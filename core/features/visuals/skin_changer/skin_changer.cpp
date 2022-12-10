@@ -21,6 +21,9 @@ bool skins::apply_skin(DWORD weapon_handle) {
     if (skins::custom_models.find(weapon_index) != skins::custom_models.end())
 	    update_model(weapon);     // Will update the weapon model index and the viewmodel if needed
 
+    
+    
+
 	// Apply to fallback variables
 	if (skins::custom_skins.at(weapon_index).paint_kit != NULL) weapon->fallback_paint_kit() = skins::custom_skins.at(weapon_index).paint_kit;
 	if (skins::custom_skins.at(weapon_index).quality != NULL)   weapon->entity_quality()     = skins::custom_skins.at(weapon_index).quality;

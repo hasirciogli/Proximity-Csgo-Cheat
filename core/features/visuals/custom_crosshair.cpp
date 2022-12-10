@@ -50,7 +50,7 @@ void visuals::crosshair::custom_crosshair() {
 		helpers::console::state_to_console_color("Crosshair", "Using engine crosshair...");
 	}
 
-	visuals::crosshair::draw_custom_crosshair(mid_x, mid_y, true, variables::colors::crosshair_c);
+	visuals::crosshair::draw_custom_crosshair(mid_x, mid_y, true, vfuns::getcolorofimcolor(variables::colors::crosshair_c));
 }
 
 /* -------------------------------- RECOIL CROSSHAIR -------------------------------- */
@@ -104,5 +104,5 @@ void visuals::crosshair::recoil_crosshair() {
 	x = (x == screen_w / 2 - 1 || x == screen_w / 2 + 1) ? screen_w / 2 : x;
 	y = (y == screen_h / 2 - 1 || x == screen_h / 2 + 1) ? screen_h / 2 : y;
 
-	visuals::crosshair::draw_custom_crosshair(x, y, true, variables::colors::recoil_crosshair_c);
+	visuals::crosshair::draw_custom_crosshair(x, y, true, vfuns::getcolorofimcolor(variables::colors::recoil_crosshair_c));
 }

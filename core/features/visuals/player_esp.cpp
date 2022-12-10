@@ -54,8 +54,8 @@ bool bbox(entity_t *entity, int &x, int &y, int &w, int &h) {
 void visuals::playeresp() {
 	// Check if there is at least one item enabled
 	bool player_info_enabled = false;
-	for (multicombo_opt_t item : variables::player_visuals::playerinfo.vector) {
-		if (item.state) {
+	for (variables::player_visuals::multicombo_opt_t item : variables::player_visuals::playerinfo_options) {
+		if (item.value) {
 			player_info_enabled = true;
 			break;
 		}
@@ -111,9 +111,9 @@ void visuals::playeresp() {
 				if (!math::world_to_screen(parent, s_parent)) continue;
 
 				if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
-					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, variables::colors::friendly_color_soft);
+					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, vfuns::getcolorofimcolor(variables::colors::friendly_color_soft));
 				else if (player->team() != csgo::local_player->team())
-					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, variables::colors::enemy_color_soft);
+					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, vfuns::getcolorofimcolor(variables::colors::enemy_color_soft));
 			}
 		}
 		#pragma endregion
@@ -121,13 +121,13 @@ void visuals::playeresp() {
 		#pragma region BOX ESP
 		if (variables::player_visuals::boxesp) {
 			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp) {
-				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(variables::colors::friendly_color.col.a));		// Outer box outline (Use inner color's opacity)
-				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(variables::colors::friendly_color.col.a));		// Inner box outline
-				render::draw_rect(x, y, w, h, variables::colors::friendly_color);											// Color box line
+				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Outer box outline (Use inner color's opacity)
+				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Inner box outline
+				render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::friendly_color));											// Color box line
 			} else if (player->team() != csgo::local_player->team()) {
-				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(variables::colors::enemy_color.col.a));
-				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(variables::colors::enemy_color.col.a));
-				render::draw_rect(x, y, w, h, variables::colors::enemy_color);
+				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
+				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
+				render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::enemy_color));
 			}
 		}
 		#pragma endregion
@@ -139,9 +139,9 @@ void visuals::playeresp() {
 			
 			// Draw from crosshair
 			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
-				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, variables::colors::friendly_color.col);
+				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, vfuns::getcolorofimcolor(variables::colors::friendly_color));
 			else if (player->team() != csgo::local_player->team())
-				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, variables::colors::enemy_color.col);
+				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, vfuns::getcolorofimcolor(variables::colors::enemy_color));
 		}
 		#pragma endregion
 		
@@ -153,9 +153,9 @@ void visuals::playeresp() {
 			if (MultiByteToWideChar(CP_UTF8, 0, playerinfo.name, -1, w_player_name, 128) < 0) continue;
 
 			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
-				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, variables::colors::friendly_color.col);
+				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, vfuns::getcolorofimcolor(variables::colors::friendly_color));
 			else if (player->team() != csgo::local_player->team())
-				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, variables::colors::enemy_color.col);
+				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, vfuns::getcolorofimcolor(variables::colors::enemy_color));
 		}
 		#pragma endregion
 
@@ -163,14 +163,14 @@ void visuals::playeresp() {
 		if (player_info_enabled) {
 			// Friends and enemies
 			if (player->team() != csgo::local_player->team() || variables::player_visuals::showteamesp) {
-				if (variables::player_visuals::playerinfo.is_enabled(2) && player->armor() > 0) {
+				if (variables::player_visuals::playerinfo_options[0].value && player->armor() > 0) {
 					int armor_x = (variables::player_visuals::healthesp) ? 6 : 0;
-					render::draw_text_string(x - 10 - armor_x, y + 1, render::fonts::watermark_font, "A", false, variables::colors::friendly_color_softer.col);
+					render::draw_text_string(x - 10 - armor_x, y + 1, render::fonts::watermark_font, "A", false, vfuns::getcolorofimcolor(variables::colors::friendly_color_softer));
 				}
 
 				// Has bomb
 				bool has_bomb = false;
-				if (variables::player_visuals::playerinfo.is_enabled(4)) {
+				if (variables::player_visuals::playerinfo_options[4].value) {
 					const auto weapons = player->get_weapons();
 					if (!weapons) return;
 					for (int n = 0; weapons[n]; n++) {		// Iterate list of weapon handles
@@ -183,50 +183,50 @@ void visuals::playeresp() {
 				}
 
 				int item_num = 0;
-				if (variables::player_visuals::playerinfo.is_enabled(3) && player->is_defusing()) {
+				if (variables::player_visuals::playerinfo_options[3].value && player->is_defusing()) {
 					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "D", true, color::blue(255));
 					item_num++;
-				} else if (variables::player_visuals::playerinfo.is_enabled(3) && player->has_defuser()) {
-					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "D", true, variables::colors::friendly_color_softer.col);
+				} else if (variables::player_visuals::playerinfo_options[3].value && player->has_defuser()) {
+					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "D", true, vfuns::getcolorofimcolor(variables::colors::friendly_color_softer));
 					item_num++;
-				} else if (variables::player_visuals::playerinfo.is_enabled(4) && has_bomb) {
+				} else if (variables::player_visuals::playerinfo_options[4].value && has_bomb) {
 					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "B", true, color(210, 110, 0, 255));
 					item_num++;
 				}
 
-				if (variables::player_visuals::playerinfo.is_enabled(5) && player->is_scoped()) {
-					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "S", true, (player->is_defusing()) ? color::blue(255) : variables::colors::friendly_color_softer.col);
+				if (variables::player_visuals::playerinfo_options[5].value && player->is_scoped()) {
+					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "S", true, (player->is_defusing()) ? color::blue(255) : vfuns::getcolorofimcolor(variables::colors::friendly_color_softer));
 					item_num++;
 				}
-				if (variables::player_visuals::playerinfo.is_enabled(6) && player->is_flashed()) {
+				if (variables::player_visuals::playerinfo_options[6].value && player->is_flashed()) {
 					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "F", true, color(255, 255, 0));
 					item_num++;
 				}
-				if (variables::player_visuals::playerinfo.is_enabled(7) && !aim::can_fire(player)) {
+				if (variables::player_visuals::playerinfo_options[7].value && !aim::can_fire(player)) {
 					render::draw_text_string(x + w + 5, y + 1 + 10 * item_num, render::fonts::watermark_font, "X", true, color(230, 210, 0, 255));
 					item_num++;
 				}
 
 				// Weapon name/icon
-				if (variables::player_visuals::playerinfo.is_enabled(0) || variables::player_visuals::playerinfo.is_enabled(1)) {
+				if (variables::player_visuals::playerinfo_options[0].value || variables::player_visuals::playerinfo_options[1].value) {
 					auto current_weapon = player->active_weapon();
 					if (!current_weapon) continue;
 
 					int y_weapon = (variables::player_visuals::nameesp) ? 12 : 0;
 
 					// Weapon icon
-					if (variables::player_visuals::playerinfo.is_enabled(1)) {
+					if (variables::player_visuals::playerinfo_options[1].value) {
 						const int idx = current_weapon->item_definition_index();
 						render::draw_text_string(x + w / 2, y + h + y_weapon - 2, render::fonts::weapon_icon_font, helpers::idx2icon(idx), true, color::white());
 					// We ignore text if we have icon, price of having a multicombobox for all the items
-					} else if (variables::player_visuals::playerinfo.is_enabled(0)) {
+					} else if (variables::player_visuals::playerinfo_options[3].value) {
 						auto weapon_data = current_weapon->get_weapon_data();
 						if (!weapon_data) continue;
 						std::string s_weapon_name = weapon_data->weapon_name;
 
 						if (strstr(s_weapon_name.c_str(), "weapon_")) s_weapon_name.erase(s_weapon_name.begin(), s_weapon_name.begin() + 7);	// Remove "weapon_"
 
-						const color weapon_name_col = (player->team() == csgo::local_player->team()) ? variables::colors::friendly_color_softer.col : variables::colors::enemy_color_softer.col;
+						const color weapon_name_col = (player->team() == csgo::local_player->team()) ? vfuns::getcolorofimcolor(variables::colors::friendly_color_softer) : vfuns::getcolorofimcolor(variables::colors::enemy_color_softer);
 						render::draw_text_string(x + w / 2, y + h + 2 + y_weapon, render::fonts::watermark_font, s_weapon_name, true, weapon_name_col);
 					}
 				}

@@ -103,7 +103,7 @@ namespace helpers {
 
 	namespace chat {
 		void print(std::string str);
-		void print(std::string str, char col);		// Prints 'NullHooks | str' with color
+		void print(std::string str, char col);		// Prints 'Rogsoftware | str' with color
 		void load_config(std::string config_name);
 		void save_config(std::string config_name);
 	}

@@ -13,7 +13,7 @@ void draw_spec_frame(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_
 
 void misc::spectator_list() {
 	if (!variables::ui::spectators::spectator_list) return;
-	if ((!interfaces::engine->is_connected() && !interfaces::engine->is_in_game()) && !variables::ui::menu::opened) return;
+	if ((!interfaces::engine->is_connected() && !interfaces::engine->is_in_game()) && !variables::Menu_Settings::isOpened) return;
 	if (!csgo::local_player) {
 		// Draw only frame in main menu for example
 		variables::ui::spectators::h = 5 + 5 + 25;
@@ -66,7 +66,7 @@ void misc::spectator_list() {
 	}
 
 	// Only render if there are spectators or the menu is open
-	if (spec_arr[0] != L"" || variables::ui::menu::opened) {
+	if (spec_arr[0] != L"" || variables::Menu_Settings::isOpened) {
 		int cur_name_w = variables::ui::spectators::w;
 		int cur_name_h;
 

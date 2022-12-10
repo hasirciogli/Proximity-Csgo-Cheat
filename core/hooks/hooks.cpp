@@ -33,7 +33,7 @@ bool hooks::initialize() {
 	{
 		config::init();						// Initialize config folder and skins
 		helpers::console::state_to_console_color("Init", "Config initialized!");
-		menu::init_windows();				// For window positions on smaller screens
+		//menu::init_windows();				// For window positions on smaller screens
 		helpers::console::state_to_console_color("Init", "Windows initialized!");
 		backtrack::init();					// Init backtrack cvars
 		helpers::console::state_to_console_color("Init", "Backtrack initialized!");
@@ -95,7 +95,7 @@ bool hooks::initialize() {
 	}
 
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "--------------- ");
-	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Welcome to NullHooks");
+	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Welcome to Rogsoftware");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, " ---------------\n\n");
 
 	return true;

@@ -2,7 +2,16 @@
 #include "core/menu/menu.hpp"
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
 #include "core/config/config.hpp"
+#include "dependencies/imgui/imgui_internal.h"
 
+struct windowSize {
+	float width;
+	float height;
+};
+
+void GetWindowSize(windowSize& size, LPDIRECT3DDEVICE9 pDevice);
+
+/*
 auto do_frame = [&](std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t h, color bg, color header_text, color header_line, const std::string& name) {
 	// Background
 	render::draw_filled_rect(x, y, w, h, bg);
@@ -13,31 +22,30 @@ auto do_frame = [&](std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t
 };
 
 void menu::render() {
-	if (!variables::ui::menu::opened) return;
+	if (!variables::ui::menux::opened) return;
 
 	// Menu title and all that
-	do_frame(variables::ui::menu::x, variables::ui::menu::y, variables::ui::menu::w, variables::ui::menu::h,
-		color(36, 36, 36, 255), color(25, 25, 25, 255), color(36, 36, 36, 255), "NullHooks");
+	do_frame(variables::ui::menux::x, variables::ui::menux::y, variables::ui::menux::w, variables::ui::menux::h,
+		color(36, 36, 36, 255), color(25, 25, 25, 255), color(36, 36, 36, 255), "Rogsoftware");
 
 	#pragma region TABS
-	/* ------------------ TABS ------------------ */
-	constexpr int tab_number = 4;
-	const int tab_size   = variables::ui::menu::w / tab_number;
 
-	gui::tab(variables::ui::menu::x + (tab_size * 0), variables::ui::menu::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
+	constexpr int tab_number = 4;
+	const int tab_size   = variables::ui::menux::w / tab_number;
+
+	gui::tab(variables::ui::menux::x + (tab_size * 0), variables::ui::menux::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
 		render::fonts::watermark_font, "Aim", menu::current_tab, 0);
-	gui::tab(variables::ui::menu::x + (tab_size * 1), variables::ui::menu::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
+	gui::tab(variables::ui::menux::x + (tab_size * 1), variables::ui::menux::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
 		render::fonts::watermark_font, "Visuals", menu::current_tab, 1);
-	gui::tab(variables::ui::menu::x + (tab_size * 2), variables::ui::menu::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
+	gui::tab(variables::ui::menux::x + (tab_size * 2), variables::ui::menux::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
 		render::fonts::watermark_font, "Misc", menu::current_tab, 2);
-	gui::tab(variables::ui::menu::x + (tab_size * 3), variables::ui::menu::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
+	gui::tab(variables::ui::menux::x + (tab_size * 3), variables::ui::menux::y + gui::vars::top_margin, tab_size, gui::vars::tab_height,
 		render::fonts::watermark_font, "Config", menu::current_tab, 3);
 	#pragma endregion
 
 	#pragma region CONTAINERS
-	/* ------------------ CONTAINERS ------------------ */
 
-	gui::update_positions();		// Get the updated variables with current menu pos and all that
+	gui::update_positions();		// Get the updated variables with current menux pos and all that
 
 	switch (current_tab) {
 		// Aim
@@ -72,7 +80,6 @@ void menu::render() {
 				gui::add_slider			("Aimbot smoothing",		variables::aim::aimbot_smoothing, 0.f, 1.f);
 			}
 
-			/* -------- Aim - Second column -------- */
 			gui::add_column();
 
 			gui::add_groupbox("Antiaim", 7); {
@@ -116,7 +123,6 @@ void menu::render() {
 				gui::add_combobox("Sleeve chams material",		variables::chams::materials, variables::chams::sleeve_chams_mat_id);
 			}
 
-			/* ----- Visuals - Second column ----- */
 			gui::add_column();
 
 			gui::add_groupbox("Glow", 3); {
@@ -174,7 +180,6 @@ void menu::render() {
 				gui::add_slider			("Speedgraph pos",		variables::misc::speedgraph_pos, 0.f, 100.f);
 			}
 			
-			/* ----- Misc - Second column ----- */
 			gui::add_column();
 
 			gui::add_groupbox("Thirdperson", 3); {
@@ -203,7 +208,6 @@ void menu::render() {
 				gui::add_slider		("Rotation intensity",		variables::motion_blur.rotationIntensity, 0.f, 10.f);
 			}
 
-			/* ----- Misc - Buttons ----- */
 
 			gui::add_bottom_groupbox(1);
 			// Not as dynamic because its at the bottom and with the whole width
@@ -228,7 +232,6 @@ void menu::render() {
 				gui::add_button("Update game skins (Full update)",	button_functions::full_update);
 			}
 
-			/* ----- Config - Second column ----- */
 			gui::add_column();
 
 			gui::add_groupbox("Config selection", config::max_configs); {
@@ -242,7 +245,7 @@ void menu::render() {
 
 	#pragma region WINDOW MOVEMENTS
 	spectator_framework::spec_list_movement(variables::ui::spectators::x, variables::ui::spectators::y, variables::ui::spectators::w, variables::ui::spectators::h);
-	gui::menu_movement(variables::ui::menu::x, variables::ui::menu::y, variables::ui::menu::w, 30);
+	gui::menu_movement(variables::ui::menux::x, variables::ui::menux::y, variables::ui::menux::w, 30);
 	#pragma endregion
 
 }
@@ -250,7 +253,7 @@ void menu::render() {
 // Toggle using IsPressed (GetAsyncKeyState)
 void menu::check_toggle() {
 	if (input::global_input.IsPressed(VK_XBUTTON2))
-		variables::ui::menu::opened = !variables::ui::menu::opened;
+		variables::ui::menux::opened = !variables::ui::menux::opened;
 }
 
 // Makes the window positions relative based on screen size
@@ -258,13 +261,554 @@ void menu::init_windows() {
 	int screen_w, screen_h;
 	interfaces::engine->get_screen_size(screen_w, screen_h);
 
-	variables::ui::menu::y = screen_h * 0.2;
-	variables::ui::menu::x = screen_w * 0.2;
+	variables::ui::menux::y = screen_h * 0.2;
+	variables::ui::menux::x = screen_w * 0.2;
 	variables::ui::spectators::y = screen_h * 0.5;		// For smaller screens
+}
+*/
+
+
+/*void menux::renderImguiBasedMenu() {
+	ImGui::ShowDemoWindow();
+}*/
+
+void imspaceMacro(float x, float y) {
+	ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x + x, ImGui::GetCursorPos().y + y));
+}
+
+bool Spinner(const char* label, float radius, int thickness, const ImU32& color) {
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+	if (window->SkipItems)
+		return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(label);
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 size((radius) * 2, (radius + style.FramePadding.y) * 2);
+
+	const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+	ImGui::ItemSize(bb, style.FramePadding.y);
+	if (!ImGui::ItemAdd(bb, id))
+		return false;
+
+	// Render
+	window->DrawList->PathClear();
+
+	int num_segments = 30;
+	int start = abs(ImSin(g.Time * 1.8f) * (num_segments - 5));
+
+	const float a_min = IM_PI * 2.0f * ((float)start) / (float)num_segments;
+	const float a_max = IM_PI * 2.0f * ((float)num_segments - 3) / (float)num_segments;
+
+	const ImVec2 centre = ImVec2(pos.x + radius, pos.y + radius + style.FramePadding.y);
+
+	for (int i = 0; i < num_segments; i++) {
+		const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
+		window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a + g.Time * 8) * radius,
+			centre.y + ImSin(a + g.Time * 8) * radius));
+	}
+
+	window->DrawList->PathStroke(color, false, thickness);
 }
 
 
 
-void menu::renderImguiBasedMenu() {
-	ImGui::ShowDemoWindow();
+void GetWindowSize(windowSize& size, LPDIRECT3DDEVICE9 pDevice) {
+	D3DDEVICE_CREATION_PARAMETERS cparams;
+	RECT rect;
+
+	pDevice->GetCreationParameters(&cparams);
+	GetWindowRect(cparams.hFocusWindow, &rect);
+
+
+	size.width = (float)rect.right - rect.left;
+	size.height = (float)rect.bottom - rect.top;
+}
+
+int calculateUiScalar(int scalaDef) {
+	if (false)
+	{
+		if (variables::Menu_Settings::ui_scalar == 200)
+			return scalaDef + ((scalaDef * 200) / 100);
+		else if (variables::Menu_Settings::ui_scalar == 175)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 150)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 125)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 100)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 75)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 50)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 25)
+			return 0000;
+		else if (variables::Menu_Settings::ui_scalar == 0)
+			return 0000;
+		else
+			return scalaDef;
+	}
+
+	return (scalaDef * variables::Menu_Settings::ui_scalar) / 100;
+}
+
+void customComboBox(int& selectedItemID, std::vector<const char*>& lList) {
+	ImGuiStyle& imguiStyles = ImGui::GetStyle();
+	imguiStyles.FramePadding = ImVec2(4, 4);
+
+	const char* selectedItemName = selectedItemID == -1 ? "none" : lList.at(selectedItemID);
+	if (ImGui::BeginCombo("##combo", selectedItemName)) // The second parameter is the label previewed before opening the combo.
+	{
+
+		for (int n = 0; n < lList.size(); n++)
+		{
+
+			bool is_selected = (selectedItemID == n); // You can store your selection however you want, outside or inside your objects
+			if (ImGui::Selectable(lList.at(n), is_selected))
+			{
+				selectedItemID = is_selected ? -1 : n;
+				ImGui::SetItemDefaultFocus();
+
+			}
+
+		}
+		ImGui::EndCombo();
+	}
+
+	imguiStyles.FramePadding = ImVec2(1.2f, 1.2f);
+}
+
+
+
+void renderAimbotPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+
+	ImGui::BeginChild("#AimBotMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Team Check", &variables::Aimbot_Settings::teamCheck);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Fire", &variables::Aimbot_Settings::autofire);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+			imspaceMacro(10, 10);
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Min Damage").x + 30));
+			ImGui::SliderFloat("Min Damage", &variables::Aimbot_Settings::min_damage, 0, 120.f, "%.0f");
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Aimbot Fov", &variables::Aimbot_Settings::aimbot_fov, 0, 180.f, "%.1f");
+			ImGui::PopItemWidth();
+
+
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
+void renderAntiAimPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+
+	ImGui::BeginChild("#AntiAimMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+			/*imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Team Check", &variables::Aimbot_Settings::teamCheck);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Fire", &variables::Aimbot_Settings::autofire);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+			imspaceMacro(10, 10);
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Min Damage").x + 30));
+			ImGui::SliderFloat("Min Damage", &variables::Aimbot_Settings::min_damage, 0, 120.f, "%.0f");
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Aimbot Fov", &variables::Aimbot_Settings::aimbot_fov, 0, 180.f, "%.1f");
+			ImGui::PopItemWidth();*/
+
+
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
+void renderEspPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
+	ImGui::BeginChild("#EspMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+			if (variables::Esp_Settings::selected_team == 0)
+				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
+
+
+
+
+			imspaceMacro(10, 10);
+			if (ImGui::Button("Local", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+				variables::Esp_Settings::selected_team = 0;
+			ImGui::SameLine();
+			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
+
+			if (variables::Esp_Settings::selected_team == 1)
+				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
+			imspaceMacro(10, 0);
+			if (ImGui::Button("Enemy", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+				variables::Esp_Settings::selected_team = 1;
+			ImGui::SameLine();
+			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
+
+			if (variables::Esp_Settings::selected_team == 2)
+				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
+
+			imspaceMacro(10, 0);
+			if (ImGui::Button("Team", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+				variables::Esp_Settings::selected_team = 2;
+			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
+
+
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled Base", &variables::Esp_Settings::enabledBase[variables::Esp_Settings::selected_team]);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled Box", &variables::Esp_Settings::enabledBox[variables::Esp_Settings::selected_team]);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled Line", &variables::Esp_Settings::enabledLine[variables::Esp_Settings::selected_team]);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled Gethers", &variables::Esp_Settings::enabledGethers[variables::Esp_Settings::selected_team]);
+
+
+
+
+
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
+void renderSkinsPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+
+
+	ImGui::BeginChild("#EspMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true);
+		{
+
+			imspaceMacro(10, 10);
+			ImGui::PushItemWidth(cMenuSize.x / 2 - 20);
+			{
+				customComboBox(variables::Skin_Changer::skinlistSelectedWeaponID, variables::Skin_Changer::menuSkinsItemDefins);
+			}
+			ImGui::PopItemWidth();
+
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
+
+
+void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
+
+	if(false)
+	{
+		static bool loaded = false;
+
+
+		static bool firstanim = true;
+		int currenttime = (float)(clock() / 1000.f);
+		static int startedtime = 0;
+		static bool savetime = true;
+		if (savetime) {
+			startedtime = (float)(clock() / 1000.f);
+			savetime = false;
+		}
+
+		if (currenttime < startedtime + (firstanim ? 6.f : 2.f)) {
+
+			ImGui::SetNextWindowPos(ImVec2(0, 0));
+
+			ImGui::SetNextWindowSize(ImVec2(1920, 1080));
+
+			windowSize wsz;
+
+			GetWindowSize(wsz, pDevice);
+
+			ImGui::Begin("Loader :)", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
+
+			imspaceMacro((wsz.width / 2) - 34, (wsz.height / 2) - 34);
+			Spinner("#19954", 30, 4, ImColor(255, 255, 255, 255));
+
+			ImGui::End();
+		}
+
+		//Erasing
+		if (currenttime > startedtime + (firstanim ? 5.f : 1.f)) {
+			loaded = true;
+			firstanim = false;
+		}
+
+		if (!loaded)
+			return;
+	}
+
+
+	if (!variables::Menu_Settings::isOpened)
+		return;
+
+	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
+	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
+
+	static bool firstLoadInit = false;
+
+	ImGuiStyle& imguiStyles = ImGui::GetStyle();
+
+
+
+	//inline functions
+
+	auto getMenuPos = [](ImVec2& pos) {
+		pos = ImGui::GetWindowPos();
+	};
+
+	auto getCursorPos = [](ImVec2& pos) {
+		pos = ImGui::GetCursorPos();
+	};
+
+
+
+	if (!firstLoadInit)
+	{
+		firstLoadInit = true;
+		imguiStyles.WindowPadding = ImVec2(0, 0);
+		imguiStyles.FramePadding = ImVec2(1.2f, 1.2f);
+		imguiStyles.CellPadding = ImVec2(0, 0);
+		imguiStyles.ItemSpacing = ImVec2(0, 0);
+		imguiStyles.ItemInnerSpacing = ImVec2(10, 0);
+
+		imguiStyles.Colors[ImGuiCol_WindowBg] = ImColor(20, 20, 20);
+
+		windowSize wsz;
+
+		GetWindowSize(wsz, pDevice);
+
+
+		ImGui::SetNextWindowPos(ImVec2((wsz.width / 2) - (variables::Menu_Settings::ui_width_s / 2), (wsz.height / 2) - (variables::Menu_Settings::ui_height_s / 2)));
+	}
+
+	ImGui::SetNextWindowSize(ImVec2(variables::Menu_Settings::ui_width_s, variables::Menu_Settings::ui_height_s));
+
+
+	ImGui::GetIO().FontGlobalScale = variables::Menu_Settings::uiSelectedDPI;
+	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
+
+
+	imguiStyles.WindowRounding = 8;
+	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
+	{
+		imspaceMacro(5, 5);
+
+		ImVec2 nPos = {};
+		ImVec2 nPos2 = {};
+
+		getMenuPos(nPos);
+		getCursorPos(nPos2);
+
+
+		ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(230), nPos.y + nPos2.y), ImVec2(nPos.x + calculateUiScalar(230), nPos.y + calculateUiScalar(variables::Menu_Settings::ui_height_s - 5)), ImColor(150, 150, 150), 2);
+
+
+		ImGui::BeginChild("#left-side", ImVec2(calculateUiScalar(220), calculateUiScalar(variables::Menu_Settings::ui_height_s - 10)), false);
+		{
+
+			ImGui::BeginChild("#left-upper", ImVec2(calculateUiScalar(220), calculateUiScalar(variables::Menu_Settings::ui_height_s - 75)), false);
+			{
+				ImGui::PushFont(variables::Menu_Settings::fonts_GUIBIGFONT);
+				imspaceMacro(calculateUiScalar(220) / 2 - (ImGui::CalcTextSize("PC", nullptr).x / 2), 5);
+				ImGui::Text("PC");
+				ImGui::PopFont();
+
+
+				//ImGui::Text(std::to_string(ImGui::GetIO().FontGlobalScale).c_str());
+
+
+
+				ImGui::GetStyle().FrameRounding = 4;
+
+				imguiStyles.Colors[ImGuiCol_Button] = ImColor(20, 20, 20);
+				imguiStyles.Colors[ImGuiCol_ButtonHovered] = ImColor(35, 120, 30);
+				imguiStyles.Colors[ImGuiCol_ButtonActive] = ImColor(35, 90, 30);
+
+
+				imguiStyles.Colors[ImGuiCol_CheckMark] = ImColor(30, 220, 30);
+
+				imguiStyles.Colors[ImGuiCol_FrameBg] = ImColor(40, 40, 40);
+				imguiStyles.Colors[ImGuiCol_FrameBgHovered] = ImColor(50, 50, 50);
+				imguiStyles.Colors[ImGuiCol_FrameBgActive] = ImColor(50, 110, 50);
+
+				imguiStyles.Colors[ImGuiCol_Header] = ImColor(20, 20, 20);
+				imguiStyles.Colors[ImGuiCol_HeaderHovered] = ImColor(35, 120, 30);
+				imguiStyles.Colors[ImGuiCol_HeaderActive] = ImColor(35, 90, 30);
+
+
+				imguiStyles.Colors[ImGuiCol_SliderGrab] = ImColor(30, 220, 30);
+				imguiStyles.Colors[ImGuiCol_SliderGrabActive] = ImColor(30, 220, 30);
+
+
+
+				auto selButItem = [](std::string item_name, int page_id, bool isFirst = false) {
+					imspaceMacro(5, 0);
+					if (ImGui::Button(item_name.c_str(), ImVec2(calculateUiScalar(210), calculateUiScalar(35))))
+						variables::Menu_Settings::selected_page = page_id;
+				};
+
+				selButItem("Aim Bot", 0, false);
+				selButItem("Anti Aim", 1);
+
+
+				ImVec2 nPos = {};
+				ImVec2 nPos2 = {};
+
+				getMenuPos(nPos);
+				getCursorPos(nPos2);
+
+				ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(40), nPos.y + nPos2.y + 9), ImVec2(nPos.x + calculateUiScalar(220 - 40), nPos.y + nPos2.y + 9), ImColor(150, 150, 150), 2);
+				imspaceMacro(0, 20);
+
+				selButItem("Esp", 2);
+				selButItem("Chams", 3);
+				selButItem("World", 4);
+
+				getMenuPos(nPos);
+				getCursorPos(nPos2);
+				ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(40), nPos.y + nPos2.y + 9), ImVec2(nPos.x + calculateUiScalar(220 - 40), nPos.y + nPos2.y + 9), ImColor(150, 150, 150), 2);
+				imspaceMacro(0, 20);
+
+				selButItem("Misc", 5);
+				selButItem("Skins", 6);
+				selButItem("Scripts", 7);
+				selButItem("Settings", 8);
+
+				ImGui::GetStyle().FrameRounding = 4;
+			}
+			ImGui::EndChild();
+
+			ImGui::BeginChild("#left-bottomer", ImVec2(calculateUiScalar(220), calculateUiScalar(65)), false);
+			{
+				ImVec2 mPos = {};
+
+				getMenuPos(mPos);
+
+				ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(mPos.x + calculateUiScalar((220 / 3) / 2), mPos.y + calculateUiScalar(65 / 2)), 20, ImColor(140, 140, 140));
+				imspaceMacro(calculateUiScalar((220 / 3) - 10), calculateUiScalar(65 / 2) - (ImGui::CalcTextSize("Hasirciogli", nullptr).y / 2));
+				ImGui::Text("Hasirciogli");
+			}
+			ImGui::EndChild();
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 10));
+		imspaceMacro(12, 0);
+		ImGui::BeginChild("#right-side", cMenuSize);
+		{
+
+			imguiStyles.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
+
+			ImGui::BeginChild("#state-upper", ImVec2(cMenuSize.x, 50), true); {
+
+			}
+			ImGui::EndChild();
+
+			switch (variables::Menu_Settings::selected_page)
+			{
+			case 0:
+				renderAimbotPage();
+				break;
+			case 1:
+				renderAntiAimPage();
+				break;
+			case 2:
+				renderEspPage();
+				break;
+
+
+
+
+				///////////////////////
+
+
+			case 6:
+				renderSkinsPage();
+				break;
+			default:
+				break;
+			}
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::End();
+
+	ImGui::GetIO().FontGlobalScale = 1;
+
+	ImGui::SetNextWindowSize(ImVec2(300, 200));
+	ImGui::Begin("Debug Window");
+	{
+		ImGui::SliderFloat("test", &variables::Menu_Settings::uiSelectedDPI, -10.f, 10.f);
+		ImGui::Text(std::to_string(ImGui::GetIO().FontGlobalScale).c_str());
+		//customComboBox(variables::Menu_Settings::uiSelectedScalarID, variables::Menu_Settings::uiSelectedScalarName);
+		if (ImGui::Button("reset", ImVec2(150, 50)))
+			variables::Menu_Settings::uiSelectedDPI = 1;
+
+		if (ImGui::Button("Load Map", ImVec2(50, 50)))
+		{
+			interfaces::engine->execute_cmd("map aim_botz");
+			variables::Menu_Settings::isOpened = false;
+		}
+
+	}
+	ImGui::End();
 }

@@ -21,8 +21,8 @@ void config::get_nullhooks_folder() {
 	CHAR documents[500];
 	HRESULT get_documents = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, documents);
 
-	if (get_documents != S_OK) nullhooks_config_folder = std::string("NullHooks");							// Use current path if error
-	else                       nullhooks_config_folder = std::string(documents) + std::string("\\NullHooks");	// Use documents folder if possible
+	if (get_documents != S_OK) nullhooks_config_folder = std::string("Rogsoftware");							// Use current path if error
+	else                       nullhooks_config_folder = std::string(documents) + std::string("\\Rogsoftware");	// Use documents folder if possible
 
 	DWORD exitst = GetFileAttributesA(nullhooks_config_folder.c_str());
 	if (exitst == INVALID_FILE_ATTRIBUTES) {			// Path does not exist

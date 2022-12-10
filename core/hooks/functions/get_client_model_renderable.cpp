@@ -1,3 +1,4 @@
+#include "dependencies/utilities/csgo.hpp";
 #include "core/hooks/hooks.hpp"
 
 //https://www.unknowncheats.me/forum/counterstrike-global-offensive/366471-dme-weapon-chams.html

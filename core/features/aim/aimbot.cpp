@@ -93,20 +93,20 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 	// Store selected hitboxes
 	std::vector<int> all_hitboxes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };	// For bodyaim if lethal
 	std::vector<int> selected_hitboxes;
-	if (variables::aim::hitboxes.is_enabled(0)) {		// Head
+	if (variables::aim::selected_hitboxes[0]) {		// Head
 		selected_hitboxes.emplace_back(hitbox_head);
 	}
-	if (variables::aim::hitboxes.is_enabled(1)) {		// Neck
+	if (variables::aim::selected_hitboxes[1]) {		// Neck
 		selected_hitboxes.emplace_back(hitbox_neck);
 	}
-	if (variables::aim::hitboxes.is_enabled(2)) {		// Chest
+	if (variables::aim::selected_hitboxes[2]) {		// Chest
 		selected_hitboxes.emplace_back(hitbox_pelvis);
 		selected_hitboxes.emplace_back(hitbox_stomach);
 		selected_hitboxes.emplace_back(hitbox_lower_chest);
 		selected_hitboxes.emplace_back(hitbox_chest);
 		selected_hitboxes.emplace_back(hitbox_upper_chest);
 	}
-	if (variables::aim::hitboxes.is_enabled(3)) {		// Arms
+	if (variables::aim::selected_hitboxes[3]) {	// Arms
 		selected_hitboxes.emplace_back(hitbox_right_hand);
 		selected_hitboxes.emplace_back(hitbox_left_hand);
 		selected_hitboxes.emplace_back(hitbox_right_upper_arm);
@@ -115,7 +115,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 		selected_hitboxes.emplace_back(hitbox_left_forearm);
 
 	}
-	if (variables::aim::hitboxes.is_enabled(4)) {		// Legs
+	if (variables::aim::selected_hitboxes[4]) {		// Legs
 		selected_hitboxes.emplace_back(hitbox_right_thigh);
 		selected_hitboxes.emplace_back(hitbox_left_thigh);
 		selected_hitboxes.emplace_back(hitbox_right_calf);
@@ -144,9 +144,9 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 
 			autowall_data_t autowall_data = { false, 0.f };
 
-			if (variables::aim::autowall.idx < 2) {
+			if (true) {
 				// If "Only visible" and we can't see it, ignore hitbox
-				if (variables::aim::autowall.idx == 0 && !csgo::local_player->can_see_player_pos(entity, hitbox_pos))
+				if (variables::Aimbot_Settings::auto_wall && !csgo::local_player->can_see_player_pos(entity, hitbox_pos))
 					continue;
 
 				// Get autowall data and check if we can make enough damage or kill. autowall::handle_walls() takes care of stuff like "bodyaim if lethal" and "only visible",
@@ -160,7 +160,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 				// Check if the returned damage is enough or if we can kill the target (we dont need to worry about bodyaim_if_lethal here)
 				if (autowall_data.damage < (int)variables::aim::min_damage && !autowall_data.lethal)
 					continue;
-			} else if (variables::aim::autowall.idx == 2) {
+			} else if (variables::Aimbot_Settings::auto_wall) {
 				// @todo: bodyaim_if_lethal would not work with "ignore walls" because we dont run autowall
 				// We are trying to use ignore walls with disabled hitbox.
 				if (!enabled_hitbox) continue;
@@ -282,7 +282,7 @@ void aim::draw_fov() {
 	float x2 = tan(DEG2RAD(screen_fov) / 2);
 	float rad = (x1 / x2) * (sw/2);
 	
-	render::draw_circle(sw/2, sh/2, rad, 255, variables::colors::aimbot_fov_c);
+	render::draw_circle(sw/2, sh/2, rad, 255, vfuns::getcolorofimcolor(variables::colors::aimbot_fov_c));
 }
 
 // Used in createmove after aa

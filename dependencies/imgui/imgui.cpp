@@ -1,4 +1,4 @@
-// dear imgui, v1.90 WIP
+#include "dependencies/utilities/csgo.hpp";// dear imgui, v1.90 WIP
 // (main code and documentation)
 
 // Help:

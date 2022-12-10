@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
+#include "dependencies/utilities/csgo.hpp";
 #include "source-sdk/sdk.hpp"
 #include "core/helpers/helpers.hpp"
-#include "core/menu/framework.hpp"
 
 #include <d3d9.h>
 #include <d3dx9.h>

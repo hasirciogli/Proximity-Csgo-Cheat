@@ -28,5 +28,5 @@ void visuals::worldcolor() {
     if (!interfaces::engine->is_connected() || !interfaces::engine->is_in_game()) return;
 
     using_worldcolor = true;
-    apply_worldcolor(variables::colors::worldcolor_c.col);
+    apply_worldcolor(vfuns::getcolorofimcolor(variables::colors::worldcolor_c));
 }

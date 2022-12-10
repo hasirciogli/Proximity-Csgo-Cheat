@@ -1,3 +1,4 @@
+#include "dependencies/utilities/csgo.hpp";
 #include "core/features/features.hpp"
 #include "core/hooks/hooks.hpp"
 #include "core/menu/menu.hpp"
@@ -25,22 +26,22 @@ void __stdcall hooks::paint_traverse::hook(unsigned int panel, bool force_repain
 		#pragma endregion
 
 		#pragma region GUI
-		watermark::draw();
+		//watermark::draw();
 
 		misc::speedgraph::draw();
 		misc::spectator_list();
 
-		menu::check_toggle();				// Checks if the insert key was pressed
-		menu::render();
-		popup_system::render_popups();		// Check for popups and render them on top
+		//menu::check_toggle();				// Checks if the insert key was pressed
+		//menu::render();
+		//popup_system::render_popups();		// Check for popups and render them on top
 		#pragma endregion
 
 		break;
 	case fnv::hash("FocusOverlayPanel"):
 		//interfaces::panel->set_keyboard_input_enabled(panel, variables::menu::editing_text);
-		interfaces::input_system->enable_input(!(variables::ui::menu::opened && (input::global_input.reading_hotkey || input::global_input.reading_textbox)));					// TODO: Does not restore when unhooking
-		interfaces::panel->set_keyboard_input_enabled(panel, variables::ui::menu::opened && (input::global_input.reading_hotkey || input::global_input.reading_textbox));		// TODO: Does not restore when unhooking
-		interfaces::panel->set_mouse_input_enabled(panel, variables::ui::menu::opened);
+		interfaces::input_system->enable_input(!(variables::Menu_Settings::isOpened && (input::global_input.reading_hotkey || input::global_input.reading_textbox)));					// TODO: Does not restore when unhooking
+		interfaces::panel->set_keyboard_input_enabled(panel, variables::Menu_Settings::isOpened && (input::global_input.reading_hotkey || input::global_input.reading_textbox));		// TODO: Does not restore when unhooking
+		interfaces::panel->set_mouse_input_enabled(panel, variables::Menu_Settings::isOpened);
 		break;
 	case fnv::hash("HudZoom"):	// No sniper scope
 		if (!variables::misc_visuals::noscope) break;

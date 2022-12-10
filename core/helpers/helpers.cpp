@@ -3,12 +3,12 @@
 
 #pragma region CONSOLE
 void helpers::console::state_to_console(const char* tag, const char* text) {
-	interfaces::console->printf("[NullHooks] [%s] %s\n", tag, text);
+	interfaces::console->printf("[Rogsoftware] [%s] %s\n", tag, text);
 }
 
 void helpers::console::state_to_console_color(const char* tag, const char* text) {
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "[");
-	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "NullHooks");
+	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Rogsoftware");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] [");
 	interfaces::console->color_printf(valve_color_t{   0, 165, 230, 255 }, tag);
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] %s\n", text);
@@ -16,7 +16,7 @@ void helpers::console::state_to_console_color(const char* tag, const char* text)
 
 void helpers::console::error_to_console(const char* text) {
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "[");
-	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "NullHooks");
+	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Rogsoftware");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] [");
 	interfaces::console->color_printf(valve_color_t{ 230, 130,  50, 255 }, "Error");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] %s\n", text);
@@ -137,19 +137,19 @@ void helpers::chat::print(std::string str) {
 }
 
 void helpers::chat::print(std::string str, char col) {
-	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("NullHooks") + (char)CHAT_COLOR_GRAY + std::string(" | ") + (char)col + str;
+	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("Rogsoftware") + (char)CHAT_COLOR_GRAY + std::string(" | ") + (char)col + str;
 	interfaces::clientmode->chat->chat_printf(0, buff.c_str());
 }
 
 void helpers::chat::load_config(std::string config_name) {
-	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("NullHooks") + (char)CHAT_COLOR_GRAY + std::string(" | ") +
+	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("Rogsoftware") + (char)CHAT_COLOR_GRAY + std::string(" | ") +
 		(char)CHAT_COLOR_LIGHT_GREEN + std::string("Loaded config: ") + (char)CHAT_COLOR_LIGHT_PURPLE + config_name;
 
 	interfaces::clientmode->chat->chat_printf(0, buff.c_str());
 }
 
 void helpers::chat::save_config(std::string config_name) {
-	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("NullHooks") + (char)CHAT_COLOR_GRAY + std::string(" | ") +
+	std::string buff = std::string(" ") + (char)CHAT_COLOR_RED + std::string("Rogsoftware") + (char)CHAT_COLOR_GRAY + std::string(" | ") +
 		(char)CHAT_COLOR_LIGHT_GREEN + std::string("Saved config: ") + (char)CHAT_COLOR_LIGHT_PURPLE + config_name;
 
 	interfaces::clientmode->chat->chat_printf(0, buff.c_str());

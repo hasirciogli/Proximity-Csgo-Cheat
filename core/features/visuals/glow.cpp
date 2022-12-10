@@ -33,11 +33,11 @@ void visuals::glow() {
 					glowObj.set(0.9f, 0.9f, 0.8f);
 				} else {
 					if (glowEnt->team() != csgo::local_player->team()) {
-						float_color f_col(variables::colors::enemy_glow_c.col);
-						glowObj.set(f_col.r, f_col.g, f_col.b, variables::colors::enemy_glow_c.col.a / 255.f);
+						float_color f_col(vfuns::getcolorofimcolor(variables::colors::enemy_glow_c));
+						glowObj.set(f_col.r, f_col.g, f_col.b, vfuns::getcolorofimcolor(variables::colors::enemy_glow_c).a / 255.f);
 					} else if (variables::player_visuals::showteamesp) {
-						float_color f_col(variables::colors::friendly_glow_c.col);
-						glowObj.set(f_col.r, f_col.g, f_col.b, variables::colors::friendly_glow_c.col.a / 255.f);
+						float_color f_col(vfuns::getcolorofimcolor(variables::colors::friendly_glow_c));
+						glowObj.set(f_col.r, f_col.g, f_col.b, vfuns::getcolorofimcolor(variables::colors::friendly_glow_c).a / 255.f);
 					}
 				}
 				break;
@@ -75,8 +75,8 @@ void visuals::glow() {
 					break;
 				}
 
-				float_color f_col(variables::colors::entity_glow_c.col);
-				glowObj.set(f_col.r, f_col.g, f_col.b, variables::colors::entity_glow_c.col.a / 255.f);
+				float_color f_col(vfuns::getcolorofimcolor(variables::colors::entity_glow_c));
+				glowObj.set(f_col.r, f_col.g, f_col.b, vfuns::getcolorofimcolor(variables::colors::entity_glow_c).a / 255.f);
 
 				break;
 			}
@@ -133,8 +133,8 @@ void visuals::glow() {
 					break;
 				}
 
-				float_color f_col(variables::colors::entity_glow_c.col);
-				glowObj.set(f_col.r, f_col.g, f_col.b, variables::colors::entity_glow_c.col.a / 255.f);
+				float_color f_col(vfuns::getcolorofimcolor(variables::colors::entity_glow_c));
+				glowObj.set(f_col.r, f_col.g, f_col.b, vfuns::getcolorofimcolor(variables::colors::entity_glow_c).a / 255.f);
 
 				break;
 			}

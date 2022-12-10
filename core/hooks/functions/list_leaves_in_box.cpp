@@ -1,3 +1,4 @@
+#include "dependencies/utilities/csgo.hpp";
 #include "core/hooks/hooks.hpp"
 
 struct renderable_info_t {

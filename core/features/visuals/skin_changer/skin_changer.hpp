@@ -1,4 +1,4 @@
-#pragma once 
+﻿#pragma once 
 #include "core/features/features.hpp"
 
 /*
@@ -56,9 +56,10 @@ namespace skins {
     bool custom_kill_icons(i_game_event* game_event);
 
     inline std::unordered_map<int, skin_info> custom_skins;
+
     void read_skins();
     inline void init_skin_config() {
-        read_skins();
+        //read_skins();
     }
 
     #pragma region SKIN_MAPS
@@ -120,5 +121,68 @@ namespace skins {
         { "SKIN_QUALITY_COMPLETED",     SKIN_QUALITY_COMPLETED },
         { "SKIN_QUALITY_TOURNAMENT",    SKIN_QUALITY_TOURNAMENT }
     };
+
+    namespace _st
+    {
+	    inline struct wSkins_Weplst
+	    {
+            int weaponGameID;
+            std::string weaponMenuName;
+            int weaponMenuID;
+	    };
+
+        inline struct _skinsList
+        {
+            int paintKitID;
+            std::string name;
+        };
+    }
+
+    const std::vector<skins::_st::wSkins_Weplst> wItemDefs = 
+    {
+        {WEAPON_KNIFE, "Knife", 0},
+        {GLOVE_T_SIDE, "Glove", 1},
+        {7, "AK-47", 2},
+        {8, "AUG", 3},
+        {9, "AWP", 4},
+        {63, "CZ75 Auto", 5},
+        {1, "Desert Eagle", 6},
+        {2, "Dual Berettas", 7},
+        {10, "FAMAS", 8},
+        {3, "Five-SeveN", 9},
+        {11, "G3SG1", 10},
+        {13, "Galil AR", 11},
+        {4, "Glock-18", 12},
+        {14, "M249", 13},
+        {60, "M4A1-S", 14},
+        {16, "M4A4", 15},
+        {17, "MAC-10", 16},
+        {27, "MAG-7", 17},
+        {23, "MP5-SD", 18},
+        {33, "MP7", 19},
+        {34, "MP9", 20},
+        {28, "Negev", 21},
+        {35, "Nova", 22},
+        {32, "P2000", 33},
+        {36, "P250", 24},
+        {19, "P90", 25},
+        {26, "PP-Bizon", 26},
+        {64, "R8 Revolver", 27},
+        {29, "Sawed-Off", 28},
+        {38, "SCAR-20", 29},
+        {40, "SSG 08", 30},
+        {39, "SG 553", 31},
+        {30, "Tec-9", 32},
+        {24, "UMP-45", 33},
+        {61, "USP-S", 34},
+        {25, "XM1014", 35},
+    };
+
+    const std::vector<skins::_st::_skinsList> skinsList =
+    {
+
+    };
+
+
     #pragma endregion
 }

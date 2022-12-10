@@ -2,6 +2,7 @@
 #include "core/features/features.hpp"
 #include "core/menu/variables.hpp"
 #include "core/menu/menu.hpp"
+#include "core/menu/variables.hpp"
 #include "core/hooks/hooks.hpp"
 
 
@@ -10,7 +11,7 @@
 HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 	static bool isSetupped = false;
 	 
-	if (!isSetupped) 
+	if (!isSetupped)
 	{
 		isSetupped = true;
 
@@ -32,6 +33,12 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 		ImFont* ff = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Candara.ttf", 13);
 		ImFont* fontVerdana = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Verdana.ttf", 13);
 		io.FontDefault = fontVerdana;
+
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 18);
+
+		variables::Menu_Settings::fonts_GUIBIGFONT = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 150);
+		variables::Menu_Settings::fonts_GUIBIGFONT2 = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 50);
+
 	}
 
 
@@ -39,10 +46,10 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	if (variables::ui::menu::opened)
-	{
-		menu::renderImguiBasedMenu();
-	}
+	if (GetAsyncKeyState(VK_XBUTTON2) & 1)
+		variables::Menu_Settings::isOpened = !variables::Menu_Settings::isOpened;
+
+	iXmenu::renderImguiBasedMenu(pDevice, variables::Menu_Settings::isOpened);
 
 
 	ImGui::EndFrame();

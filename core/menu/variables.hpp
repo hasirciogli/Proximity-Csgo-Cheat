@@ -1,6 +1,11 @@
 #pragma once
 #include "core/menu/global_input.hpp"
-#include "core/menu/framework.hpp"
+
+
+namespace vfuns
+{
+	inline color getcolorofimcolor(ImColor item) { return color(item.Value.x, item.Value.y, item.Value.z, item.Value.w); }
+}
 
 namespace variables {
 	namespace aim {
@@ -21,7 +26,7 @@ namespace variables {
 			"Autowall",
 			"Ignore walls"
 		};
-		inline combobox_toggle_t autowall(0);	// Will store the autowall setting: 0 only visible, 1 autowall, 2 ignore walls
+
 
 		inline float aimbot_fov = 20.f;
 		inline bool draw_fov = false;
@@ -34,14 +39,19 @@ namespace variables {
 
 		inline float min_damage = 60.f;
 
-		inline std::vector<multicombo_opt_t> hitboxes_options = {
-			{ "Head",	        true },
-			{ "Neck",	        true },
-			{ "Chest",			false },
-			{ "Arms",			false },
-			{ "Legs",			false },
+		struct hitboxLamp
+		{
+			
 		};
-		inline multicombobox_toggle_t hitboxes(hitboxes_options);
+
+		inline bool selected_hitboxes[] = {
+			false,
+			false,
+			false,
+			false,
+			false
+		};
+		//inline multicombobox_toggle_t hitboxes(hitboxes_options);
 	}
 
 	namespace antiaim {
@@ -54,7 +64,7 @@ namespace variables {
 		inline hotkey_t peek_aa_toggle_key(VK_XBUTTON1);
 	}
 
-	namespace player_visuals {
+	namespace	player_visuals {
 		inline bool showteamesp = false;
 		inline bool playerglow = false;
 		inline bool boxesp = false;
@@ -62,17 +72,22 @@ namespace variables {
 		inline bool skeletonesp = false;
 		inline bool nameesp = false;
 
+		inline struct multicombo_opt_t
+		{
+			const char* text = "";
+			bool value = false;
+		};
+
 		inline std::vector<multicombo_opt_t> playerinfo_options = {
 			{ "Weapon name",	false },
 			{ "Weapon icon",	false },
 			{ "Armor",			false },
 			{ "Defuser",		false },
 			{ "Bomb",			false },
-			{ "Scoped",			false },
+			{ "Scoped",		false },
 			{ "Flashed",		false },
 			{ "Can fire",		false }
 		};
-		inline multicombobox_toggle_t playerinfo(playerinfo_options);
 
 		inline bool healthesp = false;
 	}
@@ -83,7 +98,7 @@ namespace variables {
 			"Text",
 			"Icon"
 		};
-		inline combobox_toggle_t entity_esp(0);
+		inline int entity_esp = 0;
 
 		inline bool entityglow = false;
 		inline bool bombtimer = true;
@@ -122,11 +137,11 @@ namespace variables {
 		inline bool vm_sleeve_chams = false;
 
 		// Selected material for each setting
-		inline combobox_toggle_t player_chams_mat_id(1);
-		inline combobox_toggle_t localplayer_chams_mat_id(1);
-		inline combobox_toggle_t weapon_chams_mat_id(4);
-		inline combobox_toggle_t arm_chams_mat_id(1);
-		inline combobox_toggle_t sleeve_chams_mat_id(1);
+		inline int player_chams_mat_id = 0;
+		inline int localplayer_chams_mat_id = 0;
+		inline int weapon_chams_mat_id = 0;
+		inline int arm_chams_mat_id = 0;
+		inline int sleeve_chams_mat_id = 0;
 
 		// Backtrack
 		inline bool backtrack_chams = true;
@@ -141,7 +156,7 @@ namespace variables {
 		inline bool recoil_crosshair = false;
 		inline bool worldcolor = false;
 
-		inline std::vector<multicombo_opt_t> bulletracer_draw_options = {
+		/*inline std::vector<multicombo_opt_t> bulletracer_draw_options = {
 			{ "Line",			false },
 			{ "Impacts",		false }
 			//{ "Hits",			false }		// Will just draw a different color for hits
@@ -152,7 +167,10 @@ namespace variables {
 			{ "Enemy",			false }
 		};
 		inline multicombobox_toggle_t bulletracer_draw_target(bulletracer_draw_options);
-		inline multicombobox_toggle_t bulletracer_team_target(bulletracer_team_options);
+		inline multicombobox_toggle_t bulletracer_team_target(bulletracer_team_options);*/
+
+		inline bool bulletracer_team_target[] = { false, false, false };
+		inline int bulletracer_type = 0;
 
 		inline bool chickenpride = false;
 
@@ -171,7 +189,8 @@ namespace variables {
 			"Forward rage",
 			"Multidir rage"
 		};
-		inline combobox_toggle_t autostrafe_target(0);
+
+		inline int autostrafe_target = 0;
 
 		inline bool edgejump = false;
 		inline hotkey_t ej_key('C');	// Mind the ' ' and the capital letter
@@ -182,13 +201,15 @@ namespace variables {
 		inline bool slowwalk = false;
 		inline hotkey_t slowwalk_key(VK_MENU);	// Alt key
 
-		inline std::vector<multicombo_opt_t> speedgraph_options = {
+		/*inline std::vector<multicombo_opt_t> speedgraph_options = {
 			{ "Line",		false },
 			{ "Color",		false },
 			{ "Speed",		true },
 			{ "Jump",		true }
 		};
-		inline multicombobox_toggle_t speedgraph_target(speedgraph_options);
+		inline multicombobox_toggle_t speedgraph_target(speedgraph_options);*/
+
+		inline bool speedGraph[] = { false, false, false };
 		inline float speedgraph_h = 40.f;
 		inline float speedgraph_pos = 92.5;
 
@@ -203,13 +224,13 @@ namespace variables {
 		inline float thirdperson_dist = 100.f;
 
 		// UI
-		inline std::vector<multicombo_opt_t> watermark_options = {
+		/*inline std::vector<multicombo_opt_t> watermark_options = {
 			{ "User",		true },
 			{ "Cheat",		true },
 			{ "Fps",		true },
 			{ "Ping",		true }
 		};
-		inline multicombobox_toggle_t watermark(watermark_options);
+		inline multicombobox_toggle_t watermark(watermark_options);*/
 		inline bool clean_screenshots = true;
 		inline bool reveal_ranks = true;
 	}
@@ -221,7 +242,7 @@ namespace variables {
 			inline int w = 100, h = 10;
 		}
 
-		namespace menu {
+		namespace menux {
 			inline bool opened = false;
 			inline int x = 300, y = 200;
 			inline int w = 500, h = 450;
@@ -249,38 +270,46 @@ namespace variables {
 	// Despite the indentation, we are calling constructor with color as argument
 	namespace colors {
 		// Esp and glow
-		inline colorpicker_col_t friendly_color(color(0, 90, 255, 255));
-		inline colorpicker_col_t friendly_color_soft(color(0, 150, 255, 255));
-		inline colorpicker_col_t friendly_color_softer(color(90, 180, 255, 255));
-		inline colorpicker_col_t enemy_color(color(255, 0, 0, 255));
-		inline colorpicker_col_t enemy_color_soft(color(190, 25, 25, 255));
-		inline colorpicker_col_t enemy_color_softer(color(255, 75, 75, 255));
 
-		inline colorpicker_col_t friendly_glow_c(friendly_color_soft.col.get_custom_alpha(200));
-		inline colorpicker_col_t enemy_glow_c(enemy_color_soft.col.get_custom_alpha(200));
-		inline colorpicker_col_t entity_glow_c(color::white(200));
+		inline ImColor friendly_color = ImColor(250, 250, 250, 250);
+		inline ImColor friendly_color_soft = ImColor(250, 250, 250, 250);
+		inline ImColor friendly_color_softer = ImColor(250, 250, 250, 250);
+		inline ImColor enemy_color = ImColor(250, 250, 250, 250);
+		inline ImColor enemy_color_soft = ImColor(250, 250, 250, 250);
+		inline ImColor enemy_color_softer = ImColor(250, 250, 250, 250);
+
+		inline ImColor friendly_glow_c = ImColor(250, 250, 250, 250);
+		inline ImColor enemy_glow_c = ImColor(250, 250, 250, 250);
+		inline ImColor entity_glow_c = ImColor(250, 250, 250, 250);
 
 		// Chams
-		inline colorpicker_col_t chams_localplayer(color(255, 150, 255, 255));
-		inline colorpicker_col_t chams_vis_enemy_c(color(230, 20, 70));
-		inline colorpicker_col_t chams_inv_enemy_c(color(150, 15, 15, 255));
-		inline colorpicker_col_t chams_vis_friend_c(color(0, 150, 255));
-		inline colorpicker_col_t chams_inv_friend_c(color(0, 75, 255));
+		inline ImColor chams_localplayer = ImColor(250, 250, 250, 250);
+		inline ImColor chams_vis_enemy_c = ImColor(250, 250, 250, 250);
+		inline ImColor chams_inv_enemy_c = ImColor(250, 250, 250, 250);
+		inline ImColor chams_vis_friend_c = ImColor(250, 250, 250, 250);
+		inline ImColor chams_inv_friend_c = ImColor(250, 250, 250, 250);
 
-		inline colorpicker_col_t chams_weapon_c(color(255, 150, 255, 255));
-		inline colorpicker_col_t chams_arms_c(color(255, 0, 255, 255));
-		inline colorpicker_col_t chams_sleeve_c(color(100, 0, 255, 255));
+		inline ImColor chams_weapon_c = ImColor(250, 250, 250, 250);
+		inline ImColor chams_arms_c = ImColor(250, 250, 250, 250);
+		inline ImColor chams_sleeve_c = ImColor(250, 250, 250, 250);
 
-		inline colorpicker_col_t bt_chams_enemy(chams_vis_enemy_c.col.get_custom_alpha(30));		// Backtrack enemy
-		inline colorpicker_col_t bt_chams_friend(chams_vis_friend_c.col.get_custom_alpha(30));		// Backtrack friendly
-		inline colorpicker_col_t bt_chams_enemy_fade(color::white(200));		// Used for the color transition
-		inline colorpicker_col_t bt_chams_friend_fade(color::white(200));		// Used for the color transition
+		inline ImColor bt_chams_enemy = ImColor(250, 250, 250, 250);
+		inline ImColor bt_chams_friend = ImColor(250, 250, 250, 250);
+		inline ImColor bt_chams_enemy_fade = ImColor(250, 250, 250, 250);
+		inline ImColor bt_chams_friend_fade = ImColor(250, 250, 250, 250);
 
 		// Misc
-		inline colorpicker_col_t crosshair_c(color(255, 255, 255, 255));
-		inline colorpicker_col_t recoil_crosshair_c(color(0, 255, 0, 255));
-		inline colorpicker_col_t aimbot_fov_c(color(255, 255, 255, 150));
-		inline colorpicker_col_t worldcolor_c(color(125, 0, 170, 255));
+		inline ImColor crosshair_c = ImColor(250, 250, 250, 250);
+		inline ImColor recoil_crosshair_c = ImColor(250, 250, 250, 250);
+		inline ImColor aimbot_fov_c = ImColor(250, 250, 250, 250);
+		inline ImColor worldcolor_c = ImColor(250, 250, 250, 250);
+
+
+
+
+
+
+		inline ImColor bulletBeamColor[] = { ImColor(255), ImColor(255), ImColor(255) };
 	};
 
 	inline struct MotionBlur {
@@ -292,4 +321,141 @@ namespace variables {
 		float rotationIntensity{ 1.0f };
 		float strength{ 4.0f };
 	} motion_blur;
-}
+
+
+
+
+	namespace Menu_Settings {
+		inline bool isOpened = true;
+		inline int ui_width = 780;
+		inline int ui_height = 590;
+
+		inline int ui_width_s = 0;
+		inline int ui_height_s = 0;
+
+		inline int ui_scalar = 100;
+
+		inline int selected_page = 0;
+
+		inline ImFont* fonts_GUIBIGFONT;
+		inline ImFont* fonts_GUIBIGFONT2;
+
+		inline int uiSelectedScalarID = 4;
+		inline float uiSelectedDPI = 1;
+		inline const char* uiSelectedScalarName[10] = { "0", "25", "50", "75", "100", "125", "150", "175", "200", "250" };
+
+		inline void updateMenuScalar(int selectedItem) {
+			switch (selectedItem)
+			{
+			case 0:
+				variables::Menu_Settings::ui_scalar = 0;
+				break;
+			case 1:
+				variables::Menu_Settings::ui_scalar = 25;
+				break;
+			case 2:
+				variables::Menu_Settings::ui_scalar = 50;
+				break;
+			case 3:
+				variables::Menu_Settings::ui_scalar = 75;
+				break;
+			case 4:
+				variables::Menu_Settings::ui_scalar = 100;
+				break;
+			case 5:
+				variables::Menu_Settings::ui_scalar = 125;
+				break;
+			case 6:
+				variables::Menu_Settings::ui_scalar = 150;
+				break;
+			case 7:
+				variables::Menu_Settings::ui_scalar = 175;
+				break;
+			case 8:
+				variables::Menu_Settings::ui_scalar = 200;
+				break;
+			case 9:
+				variables::Menu_Settings::ui_scalar = 250;
+				break;
+			default:
+				variables::Menu_Settings::ui_scalar = 100;
+				break;
+			}
+		}
+	}
+	namespace Aimbot_Settings {
+		inline bool enabled = false;
+		inline bool teamCheck = false;
+		inline bool autofire = false;
+		inline bool auto_revolver = false;
+		inline bool auto_wall = false;
+
+		inline float min_damage = 0.f;
+		inline float aimbot_fov = 0.f;
+
+		namespace hitboxes {
+			inline bool head = false;
+
+		};
+	};
+
+	namespace Esp_Settings {
+		inline int espTeamState = 0;
+		inline int selected_team = 0;
+		inline bool test = false;
+
+		inline bool enabledBase[] = { false, false, false };
+		inline bool enabledEsp[] = { false, false, false };
+		inline bool enabledBox[] = { false, false, false };
+		inline bool enabledLine[] = { false, false, false };
+		inline bool enabledGethers[] = { false, false, false };
+	};
+
+
+	namespace Skin_Changer
+	{
+		inline int skinlistSelectedWeaponID = -1;
+
+		inline std::vector<const char*> menuSkinsItemDefins = 
+		{
+			"Knife",
+			"Glove",
+			"AK-47",
+			"AUG",
+			"AWP",
+			"CZ75 Auto",
+			"Desert Eagle",
+			"Dual Berettas",
+			"FAMAS",
+			"Five-SeveN",
+			"G3SG1",
+			"Galil AR",
+			"Glock-18",
+			"M249",
+			"M4A1-S",
+			"M4A4",
+			"MAC-10",
+			"MAG-7",
+			"MP5-SD",
+			"MP7",
+			"MP9",
+			"Negev",
+			"Nova",
+			"P2000",
+			"P250",
+			"P90",
+			"PP-Bizon",
+			"R8 Revolver",
+			"Sawed-Off",
+			"SCAR-20",
+			"SSG 08",
+			"SG 553",
+			"Tec-9",
+			"UMP-45",
+			"USP-S",
+			"XM1014",
+		};
+	};
+
+
+};
