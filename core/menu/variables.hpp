@@ -401,7 +401,7 @@ namespace variables {
 
 	namespace Esp_Settings {
 		inline int espTeamState = 0;
-		inline int selected_team = 0; 
+		inline int selected_team = 0;  
 		inline bool test = false;
 
 		inline bool enabledBase[] = { false, false, false };
