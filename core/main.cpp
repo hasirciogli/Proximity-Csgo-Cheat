@@ -1,6 +1,16 @@
+#define WIN32_LEAN_AND_MEAN
+#include "socket/msoket.h"
+
 #include "core/features/features.hpp"
 #include "core/menu/variables.hpp"
 #include "dependencies/utilities/renderer/renderer.hpp"
+
+#include <nlohmann/json.hpp>
+
+
+using namespace nlohmann::json_abi_v3_11_2;
+
+
 
 volatile constexpr const char fuck_skids[] = /* :^) */
 	"Hey! If you are reading this maybe you looked through the source code or maybe you are reversing this DLL! "
@@ -27,11 +37,17 @@ unsigned long WINAPI initialize(void* instance) {
 	}
 
 	// VK_END to unhook. We use IsHeld() because don't need to check the "first frame"
-	while (!input::global_input.IsHeld(VK_END))
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	while (!input::global_input.IsHeld(VK_END) && !variables::cheat::forceCloseCheat)
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	
 	//close menu so input is restored to user in the hooks::paint_traverse::hook hook.
 	variables::Menu_Settings::isOpened = false;
+
+	mSocket::cfg::closingTO = true;
+	mSocket::cfg::socketReconnect = false;
+	mSocket::cfg::socketIsConnected = false;
+
+	mSocket::cleanup();
 
 	//wait for paint_traverse::hook to be called and restore input.
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -55,6 +71,10 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
+				CloseHandle(handle);
+
+
+			if (auto handle = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)mSocket::socketThread, instance, NULL, nullptr))
 				CloseHandle(handle);
 			break;
 		}

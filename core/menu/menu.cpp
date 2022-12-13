@@ -4,9 +4,19 @@
 #include "core/config/config.hpp"
 #include "dependencies/imgui/imgui_internal.h"
 
+#define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
+
 struct windowSize {
 	float width;
 	float height;
+};
+
+auto getMenuPos = [](ImVec2& pos) {
+	pos = ImGui::GetWindowPos();
+};
+
+auto getCursorPos = [](ImVec2& pos) {
+	pos = ImGui::GetCursorPos();
 };
 
 void GetWindowSize(windowSize& size, LPDIRECT3DDEVICE9 pDevice);
@@ -388,23 +398,65 @@ void renderAimbotPage() {
 
 	ImGui::BeginChild("#AimBotMenu", cMenuSize, false);
 	{
-		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			imspaceMacro(10, 10);
 			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
 			imspaceMacro(10, 10);
 			ImGui::Checkbox("Team Check", &variables::Aimbot_Settings::teamCheck);
 			imspaceMacro(10, 10);
+			ImGui::Checkbox("No Scope", &variables::Aimbot_Settings::noScope);
+			imspaceMacro(10, 10);
 			ImGui::Checkbox("Auto Fire", &variables::Aimbot_Settings::autofire);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Silent Aim", &variables::Aimbot_Settings::silentAim);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Non Rifle Aim Punch", &variables::Aimbot_Settings::non_rifle_aimpunch);
 			imspaceMacro(10, 10);
 			ImGui::Checkbox("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+			ImGui::Checkbox("Draw Fov", &variables::Aimbot_Settings::drawFov);
 			imspaceMacro(10, 10);
-			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Min Damage").x + 30));
-			ImGui::SliderFloat("Min Damage", &variables::Aimbot_Settings::min_damage, 0, 120.f, "%.0f");
+			ImGui::Checkbox("Priorize Lethal Targets", &variables::Aimbot_Settings::priorize_lethal_targets);
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+
+
+
+
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Aimbot Fov").x + 30));
+
 			imspaceMacro(10, 10);
 			ImGui::SliderFloat("Aimbot Fov", &variables::Aimbot_Settings::aimbot_fov, 0, 180.f, "%.1f");
+
 			ImGui::PopItemWidth();
+
+
+
+
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Smoothness").x + 30));
+
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Smoothness", &variables::Aimbot_Settings::aimbot_smoothing,0, 200);
+
+			ImGui::PopItemWidth();
+
+
+
+
+
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Min Damage").x + 30));
+
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Min Damage", &variables::Aimbot_Settings::min_damage, 0, 120.f, "%.0f");
+
+			ImGui::PopItemWidth();
+
+			 
+			ImVec2 nPos = {};
+
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
 
 
 		}
@@ -412,8 +464,24 @@ void renderAimbotPage() {
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("").x + 30));
 
+			imspaceMacro(10, 10);
+			ImGui::ListBoxHeader("#aimbot-hitboxes-list-box :)", 4, 10);
+			{
+				for (size_t i = 0; i < IM_ARRAYSIZE(variables::Aimbot_Settings::selected_hitboxes); i++)
+				{
+					bool* isSelected = &variables::Aimbot_Settings::selected_hitboxes[i];
+
+					if (ImGui::Selectable(variables::Aimbot_Settings::selected_hitboxes_names[i], *isSelected))
+					{
+						*isSelected = !*isSelected;
+					}
+				}
+			}
+			ImGui::ListBoxFooter();
+			ImGui::PopItemWidth();
 		}
 		ImGui::EndChild();
 	}
@@ -425,7 +493,7 @@ void renderAntiAimPage() {
 
 	ImGui::BeginChild("#AntiAimMenu", cMenuSize, false);
 	{
-		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			/*imspaceMacro(10, 10);
 			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
 			imspaceMacro(10, 10);
@@ -443,13 +511,18 @@ void renderAntiAimPage() {
 			ImGui::SliderFloat("Aimbot Fov", &variables::Aimbot_Settings::aimbot_fov, 0, 180.f, "%.1f");
 			ImGui::PopItemWidth();*/
 
+			ImVec2 nPos = {};
+
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
 
 		}
 		ImGui::EndChild();
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 
 		}
 		ImGui::EndChild();
@@ -462,14 +535,17 @@ void renderEspPage() {
 	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
 	ImGui::BeginChild("#EspMenu", cMenuSize, false);
 	{
-		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			if (variables::Esp_Settings::selected_team == 0)
 				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
 
 
 
-
 			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled Base", &variables::Esp_Settings::enabledBase);
+
+
+			imspaceMacro(10, 20);
 			if (ImGui::Button("Local", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 0;
 			ImGui::SameLine();
@@ -490,27 +566,39 @@ void renderEspPage() {
 			if (ImGui::Button("Team", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 2;
 			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
-
+			
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Name", &variables::Esp_Settings::enabledNameesp[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled Base", &variables::Esp_Settings::enabledBase[variables::Esp_Settings::selected_team]);
+			ImGui::Checkbox("Health", &variables::Esp_Settings::enabledHealthesp[variables::Esp_Settings::selected_team]);
+
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled Box", &variables::Esp_Settings::enabledBox[variables::Esp_Settings::selected_team]);
+			ImGui::Checkbox("Box", &variables::Esp_Settings::enabledBox[variables::Esp_Settings::selected_team]);
+
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled Line", &variables::Esp_Settings::enabledLine[variables::Esp_Settings::selected_team]);
+			ImGui::Checkbox("Line", &variables::Esp_Settings::enabledLine[variables::Esp_Settings::selected_team]);
+
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled Gethers", &variables::Esp_Settings::enabledGethers[variables::Esp_Settings::selected_team]);
+			ImGui::Checkbox("Skeleton", &variables::Esp_Settings::enabledSkeleton[variables::Esp_Settings::selected_team]);
+
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Other Info", &variables::Esp_Settings::enabledGethers[variables::Esp_Settings::selected_team]);
 
 
 
+			ImVec2 nPos = {};
 
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
 
 		}
 		ImGui::EndChild();
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 
 		}
 		ImGui::EndChild();
@@ -524,9 +612,13 @@ void renderSkinsPage() {
 
 	ImGui::BeginChild("#EspMenu", cMenuSize, false);
 	{
-		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), true);
+		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
 		{
 
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Enabled", &variables::Skin_Changer::isEnabledBasement);
+
+			int TsexVal = variables::Skin_Changer::skinlistSelectedWeaponID;
 			imspaceMacro(10, 10);
 			ImGui::PushItemWidth(cMenuSize.x / 2 - 20);
 			{
@@ -534,13 +626,62 @@ void renderSkinsPage() {
 			}
 			ImGui::PopItemWidth();
 
+			ImVec2 nPos = {};
+
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
+
 		}
 		ImGui::EndChild();
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), true); {
+		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
+		{
+			if (variables::Skin_Changer::skinlistSelectedWeaponID != -1)
+			{
+				imspaceMacro(10, 10);
+				ImGui::Checkbox("Enabled", &variables::Skin_Changer::isEnabled[variables::Skin_Changer::skinlistSelectedWeaponID]);
 
+				if (variables::Skin_Changer::skinlistSelectedWeaponID == 0)
+				{
+					imspaceMacro(10, 10);
+					ImGui::PushItemWidth(cMenuSize.x / 2 - 20);
+					{
+						customComboBox(variables::Skin_Changer::selectedKnifeNameID, variables::Skin_Changer::knifeNames);
+					}
+					ImGui::PopItemWidth();
+				}
+				else if (variables::Skin_Changer::skinlistSelectedWeaponID == 1)
+				{
+					imspaceMacro(10, 10);
+					ImGui::PushItemWidth(cMenuSize.x / 2 - 20);
+					{
+						customComboBox(variables::Skin_Changer::selectedKnifeNameID, variables::Skin_Changer::knifeNames);
+					}
+					ImGui::PopItemWidth();
+				}
+
+				imspaceMacro(10, 10);
+				ImGui::InputInt("Paint Kit", &variables::Skin_Changer::newPaintKit[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				imspaceMacro(10, 10);
+				ImGui::InputInt("Seed", &variables::Skin_Changer::newSeed[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				imspaceMacro(10, 10);
+				ImGui::InputInt("Stat Track", &variables::Skin_Changer::newStatTrak[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				imspaceMacro(10, 10);
+				ImGui::InputInt("Quality", &variables::Skin_Changer::newQuality[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				imspaceMacro(10, 10);
+				ImGui::InputFloat("Wear", &variables::Skin_Changer::newWear[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				//imspaceMacro(10, 10);
+				//ImGui::InputText("Custom Name", (char*)&variables::Skin_Changer::newCustomName, strlen(variables::Skin_Changer::newCustomName[variables::Skin_Changer::skinlistSelectedWeaponID]));
+
+				imspaceMacro(10, 10);
+				if (ImGui::Button("SAVE & UPDATE", ImVec2(150, 35)))
+				{
+					interfaces::clientstate->full_update();
+				}
+			}
 		}
 		ImGui::EndChild();
 	}
@@ -548,18 +689,25 @@ void renderSkinsPage() {
 }
 
 
-
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
+	static bool loaded = false;
+	static bool firstanim = true;
+	int currenttime = (float)(clock() / 1000.f);
+	static int startedtime = 0;
+	static bool savetime = true;
+	
+	static bool initedFirstOpen = false;
 
-	if(false)
+	float deltaTime = ImGui::GetIO().DeltaTime;
+	static float speed = 300.f;
+
+	static float alpha = 0.0f;
+
+	ImClamp(alpha, 0.f, 255.0f);
+
+	if (true)
 	{
-		static bool loaded = false;
 
-
-		static bool firstanim = true;
-		int currenttime = (float)(clock() / 1000.f);
-		static int startedtime = 0;
-		static bool savetime = true;
 		if (savetime) {
 			startedtime = (float)(clock() / 1000.f);
 			savetime = false;
@@ -575,12 +723,16 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 			GetWindowSize(wsz, pDevice);
 
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.2f, 0.2f, 0.2f, 0.2f));
+
 			ImGui::Begin("Loader :)", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 
 			imspaceMacro((wsz.width / 2) - 34, (wsz.height / 2) - 34);
-			Spinner("#19954", 30, 4, ImColor(255, 255, 255, 255));
+			Spinner("#19954", 25, 4, ImColor(35, 160, 30));
 
 			ImGui::End();
+
+			ImGui::PopStyleColor();
 		}
 
 		//Erasing
@@ -593,29 +745,54 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			return;
 	}
 
+	ImClamp(alpha, 0.f, 255.0f);
 
-	if (!variables::Menu_Settings::isOpened)
+
+
+
+	if (variables::Menu_Settings::isOpened)
+	{
+		if (alpha < 255)
+		{
+			alpha += speed * deltaTime;
+		}
+		else
+			alpha = 255.f;
+	}
+	else
+	{
+		if (alpha > 0)
+			alpha -= speed * deltaTime;
+		else
+			alpha = 0;
+	}
+
+	if (alpha > 255.0f)
+	{
+		alpha = 255.0f;
+	}
+	else if (alpha < 0.0f)
+	{
+		alpha = 0.0f;
+	}
+
+	if (!initedFirstOpen && alpha == 255.0f)
+	{
+		speed = 2250.f;
+		initedFirstOpen = true;
+	}
+
+	ImGuiStyle& imguiStyles = ImGui::GetStyle();
+
+	imguiStyles.Alpha = alpha / 255.f;
+
+	if (imguiStyles.Alpha <= 0.0f)
 		return;
 
 	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
 	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
-
+	 
 	static bool firstLoadInit = false;
-
-	ImGuiStyle& imguiStyles = ImGui::GetStyle();
-
-
-
-	//inline functions
-
-	auto getMenuPos = [](ImVec2& pos) {
-		pos = ImGui::GetWindowPos();
-	};
-
-	auto getCursorPos = [](ImVec2& pos) {
-		pos = ImGui::GetCursorPos();
-	};
-
 
 
 	if (!firstLoadInit)
@@ -627,7 +804,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		imguiStyles.ItemSpacing = ImVec2(0, 0);
 		imguiStyles.ItemInnerSpacing = ImVec2(10, 0);
 
-		imguiStyles.Colors[ImGuiCol_WindowBg] = ImColor(20, 20, 20);
+		imguiStyles.Colors[ImGuiCol_WindowBg] = ImColor(20, 20, 20, 255);
 
 		windowSize wsz;
 
@@ -642,7 +819,6 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImGui::GetIO().FontGlobalScale = variables::Menu_Settings::uiSelectedDPI;
 	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
-
 
 	imguiStyles.WindowRounding = 8;
 	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
@@ -676,7 +852,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 				ImGui::GetStyle().FrameRounding = 4;
 
-				imguiStyles.Colors[ImGuiCol_Button] = ImColor(20, 20, 20);
+				imguiStyles.Colors[ImGuiCol_Button] = ImColor(20, 20, 20, 0);
 				imguiStyles.Colors[ImGuiCol_ButtonHovered] = ImColor(35, 120, 30);
 				imguiStyles.Colors[ImGuiCol_ButtonActive] = ImColor(35, 90, 30);
 
@@ -687,7 +863,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 				imguiStyles.Colors[ImGuiCol_FrameBgHovered] = ImColor(50, 50, 50);
 				imguiStyles.Colors[ImGuiCol_FrameBgActive] = ImColor(50, 110, 50);
 
-				imguiStyles.Colors[ImGuiCol_Header] = ImColor(20, 20, 20);
+
+
+				imguiStyles.Colors[ImGuiCol_Header] = ImColor(50, 180, 50);
 				imguiStyles.Colors[ImGuiCol_HeaderHovered] = ImColor(35, 120, 30);
 				imguiStyles.Colors[ImGuiCol_HeaderActive] = ImColor(35, 90, 30);
 
@@ -757,7 +935,14 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 			imguiStyles.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
 
-			ImGui::BeginChild("#state-upper", ImVec2(cMenuSize.x, 50), true); {
+			ImGui::BeginChild("#state-upper", ImVec2(cMenuSize.x, 50), false); {
+				ImVec2 nPos = {};
+				ImVec2 nPos2 = {};
+
+				getMenuPos(nPos);
+				getCursorPos(nPos2);
+
+				ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + 5, nPos.y + 48), ImVec2(nPos.x + cMenuSize.x - 10, nPos.y + 48), ImColor(150, 150, 150), 2);
 
 			}
 			ImGui::EndChild();
@@ -794,7 +979,8 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImGui::GetIO().FontGlobalScale = 1;
 
-	ImGui::SetNextWindowSize(ImVec2(300, 200));
+	ImGui::SetNextWindowSize(ImVec2(300, 400));
+
 	ImGui::Begin("Debug Window");
 	{
 		ImGui::SliderFloat("test", &variables::Menu_Settings::uiSelectedDPI, -10.f, 10.f);
@@ -809,6 +995,92 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			variables::Menu_Settings::isOpened = false;
 		}
 
+		if (false && interfaces::engine->is_in_game() && interfaces::engine->is_connected() && csgo::local_player && csgo::local_player->is_alive())
+		{
+			auto wep = csgo::local_player->active_weapon();
+			if (wep)
+			{
+				int indes = wep->item_definition_index();
+
+				variables::Skin_Changer::SkinSetSt sst = variables::Skin_Changer::getValueFromList(indes);
+
+				ImGui::Text(std::to_string(skins::currWeapID).c_str());
+				ImGui::Text(std::to_string(sst.GameID).c_str());
+				ImGui::Text(std::to_string(sst.MenuID).c_str());
+				ImGui::Text(std::to_string(sst.isKnife).c_str());
+				ImGui::Text(std::to_string(sst.newKnifeID).c_str());
+				ImGui::Text(std::to_string(sst.PaintKit).c_str());
+				ImGui::Text(std::to_string(sst.isEnabled).c_str());
+			}
+		}
+		else
+		{
+
+			imspaceMacro(10, 10);
+			ImGui::ListBoxHeader("#hitbox-selection-menu", 4, 10);
+			{
+				for (size_t i = 0; i < IM_ARRAYSIZE(variables::Aimbot_Settings::selected_hitboxes); i++)
+				{
+					bool* isSelected = &variables::Aimbot_Settings::selected_hitboxes[i];
+
+					if (ImGui::Selectable(variables::Aimbot_Settings::selected_hitboxes_names[i], *isSelected))
+					{
+						*isSelected = !*isSelected;
+					}
+				}
+			}
+			ImGui::ListBoxFooter();
+		}
+
+
+		if (ImGui::Button("RESET LOAD"))
+		{
+			loaded = false;
+			firstanim = true;
+			currenttime = (float)(clock() / 1000.f);
+			startedtime = 0;
+			savetime = true;
+			initedFirstOpen = false;
+			speed = 300.0f;
+			alpha = 0.0f;
+		}
+
+	}
+	ImGui::End();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	ImGui::SetNextWindowSize(ImVec2(350, 500));
+
+	ImGui::Begin("ONLINE TEST WINDOW");
+	{
+		ImGui::BeginChild("#dkWindow", ImVec2(250, 400), true);
+		{
+			for (std::string item : variables::cheat::logboxLists)
+			{
+				ImGui::Text(item.c_str());
+			}
+		}
+		ImGui::EndChild();
 	}
 	ImGui::End();
 }

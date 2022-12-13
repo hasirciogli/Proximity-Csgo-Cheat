@@ -1,13 +1,20 @@
 #pragma once
 #include "core/menu/global_input.hpp"
+#include "core/features/visuals/skin_changer/skin_changer.hpp"
 
 
 namespace vfuns
 {
-	inline color getcolorofimcolor(ImColor item) { return color(item.Value.x, item.Value.y, item.Value.z, item.Value.w); }
+	inline color getcolorofimcolor(ImColor item) { return color(255, 255, 255, 255); }
 }
 
 namespace variables {
+	namespace cheat
+	{
+		inline bool forceCloseCheat = false;
+		inline std::list<std::string> logboxLists;
+	};
+
 	namespace aim {
 		inline bool triggerbot = false;
 		inline hotkey_t triggerbot_key(VK_PRIOR);
@@ -271,10 +278,10 @@ namespace variables {
 	namespace colors {
 		// Esp and glow
 
-		inline ImColor friendly_color = ImColor(250, 250, 250, 250);
+		inline ImColor friendly_color = ImColor(1, 1, 1, 1);
 		inline ImColor friendly_color_soft = ImColor(250, 250, 250, 250);
 		inline ImColor friendly_color_softer = ImColor(250, 250, 250, 250);
-		inline ImColor enemy_color = ImColor(250, 250, 250, 250);
+		inline ImColor enemy_color = ImColor(1, 1, 1, 1);
 		inline ImColor enemy_color_soft = ImColor(250, 250, 250, 250);
 		inline ImColor enemy_color_softer = ImColor(250, 250, 250, 250);
 
@@ -383,19 +390,41 @@ namespace variables {
 			}
 		}
 	}
+
 	namespace Aimbot_Settings {
 		inline bool enabled = false;
 		inline bool teamCheck = false;
+		inline bool noScope = false;
 		inline bool autofire = false;
+		inline bool silentAim = false;
+		inline bool non_rifle_aimpunch = false;
 		inline bool auto_revolver = false;
+		inline bool drawFov = false;
+		inline bool priorize_lethal_targets = false;
 		inline bool auto_wall = false;
+
+		inline int aimbotKey = -2;
+
+		inline float aimbot_smoothing = 0.f; 
+
 
 		inline float min_damage = 0.f;
 		inline float aimbot_fov = 0.f;
 
-		namespace hitboxes {
-			inline bool head = false;
+		inline bool selected_hitboxes[] = {
+			false,
+			false,
+			false,
+			false,
+			false
+		};
 
+		inline const char* selected_hitboxes_names[] = {
+			"head",
+			"neck",
+			"chest",
+			"arms",
+			"legs"
 		};
 	};
 
@@ -404,17 +433,36 @@ namespace variables {
 		inline int selected_team = 0;  
 		inline bool test = false;
 
-		inline bool enabledBase[] = { false, false, false };
-		inline bool enabledEsp[] = { false, false, false };
+		inline bool enabledBase = false;
+		inline bool enabledNameesp[] = { false, false, false };
+		inline bool enabledHealthesp[] = { false, false, false };
 		inline bool enabledBox[] = { false, false, false };
 		inline bool enabledLine[] = { false, false, false };
+		inline bool enabledSkeleton[] = { false, false, false };
 		inline bool enabledGethers[] = { false, false, false };
 	};
 
 
 	namespace Skin_Changer
 	{
+		inline bool isEnabledBasement = false;
+
+
 		inline int skinlistSelectedWeaponID = -1;
+
+		inline bool isEnabled[70];
+		inline int newKnifeID = 0;
+		inline int newGloveID = 0;
+
+		inline int newPaintKit[70];
+		inline int newSeed[70];
+		inline int newStatTrak[70];
+		inline int newQuality[70];
+		inline float newWear[70];
+
+		inline const char* newCustomName[70];
+
+
 
 		inline std::vector<const char*> menuSkinsItemDefins = 
 		{
@@ -455,6 +503,163 @@ namespace variables {
 			"USP-S",
 			"XM1014",
 		};
+
+		inline struct SkinSetSt
+		{
+			bool isEnabled = false;
+			bool isKnife = false;
+			bool isGlove = false;
+			int newKnifeID = NULL;
+			int newGloveID = NULL;
+
+			int MenuID = 0;
+			int GameID = 0;
+
+			int PaintKit = 0;
+			int Seed = 0;
+			int StatTrack = 0;
+			int Quality = 0;
+			float Wear = 0;
+			std::string CustomName = "";
+		};
+
+		inline std::vector<const char*> knifeNames = 
+		{
+			"-",
+			"BAYONET",
+			"M9_BAYONET",
+			"KARAMBIT",
+			"SURVIVAL_BOWIE",
+			"BUTTERFLY",
+			"FALCHION",
+			"FLIP",
+			"GUT",
+			"TACTICAL",   // Huntsman
+			"PUSH",
+			"GYPSY_JACKKNIFE",
+			"STILETTO",
+			"WIDOWMAKER",      // Talon
+			"SKELETON",
+			"URSUS",
+			"CSS"
+		};
+
+		inline int selectedKnifeNameID = 0;
+
+		inline int getKnifeNewID()
+		{
+			switch (selectedKnifeNameID)
+			{
+			case 0:
+				return 42;
+				break;
+			case 1:
+				return WEAPON_BAYONET;
+				break;
+			case 2:
+				return WEAPON_KNIFE_M9_BAYONET;
+				break;
+			case 3:
+				return WEAPON_KNIFE_KARAMBIT;
+				break;
+			case 4:
+				return WEAPON_KNIFE_SURVIVAL_BOWIE;
+				break;
+			case 5:
+				return WEAPON_KNIFE_BUTTERFLY;
+				break;
+			case 6:
+				return WEAPON_KNIFE_FALCHION;
+				break;
+			case 7:
+				return WEAPON_KNIFE_FLIP;
+				break;
+			case 8:
+				return WEAPON_KNIFE_GUT;
+				break;
+			case 9:
+				return WEAPON_KNIFE_TACTICAL;
+				break;
+			case 10:
+				return WEAPON_KNIFE_PUSH;
+				break;
+			case 11:
+				return WEAPON_KNIFE_GYPSY_JACKKNIFE;
+				break;
+			case 12:
+				return WEAPON_KNIFE_STILETTO;
+				break;
+			case 13:
+				return WEAPON_KNIFE_WIDOWMAKER;
+				break;
+			case 14:
+				return WEAPON_KNIFE_SKELETON;
+				break;
+			case 15:
+				return WEAPON_KNIFE_URSUS;
+				break;
+			case 16:
+				return WEAPON_KNIFE_CSS;
+				break;
+			default:
+				return 0;
+				break;
+			}
+		}
+
+		inline SkinSetSt getValueFromList(int skinWeaponID)
+		{
+			int bBar = -1;
+
+			skins::_st::wSkins_Weplst bbeka;
+
+			for(auto item : skins::wItemDefs)
+			{
+				if (item.weaponGameID == skinWeaponID)
+				{
+					bBar = item.weaponMenuID;
+					bbeka = item;
+					break;
+				}
+			}
+
+			SkinSetSt rbeka;
+
+			if (bBar == -1)
+			{
+				rbeka.isEnabled = false;
+				rbeka.isKnife = false;
+				rbeka.isGlove = false;
+				rbeka.newKnifeID = 0;
+				rbeka.newGloveID = 0;
+				rbeka.PaintKit = 0;
+				rbeka.Seed = 0;
+				rbeka.StatTrack = 0;
+				rbeka.Quality = 0;
+				rbeka.Wear = 0;
+				rbeka.CustomName = "";
+			}
+			else
+			{
+				rbeka.isEnabled = variables::Skin_Changer::isEnabled[bBar];
+				rbeka.isKnife = bBar == 0 ? true : false;
+				rbeka.isGlove = bBar == 1 ? true : false;
+				rbeka.newKnifeID = bBar == 0 ? getKnifeNewID() : 0;
+				rbeka.newGloveID = variables::Skin_Changer::newGloveID;
+				rbeka.PaintKit = variables::Skin_Changer::newPaintKit[bBar];
+				rbeka.Seed = variables::Skin_Changer::newSeed[bBar];	
+				rbeka.StatTrack = variables::Skin_Changer::newStatTrak[bBar];
+				rbeka.Quality = variables::Skin_Changer::newQuality[bBar];
+				rbeka.Wear = variables::Skin_Changer::newWear[bBar];
+				//rbeka.CustomName = variables::Skin_Changer::newCustomName[bBar];
+				rbeka.GameID = bbeka.weaponGameID;
+				rbeka.MenuID = bbeka.weaponMenuID;
+			}
+
+
+
+			return rbeka;
+		}
 	};
 
 

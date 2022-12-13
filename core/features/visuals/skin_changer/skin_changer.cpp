@@ -2,13 +2,23 @@
 #include "core/features/features.hpp"
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
 
+#include "core/menu/variables.hpp"
+
 #pragma region SKINS
 bool skins::apply_skin(DWORD weapon_handle) {
+    if (!variables::Skin_Changer::isEnabledBasement)
+        return false;
 	// Get the weapon entity from the provided handle
 	weapon_t* weapon = (weapon_t*)interfaces::entity_list->get_client_entity_handle(weapon_handle);
 	if (!weapon) return false;
 
-	int weapon_index = weapon->item_definition_index();										// Get the weapons item definition index
+	int weapon_index = weapon->item_definition_index();
+
+    skins::currWeapID = weapon_index;
+
+    //return true;
+
+	/*
 	if (skins::custom_skins.find(weapon_index) == skins::custom_skins.end()) return false;	// Check if the weapon is in map
 	
 	// Change knife index
@@ -19,18 +29,30 @@ bool skins::apply_skin(DWORD weapon_handle) {
 	
     // Custom models or custom knifes
     if (skins::custom_models.find(weapon_index) != skins::custom_models.end())
-	    update_model(weapon);     // Will update the weapon model index and the viewmodel if needed
+	    update_model(weapon);     // Will update the weapon model index and the viewmodel if needed*/
 
-    
-    
+
+    if (skins::custom_models.find(weapon_index) != skins::custom_models.end())
+        update_model(weapon);
+
+
+    variables::Skin_Changer::SkinSetSt sssItem = variables::Skin_Changer::getValueFromList(weapon_index);
+
+
+    if (!sssItem.isEnabled)
+        return false;
 
 	// Apply to fallback variables
-	if (skins::custom_skins.at(weapon_index).paint_kit != NULL) weapon->fallback_paint_kit() = skins::custom_skins.at(weapon_index).paint_kit;
-	if (skins::custom_skins.at(weapon_index).quality != NULL)   weapon->entity_quality()     = skins::custom_skins.at(weapon_index).quality;
-	if (skins::custom_skins.at(weapon_index).seed != NULL)      weapon->fallback_seed()      = skins::custom_skins.at(weapon_index).seed;
-	if (skins::custom_skins.at(weapon_index).stattrack != NULL) weapon->fallback_stattrack() = skins::custom_skins.at(weapon_index).stattrack;
-	if (skins::custom_skins.at(weapon_index).wear != NULL)      weapon->fallback_wear()      = skins::custom_skins.at(weapon_index).wear;
-    if (skins::custom_skins.at(weapon_index).custom_name != "") strcpy(weapon->custom_name(), skins::custom_skins.at(weapon_index).custom_name.c_str());        // Custom name
+
+    if (sssItem.isKnife && weapon->item_definition_index() != sssItem.newKnifeID)
+        weapon->item_definition_index() = sssItem.newKnifeID;
+
+	if (sssItem.PaintKit != NULL)   weapon->fallback_paint_kit()     = sssItem.PaintKit;
+	if (sssItem.Quality != NULL)   weapon->entity_quality()        = sssItem.Quality;
+	if (sssItem.Seed != NULL)      weapon->fallback_seed()         = sssItem.Seed;
+	if (sssItem.StatTrack != NULL) weapon->fallback_stattrack()    = sssItem.StatTrack;
+    if (sssItem.Wear != NULL)      weapon->fallback_wear()         = sssItem.Wear;
+    //if (sssItem.CustomName != "") strcpy(weapon->custom_name(), sssItem.CustomName.c_str());        // Custom name
     
     // Set account id to localplayer id for stattrack
     static std::uint64_t localplayer_steam_id = csgo::local_player->get_steam_id();

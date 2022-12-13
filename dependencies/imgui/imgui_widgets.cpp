@@ -6421,7 +6421,8 @@ bool ImGui::BeginListBox(const char* label, const ImVec2& size_arg)
 
     const ImGuiStyle& style = g.Style;
     const ImGuiID id = GetID(label);
-    const ImVec2 label_size = CalcTextSize(label, NULL, true);
+    const ImVec2 label_size = ImVec2(0, 0); //CalcTextSize(label, NULL, true);
+
 
     // Size default to hold ~7.25 items.
     // Fractional number of items helps seeing that we can scroll down/up without looking at scrollbar.

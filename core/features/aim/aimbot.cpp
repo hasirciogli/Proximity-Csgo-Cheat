@@ -36,7 +36,7 @@ bool aim::aimbot_weapon_check(bool check_scope) {
 			if (check_scope) {
 				if (weapon_data->weapon_type == WEAPONTYPE_SNIPER_RIFLE
 					&& !csgo::local_player->is_scoped()
-					&& !variables::aim::aimbot_noscope) return false;		// We are not scoped and have the noscope option disabled
+					&& !variables::Aimbot_Settings::noScope) return false;		// We are not scoped and have the noscope option disabled
 			}
 
 			break;
@@ -69,7 +69,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 			|| !entity->is_alive()
 			|| entity->dormant()
 			|| entity->has_gun_game_immunity()) continue;
-		if (!helpers::is_enemy(entity) && !variables::aim::target_friends) continue;
+		if (!helpers::is_enemy(entity) && variables::Aimbot_Settings::teamCheck) continue;
 
 		// We get the eye position of the current entity so we can store it, and then order by it. This doesn't have to be precise
 		auto entity_pos = entity->get_eye_pos();
@@ -93,20 +93,20 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 	// Store selected hitboxes
 	std::vector<int> all_hitboxes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };	// For bodyaim if lethal
 	std::vector<int> selected_hitboxes;
-	if (variables::aim::selected_hitboxes[0]) {		// Head
+	if (variables::Aimbot_Settings::selected_hitboxes[0]) {		// Head
 		selected_hitboxes.emplace_back(hitbox_head);
 	}
-	if (variables::aim::selected_hitboxes[1]) {		// Neck
+	if (variables::Aimbot_Settings::selected_hitboxes[1]) {		// Neck
 		selected_hitboxes.emplace_back(hitbox_neck);
 	}
-	if (variables::aim::selected_hitboxes[2]) {		// Chest
+	if (variables::Aimbot_Settings::selected_hitboxes[2]) {		// Chest
 		selected_hitboxes.emplace_back(hitbox_pelvis);
 		selected_hitboxes.emplace_back(hitbox_stomach);
 		selected_hitboxes.emplace_back(hitbox_lower_chest);
 		selected_hitboxes.emplace_back(hitbox_chest);
 		selected_hitboxes.emplace_back(hitbox_upper_chest);
 	}
-	if (variables::aim::selected_hitboxes[3]) {	// Arms
+	if (variables::Aimbot_Settings::selected_hitboxes[3]) {	// Arms
 		selected_hitboxes.emplace_back(hitbox_right_hand);
 		selected_hitboxes.emplace_back(hitbox_left_hand);
 		selected_hitboxes.emplace_back(hitbox_right_upper_arm);
@@ -115,7 +115,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 		selected_hitboxes.emplace_back(hitbox_left_forearm);
 
 	}
-	if (variables::aim::selected_hitboxes[4]) {		// Legs
+	if (variables::Aimbot_Settings::selected_hitboxes[4]) {		// Legs
 		selected_hitboxes.emplace_back(hitbox_right_thigh);
 		selected_hitboxes.emplace_back(hitbox_left_thigh);
 		selected_hitboxes.emplace_back(hitbox_right_calf);
@@ -128,7 +128,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 	// Iterate the ordered target list
 	for (const std::pair<float, player_t*> item : target_list) {
 		// Check if we are checking a target with more fov than needed
-		if (item.first > variables::aim::aimbot_fov) break;
+		if (item.first > variables::Aimbot_Settings::aimbot_fov) break;
 
 		const auto entity = item.second;
 		const float entity_health = entity->health();
@@ -158,7 +158,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 					continue;
 				
 				// Check if the returned damage is enough or if we can kill the target (we dont need to worry about bodyaim_if_lethal here)
-				if (autowall_data.damage < (int)variables::aim::min_damage && !autowall_data.lethal)
+				if (autowall_data.damage < (int)variables::Aimbot_Settings::min_damage && !autowall_data.lethal)
 					continue;
 			} else if (variables::Aimbot_Settings::auto_wall) {
 				// @todo: bodyaim_if_lethal would not work with "ignore walls" because we dont run autowall
@@ -191,7 +191,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 		if (best_player_damage > 0.f && final_target.is_zero()) {
 			final_target = best_player_hitbox;
 
-			if (!variables::aim::priorize_lethal_targets) break;
+			if (!variables::Aimbot_Settings::priorize_lethal_targets) break;
 		}
 	}
 	
@@ -199,9 +199,9 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 }
 
 void aim::run_aimbot(c_usercmd* cmd) {
-	if (!(variables::aim::autofire && input::global_input.IsHeld(variables::aim::aimbot_key.key))	// Not holding aimbot key
-		&& !(!variables::aim::autofire && (cmd->buttons & cmd_buttons::in_attack))) return;			// or not attacking
-	if (!variables::aim::aimbot) return;
+	if (!(variables::Aimbot_Settings::autofire && input::global_input.IsHeld(variables::Aimbot_Settings::aimbotKey))	// Not holding aimbot key
+		&& !(!variables::Aimbot_Settings::autofire && (cmd->buttons & cmd_buttons::in_attack))) return;			// or not attacking
+	if (!variables::Aimbot_Settings::enabled) return;
 	if (!interfaces::engine->is_connected() || !interfaces::engine->is_in_game()) return;
 	if (!csgo::local_player) return;
 	if (!aimbot_weapon_check(true)) return;
@@ -220,7 +220,7 @@ void aim::run_aimbot(c_usercmd* cmd) {
 	aim_angle.clamp();
 
 	vec3_t local_aim_punch{};	// Initialize at 0 because we only want aim punch with rifles
-	if (variables::aim::non_rifle_aimpunch) {
+	if (variables::Aimbot_Settings::non_rifle_aimpunch) {
 		local_aim_punch = csgo::local_player->get_aim_punch();
 	} else {
 		switch (weapon_data->weapon_type) {
@@ -235,15 +235,15 @@ void aim::run_aimbot(c_usercmd* cmd) {
 	enemy_angle.clamp();
 
 	vec3_t angle_diff = enemy_angle;	
-	if (!variables::aim::silent) angle_diff *= (1.f - variables::aim::aimbot_smoothing);	// Scale acording to smoothing if not silent
+	if (!variables::Aimbot_Settings::silentAim) angle_diff *= (1.f - variables::Aimbot_Settings::aimbot_smoothing);	// Scale acording to smoothing if not silent
 	
 	vec3_t final_angle = cmd->viewangles + angle_diff;		// The current angle before the aimbot + what we should move
-	if (!variables::aim::silent)
+	if (!variables::Aimbot_Settings::silentAim)
 		interfaces::engine->set_view_angles(final_angle);
 	
 	cmd->viewangles = final_angle;
 
-	if (variables::aim::autofire && input::global_input.IsHeld(variables::aim::aimbot_key.key))
+	if (variables::Aimbot_Settings::autofire && input::global_input.IsHeld(variables::Aimbot_Settings::aimbotKey))
 		cmd->buttons |= in_attack;
 }
 
@@ -260,12 +260,12 @@ float scale_fov_by_width(float fov, float aspect_ratio) {
 
 // Used in paint_traverse
 void aim::draw_fov() {
-	if (!variables::aim::aimbot || !variables::aim::draw_fov) return;
+	if (!variables::Aimbot_Settings::enabled || !variables::Aimbot_Settings::drawFov) return;
 	if (!interfaces::engine->is_connected() || !interfaces::engine->is_in_game()) return;
 	if (!csgo::local_player || !csgo::local_player->is_alive()) return;
 
 	// Check if the aimbot fov is too large to render
-	if (variables::aim::aimbot_fov > 90.f) return;
+	if (variables::Aimbot_Settings::aimbot_fov > 90.f) return;
 
 	// Check if the weapon can shoot, if not we dont care about fov
 	weapon_t* active_weapon = csgo::local_player->active_weapon();
@@ -278,7 +278,7 @@ void aim::draw_fov() {
 	// Calculate radius
 	const float aspect_ratio = (float)sw / (float)sh;
 	const float screen_fov = scale_fov_by_width(variables::misc_visuals::custom_fov_slider, aspect_ratio);
-	float x1 = tan(DEG2RAD(variables::aim::aimbot_fov));
+	float x1 = tan(DEG2RAD(variables::Aimbot_Settings::aimbot_fov));
 	float x2 = tan(DEG2RAD(screen_fov) / 2);
 	float rad = (x1 / x2) * (sw/2);
 	
@@ -287,7 +287,7 @@ void aim::draw_fov() {
 
 // Used in createmove after aa
 void aim::auto_revolver(c_usercmd* cmd) {
-	if (!variables::aim::autorevolver) return;
+	if (!variables::Aimbot_Settings::auto_revolver) return;
 	
 	weapon_t* weapon = csgo::local_player->active_weapon();
 	if (!weapon) return;

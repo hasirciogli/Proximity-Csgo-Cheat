@@ -57,6 +57,8 @@ namespace skins {
 
     inline std::unordered_map<int, skin_info> custom_skins;
 
+    inline int currWeapID = 0;
+
     void read_skins();
     inline void init_skin_config() {
         //read_skins();
@@ -124,23 +126,40 @@ namespace skins {
 
     namespace _st
     {
-	    inline struct wSkins_Weplst
-	    {
+        inline struct wSkins_Weplst
+        {
             int weaponGameID;
             std::string weaponMenuName;
             int weaponMenuID;
-	    };
+        };
 
         inline struct _skinsList
         {
             int paintKitID;
             std::string name;
         };
-    }
+    };
 
     const std::vector<skins::_st::wSkins_Weplst> wItemDefs = 
     {
+        {WEAPON_KNIFE_T, "Knife", 0},
         {WEAPON_KNIFE, "Knife", 0},
+        {WEAPON_BAYONET, "Knife", 0},
+        {WEAPON_KNIFE_M9_BAYONET, "Knife", 0},
+        {WEAPON_KNIFE_KARAMBIT, "Knife", 0},
+        {WEAPON_KNIFE_SURVIVAL_BOWIE, "Knife", 0},
+        {WEAPON_KNIFE_BUTTERFLY, "Knife", 0},
+        {WEAPON_KNIFE_FALCHION, "Knife", 0},
+        {WEAPON_KNIFE_FLIP, "Knife", 0},
+        {WEAPON_KNIFE_GUT, "Knife", 0},
+        {WEAPON_KNIFE_TACTICAL, "Knife", 0},
+        {WEAPON_KNIFE_PUSH, "Knife", 0},
+        {WEAPON_KNIFE_GYPSY_JACKKNIFE, "Knife", 0},
+        {WEAPON_KNIFE_STILETTO, "Knife", 0},
+        {WEAPON_KNIFE_WIDOWMAKER, "Knife", 0},
+        {WEAPON_KNIFE_SKELETON, "Knife", 0},
+        {WEAPON_KNIFE_URSUS, "Knife", 0},
+        {WEAPON_KNIFE_CSS, "Knife", 0},
         {GLOVE_T_SIDE, "Glove", 1},
         {7, "AK-47", 2},
         {8, "AUG", 3},
@@ -178,7 +197,7 @@ namespace skins {
         {25, "XM1014", 35},
     };
 
-    const std::vector<skins::_st::_skinsList> skinsList =
+    const std::vector<skins::_st::_skinsList> skinsList = 
     {
 
     };

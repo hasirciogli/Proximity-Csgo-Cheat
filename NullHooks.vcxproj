@@ -44,7 +44,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\libraries\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)./lib/x86;$(LibraryPath)</LibraryPath>
     <OutDir>.\output\debug\</OutDir>
     <IntDir>.\intermediates\</IntDir>
@@ -252,6 +252,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="socket\msoket.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="socket\packet\DataHandler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="socket\packet\DataHandlerFuncs.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="socket\packet\Packet.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="source-sdk\math\vector3d.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -369,6 +381,9 @@
     <ClInclude Include="dependencies\utilities\renderer\renderer.hpp" />
     <ClInclude Include="dependencies\utilities\singleton.hpp" />
     <ClInclude Include="dependencies\utilities\utilities.hpp" />
+    <ClInclude Include="socket\msoket.h" />
+    <ClInclude Include="socket\packet\DataHandler.h" />
+    <ClInclude Include="socket\packet\Packet.h" />
     <ClInclude Include="source-sdk\classes\client_class.hpp" />
     <ClInclude Include="source-sdk\classes\collideable.hpp" />
     <ClInclude Include="source-sdk\classes\convar.hpp" />

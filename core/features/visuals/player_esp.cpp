@@ -61,12 +61,7 @@ void visuals::playeresp() {
 		}
 	}
 
-	if (!(player_info_enabled
-		|| variables::player_visuals::boxesp
-		|| variables::player_visuals::nameesp
-		|| variables::player_visuals::skeletonesp
-		|| variables::player_visuals::healthesp
-		|| variables::player_visuals::lineesp)) return;
+	if (!player_info_enabled && !variables::Esp_Settings::enabledBase) return;
 	if (!interfaces::engine->is_connected() || !interfaces::engine->is_in_game()) return;
 	if (!csgo::local_player) return;
 
@@ -93,7 +88,7 @@ void visuals::playeresp() {
 		if (!bbox(player, x, y, w, h)) continue;
 
 		#pragma region SKELETON ESP
-		if (variables::player_visuals::skeletonesp) {
+		if (variables::Esp_Settings::enabledSkeleton[0] || variables::Esp_Settings::enabledSkeleton[1] || variables::Esp_Settings::enabledSkeleton[2]) {
 			for (int i = 0; i < hdr->bones_count; i++) {
 				studio_bone_t* bone = hdr->bone(i);
 				if (!bone || !(bone->flags & 256) || bone->parent == -1) continue;
@@ -110,57 +105,59 @@ void visuals::playeresp() {
 				if (!math::world_to_screen(child,  s_child))  continue;
 				if (!math::world_to_screen(parent, s_parent)) continue;
 
-				if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
+				if (player->team() == csgo::local_player->team() && variables::Esp_Settings::enabledSkeleton[2])
 					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, vfuns::getcolorofimcolor(variables::colors::friendly_color_soft));
-				else if (player->team() != csgo::local_player->team())
+				else if (player->team() != csgo::local_player->team() && variables::Esp_Settings::enabledSkeleton[1])
 					render::draw_line(s_child.x, s_child.y, s_parent.x, s_parent.y, vfuns::getcolorofimcolor(variables::colors::enemy_color_soft));
 			}
 		}
 		#pragma endregion
 
 		#pragma region BOX ESP
-		if (variables::player_visuals::boxesp) {
-			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp) {
-				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Outer box outline (Use inner color's opacity)
-				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Inner box outline
-				render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::friendly_color));											// Color box line
-			} else if (player->team() != csgo::local_player->team()) {
-				render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
-				render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
-				render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::enemy_color));
-			}
+
+		if (player->team() == csgo::local_player->team() && variables::Esp_Settings::enabledBox[2]) {
+			render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Outer box outline (Use inner color's opacity)
+			render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::friendly_color).a));		// Inner box outline
+			render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::friendly_color));											// Color box line
 		}
+
+		if (player->team() != csgo::local_player->team() && variables::Esp_Settings::enabledBox[1]) {
+			render::draw_rect(x - 1, y - 1, w + 2, h + 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
+			render::draw_rect(x + 1, y + 1, w - 2, h - 2, color::black(vfuns::getcolorofimcolor(variables::colors::enemy_color).a));
+			render::draw_rect(x, y, w, h, vfuns::getcolorofimcolor(variables::colors::enemy_color));
+		}
+
 		#pragma endregion
 
 		#pragma region LINE ESP
-		if (variables::player_visuals::lineesp) {
+		if (variables::Esp_Settings::enabledLine[0] || variables::Esp_Settings::enabledLine[1] || variables::Esp_Settings::enabledLine[2]) {
 			int screen_width, screen_height;
 			interfaces::engine->get_screen_size(screen_width, screen_height);
 			
 			// Draw from crosshair
-			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
+			if (player->team() == csgo::local_player->team() && variables::Esp_Settings::enabledLine[2])
 				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, vfuns::getcolorofimcolor(variables::colors::friendly_color));
-			else if (player->team() != csgo::local_player->team())
+			else if (player->team() != csgo::local_player->team() && variables::Esp_Settings::enabledLine[1])
 				render::draw_line(x + w / 2, y + h, screen_width / 2, screen_height / 2, vfuns::getcolorofimcolor(variables::colors::enemy_color));
 		}
 		#pragma endregion
 		
 		#pragma region NAME ESP
-		if (variables::player_visuals::nameesp) {
+		if (variables::Esp_Settings::enabledNameesp[0] || variables::Esp_Settings::enabledNameesp[1] || variables::Esp_Settings::enabledNameesp[2]) {
 			player_info_t playerinfo;
 			interfaces::engine->get_player_info(i, &playerinfo);
 			wchar_t w_player_name[128];
 			if (MultiByteToWideChar(CP_UTF8, 0, playerinfo.name, -1, w_player_name, 128) < 0) continue;
 
-			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp)
+			if (player->team() == csgo::local_player->team() && variables::Esp_Settings::enabledNameesp[2])
 				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, vfuns::getcolorofimcolor(variables::colors::friendly_color));
-			else if (player->team() != csgo::local_player->team())
+			else if (player->team() != csgo::local_player->team() && variables::Esp_Settings::enabledNameesp[1])
 				render::draw_text_wchar(x + w/2, y + h + 2, render::fonts::watermark_font, w_player_name, true, vfuns::getcolorofimcolor(variables::colors::enemy_color));
 		}
 		#pragma endregion
 
 		#pragma region INFO ESP
-		if (player_info_enabled) {
+		if (player_info_enabled && false) {
 			// Friends and enemies
 			if (player->team() != csgo::local_player->team() || variables::player_visuals::showteamesp) {
 				if (variables::player_visuals::playerinfo_options[0].value && player->armor() > 0) {
@@ -235,18 +232,18 @@ void visuals::playeresp() {
 		#pragma endregion
 
 		#pragma region HEALTH ESP
-		if (variables::player_visuals::healthesp) {
+		if (variables::Esp_Settings::enabledHealthesp[0] || variables::Esp_Settings::enabledHealthesp[1] || variables::Esp_Settings::enabledHealthesp[2]) {
 			int health = player->health();
 			const int health_h = (h * health) / 100;
 			const int health_w = 4;
 			const int health_y = y + (h - health_h);
 			const int health_x = x - 6;
 			//render::draw_text_string(10, 20, render::fonts::watermark_font, std::to_string(h), true, color::red());
-			if (player->team() == csgo::local_player->team() && variables::player_visuals::showteamesp) {
+			if (player->team() == csgo::local_player->team() && variables::Esp_Settings::enabledHealthesp[2]) {
 				render::draw_filled_rect(health_x, y, health_w, h, color::red());
 				render::draw_filled_rect(health_x, health_y, health_w, health_h, color::green());
 				render::draw_rect(health_x, y, health_w, h, color::black(180));
-			} else if (player->team() != csgo::local_player->team()) {
+			} else if (player->team() != csgo::local_player->team() && variables::Esp_Settings::enabledHealthesp[1]) {
 				render::draw_filled_rect(health_x, y, health_w, h, color::red());
 				render::draw_filled_rect(health_x, health_y, health_w, health_h, color::green());
 				render::draw_rect(health_x, y, health_w, h, color::black(180));
