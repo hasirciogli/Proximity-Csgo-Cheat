@@ -531,7 +531,7 @@ public:
 
 	float inaccuracy() {
 		using original_fn = float(__thiscall*)(void*);
-		return (*(original_fn**)this)[482](this);
+		return (*(original_fn**)this)[483](this);
 	}
 
 	float get_spread() {

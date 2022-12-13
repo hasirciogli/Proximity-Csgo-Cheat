@@ -433,6 +433,17 @@ void renderAimbotPage() {
 
 
 
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Aimbot Hitchance").x + 30));
+
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Aimbot Hitchance", &variables::Aimbot_Settings::aimbot_hitchance, 0.f, 125.f, "%.1f");
+
+			ImGui::PopItemWidth();
+
+
+
+
+
 			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Smoothness").x + 30));
 
 			imspaceMacro(10, 10);
@@ -566,7 +577,7 @@ void renderEspPage() {
 			if (ImGui::Button("Team", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 2;
 			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
-			
+
 			imspaceMacro(10, 10);
 			ImGui::Checkbox("Name", &variables::Esp_Settings::enabledNameesp[variables::Esp_Settings::selected_team]);
 
@@ -682,6 +693,37 @@ void renderSkinsPage() {
 					interfaces::clientstate->full_update();
 				}
 			}
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
+void renderMiscPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
+	ImGui::BeginChild("#MiscMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#misc-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			
+			imspaceMacro(10, 10);
+			ImGui::Checkbox("Thirdperson", &variables::misc::thirdperson);
+
+
+
+			ImVec2 nPos = {};
+
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
+
+		}
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+
 		}
 		ImGui::EndChild();
 	}
@@ -957,6 +999,10 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 				break;
 			case 2:
 				renderEspPage();
+				break;
+
+			case 5:
+				renderMiscPage();
 				break;
 
 

@@ -2,6 +2,21 @@
 #include "core/features/features.hpp"
 #include "core/menu/variables.hpp"
 
+
+
+float hitchance(weapon_t* pWeapon)
+{
+	//	CBaseCombatWeapon* pWeapon = (CBaseCombatWeapon*)Interfaces::EntList->GetClientEntityFromHandle(pLocal->GetActiveWeaponHandle());
+	if (!pWeapon) return 0;
+	 
+	float inaccuracy = pWeapon->inaccuracy();
+	if (inaccuracy == 0) inaccuracy = 0.0000001;
+	inaccuracy = 1 / inaccuracy;
+
+	return inaccuracy;
+}
+
+
 // Checks if we can fire, used in other places
 bool aim::can_fire(player_t* target) {
 	weapon_t* active_weapon = target->active_weapon();
@@ -230,6 +245,9 @@ void aim::run_aimbot(c_usercmd* cmd) {
 				local_aim_punch = csgo::local_player->get_aim_punch();
 		}
 	}
+
+	if (hitchance(csgo::local_player->active_weapon()) < variables::Aimbot_Settings::aimbot_hitchance)
+		return;
 
 	vec3_t enemy_angle = (aim_angle - local_aim_punch) - cmd->viewangles;
 	enemy_angle.clamp();

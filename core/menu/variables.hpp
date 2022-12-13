@@ -227,7 +227,7 @@ namespace variables {
 
 		// Thirdperson
 		inline bool thirdperson = false;
-		inline hotkey_t thirdperson_key('P');
+		inline int thirdperson_key = KEY_V;
 		inline float thirdperson_dist = 100.f;
 
 		// UI
@@ -410,6 +410,7 @@ namespace variables {
 
 		inline float min_damage = 0.f;
 		inline float aimbot_fov = 0.f;
+		inline float aimbot_hitchance = 0.f;
 
 		inline bool selected_hitboxes[] = {
 			false,
