@@ -2,7 +2,7 @@
 #include "core/features/features.hpp"
 #include "core/menu/variables.hpp"
 
-
+ 
 
 float hitchance(weapon_t* pWeapon)
 {
