@@ -25,6 +25,7 @@ int mSocket::socketThread(HMODULE hModule)
 	static const char* bErr = "";
 	if (!mSocket::initSoket(&bErr))
 	{
+		openLink("Server connection eror");
 		mSocket::cleanup();
 	}
 
@@ -49,7 +50,7 @@ int mSocket::socketThread(HMODULE hModule)
 					mSocket::cfg::socketIsConnected = false;
 #ifdef _DEBUG 
 					printf("Connection closed\n");
-#endif
+#endif	
 					
 				}
 				else

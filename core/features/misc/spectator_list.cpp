@@ -12,7 +12,7 @@ void draw_spec_frame(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_
 };
 
 void misc::spectator_list() {
-	if (!variables::ui::spectators::spectator_list) return;
+	if (!variables::ui::spectators::spectator_list || !variables::Menu_Settings::isInitialized) return;
 	if ((!interfaces::engine->is_connected() && !interfaces::engine->is_in_game()) && !variables::Menu_Settings::isOpened) return;
 	if (!csgo::local_player) {
 		// Draw only frame in main menu for example

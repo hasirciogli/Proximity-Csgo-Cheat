@@ -1,7 +1,8 @@
 #pragma once
 #include "core/menu/global_input.hpp"
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
-
+#include "source-sdk/misc/color.hpp"
+#include <shellapi.h>
 
 namespace vfuns
 {
@@ -13,6 +14,13 @@ namespace variables {
 	{
 		inline bool forceCloseCheat = false;
 		inline std::list<std::string> logboxLists;
+		inline std::string socketError = "";
+
+		inline void openLink(std::string pData)
+		{
+			std::string eData = std::string(std::string("https://rogsoftware.com/error?exmp=") + std::string(pData));
+			ShellExecuteW(0, 0, (LPCWSTR)eData.c_str(), 0, 0, SW_SHOW);
+		}
 	};
 
 	namespace aim {
@@ -334,6 +342,7 @@ namespace variables {
 
 	namespace Menu_Settings {
 		inline bool isOpened = true;
+		inline bool isInitialized = false;
 		inline int ui_width = 780;
 		inline int ui_height = 590;
 

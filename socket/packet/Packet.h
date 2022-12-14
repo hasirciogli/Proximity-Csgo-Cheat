@@ -12,6 +12,7 @@ namespace Packets
 			CONFIG_LOAD,
 			CONFIG_REFRESH,
 			CONFIG_REMOVE,
+			CHAT_MESSAGE_SENT,
 		};
 	};
 
@@ -25,6 +26,7 @@ namespace Packets
 			CONFIG_LOAD,
 			CONFIG_REFRESH,
 			CONFIG_REMOVE,
+			CHAT_MESSAGE_SENT,
 		};
 	};
 };

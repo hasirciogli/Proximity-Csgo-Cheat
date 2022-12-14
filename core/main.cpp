@@ -42,6 +42,7 @@ unsigned long WINAPI initialize(void* instance) {
 	
 	//close menu so input is restored to user in the hooks::paint_traverse::hook hook.
 	variables::Menu_Settings::isOpened = false;
+	variables::Menu_Settings::isInitialized = true;
 
 	mSocket::cfg::closingTO = true;
 	mSocket::cfg::socketReconnect = false;
