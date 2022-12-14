@@ -21,4 +21,5 @@ class CDataHandlerFuncs
 public:
 	void FirstAuth(std::string fullData);
 	void UserAuth(std::string fullData);
+	void ChatMessageSent(std::string fullData);
 };

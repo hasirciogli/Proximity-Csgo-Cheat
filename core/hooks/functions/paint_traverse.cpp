@@ -41,7 +41,7 @@ void __stdcall hooks::paint_traverse::hook(unsigned int panel, bool force_repain
 		//interfaces::panel->set_keyboard_input_enabled(panel, variables::menu::editing_text);
 		interfaces::input_system->enable_input(!(variables::Menu_Settings::isOpened && (input::global_input.reading_hotkey || input::global_input.reading_textbox)));					// TODO: Does not restore when unhooking
 		interfaces::panel->set_keyboard_input_enabled(panel, variables::Menu_Settings::isOpened && (input::global_input.reading_hotkey || input::global_input.reading_textbox));		// TODO: Does not restore when unhooking
-		interfaces::panel->set_mouse_input_enabled(panel, variables::Menu_Settings::isOpened);
+		interfaces::panel->set_mouse_input_enabled(panel, variables::Menu_Settings::isOpened || !variables::Menu_Settings::isInitialized);
 		break;
 	case fnv::hash("HudZoom"):	// No sniper scope
 		if (!variables::misc_visuals::noscope) break;

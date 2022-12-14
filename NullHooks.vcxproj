@@ -189,6 +189,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="core\menu\chatbox\ChatBox.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="core\menu\global_input.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -283,6 +286,7 @@
     <ClInclude Include="core\helpers\helpers.hpp" />
     <ClInclude Include="core\features\visuals\models.hpp" />
     <ClInclude Include="core\hooks\hooks.hpp" />
+    <ClInclude Include="core\menu\chatbox\ChatBox.h" />
     <ClInclude Include="core\menu\global_input.hpp" />
     <ClInclude Include="core\menu\menu.hpp" />
     <ClInclude Include="core\menu\variables.hpp" />
@@ -406,6 +410,9 @@
     <ClInclude Include="source-sdk\structs\models.hpp" />
     <ClInclude Include="source-sdk\structs\vertex_t.hpp" />
     <ClInclude Include="source-sdk\structs\weaponinfo.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="socket\packet\packet-tests.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
