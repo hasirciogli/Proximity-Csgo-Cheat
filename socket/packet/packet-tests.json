@@ -1,9 +1,26 @@
+{
+  "packet_id": 6,
+  "data": {
+    "message_id": 1,
+    "message_content": "1",
+    "message_content_color": "#d9a33f",
+    "message_author": "admin",
+    "message_author_color": "#e02d42",
+    "message_date": "15 Aralık 2022 Perşembe 19:36:05"
+  }
+},
 
-
-
-
-
-
+{
+  "packet_id": 6,
+  "data": {
+    "message_id": 1,
+    "message_content": "213123",
+    "message_content_color": "#d9a33f",
+    "message_author": "admin",
+    "message_author_color": "#e02d42",
+    "message_date": "15 Aralık 2022 Perşembe 19:35:14"
+  }
+},
 
 {
   "packet_id": 3,
@@ -11,6 +28,8 @@
     "message_id": 1,
     "message_uthor": "Noxy",
     "message_content": "Can i say somethink ?",
-    "message_date":  "27."
+    "message_date": "27.",
+    "message_author_color": "",
+    "message_content_color": ""
   }
 }

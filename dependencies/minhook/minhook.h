@@ -31,8 +31,9 @@
 #if !(defined _M_IX86) && !(defined _M_X64) && !(defined __i386__) && !(defined __x86_64__)
 #error MinHook supports only x86 and x64 systems.
 #endif
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#endif#include <windows.h>
 
  // MinHook Error Codes.
 typedef enum MH_STATUS

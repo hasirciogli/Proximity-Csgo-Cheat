@@ -1,4 +1,6 @@
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 
 #include <windows.h>
 #include <winsock2.h>
@@ -46,7 +48,7 @@ namespace mSocket
 		inline addrinfo* ptr;
 		inline addrinfo hints;
 
-		inline char recvbuf[8192];
+		inline char recvbuf[8192] = "";
 		inline int iResult;
 		inline int recvbuflen = 8192;
 	};

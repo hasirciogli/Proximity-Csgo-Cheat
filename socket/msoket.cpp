@@ -35,33 +35,45 @@ int mSocket::socketThread(HMODULE hModule)
 
 	while (!cfg::closingTO)
 	{
-		if (mSocket::cfg::socketInited && !cfg::closingTO)
+		if (mSocket::cfg::socketInited && !cfg::closingTO) 
 		{
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
 				mSocket::cfg::iResult = recv(mSocket::cfg::ConnectSocket, mSocket::cfg::recvbuf, mSocket::cfg::recvbuflen, 0);
 				if (mSocket::cfg::iResult > 0)
 				{
-					CDataHandler cdh = CDataHandler(mSocket::cfg::recvbuf);
+#ifdef _DEBUG
+					std::string test = "";
+					for (size_t i = 0; i < mSocket::cfg::iResult; i++)
+					{
+						test += mSocket::cfg::recvbuf[i];
+					}
+					
+					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << mSocket::cfg::iResult << std::endl << std::endl;
+#endif
+
+					CDataHandler cdh = CDataHandler(); 
+					cdh.data = test;
 					cdh.Handle();
+
+					mSocket::cfg::recvbuf[0] = {}; 
 				}
 				else if (mSocket::cfg::iResult == 0)
 				{
 					mSocket::cfg::socketIsConnected = false;
 #ifdef _DEBUG 
-					printf("Connection closed\n");
+					printf("Connection closed\n\n");
 #endif	
 					
 				}
 				else
 				{
-					mSocket::cfg::socketReconnect = true;
-					mSocket::cfg::socketIsConnected = false;
+					mSocket::cfg::socketReconnect		= true;
+					mSocket::cfg::socketIsConnected		= false;
 #ifdef _DEBUG
-					printf("recv failed with error: %d\n", WSAGetLastError());
+					printf("recv failed with error: %d\n\n", WSAGetLastError());
 #endif
-					
-				
+
 				}
 			}
 			else if (mSocket::cfg::socketReconnect && !cfg::closingTO)
@@ -74,7 +86,7 @@ int mSocket::socketThread(HMODULE hModule)
 				mSocket::cfg::iResult = getaddrinfo(DEFAULT_IP, DEFAULT_PORT, &mSocket::cfg::hints, &mSocket::cfg::result);
 				if (mSocket::cfg::iResult != 0) {
 #ifdef _DEBUG
-					printf("getaddrinfo failed with error: %d\n", mSocket::cfg::iResult);
+					printf("getaddrinfo failed with error: %d\n\n", mSocket::cfg::iResult);
 #endif
 					WSACleanup();
 					continue;
@@ -87,7 +99,7 @@ int mSocket::socketThread(HMODULE hModule)
 
 				if (mSocket::cfg::ConnectSocket == INVALID_SOCKET) {
 #ifdef _DEBUG
-					printf("socket failed with error: %ld\n", WSAGetLastError());
+					printf("socket failed with error: %ld\n\n", WSAGetLastError());
 #endif
 					WSACleanup();
 					continue;
@@ -105,7 +117,7 @@ int mSocket::socketThread(HMODULE hModule)
 
 				if (mSocket::cfg::ConnectSocket == INVALID_SOCKET) {
 #ifdef _DEBUG
-					printf("Unable to connect to server!\n");
+					printf("Unable to connect to server!\n\n");
 #endif
 					WSACleanup();
 					mSocket::cfg::socketIsConnected = false;
@@ -136,8 +148,12 @@ bool mSocket::sendPacketToServer(const char* data, const char** iError)
 	if (mSocket::cfg::iResult == SOCKET_ERROR) {
 
 		mSocket::cfg::socketIsConnected				= false;
-		mSocket::cfg::socketReconnect				= true;
+		//mSocket::cfg::socketReconnect				= true;
+		mSocket::cfg::socketReconnect				= false;
 		closesocket(mSocket::cfg::ConnectSocket);
+
+		*iError = "mSocket::cfg::iResult == SOCKET_ERROR";
+
 		//WSACleanup();
 		return false;
 	}
@@ -157,7 +173,7 @@ bool mSocket::initSoket(const char** errStr)
 	}
 
 	mSocket::cfg::iResult = WSAStartup(MAKEWORD(2, 2), &mSocket::cfg::wsaData);
-	if (mSocket::cfg::iResult != 0) {
+	if (mSocket::cfg::iResult != 0) { 
 		*errStr = "Error -> Socket init failed" + mSocket::cfg::iResult;
 		return false;
 	}
@@ -179,7 +195,7 @@ bool mSocket::cleanup()
 	mSocket::cfg::socketReconnect		= false;
 	mSocket::cfg::socketIsConnected		= false;
 
-
+	printf("Cleanup called\n\n");
 
 	// Cleanup
 	closesocket(mSocket::cfg::ConnectSocket);

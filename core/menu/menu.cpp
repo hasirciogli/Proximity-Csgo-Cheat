@@ -2,6 +2,8 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#include "./chatbox/ChatBox.h"
+
 #include "socket/msoket.h"
 
 #include "core/features/features.hpp"
@@ -9,7 +11,7 @@
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
 #include "core/config/config.hpp"
 #include "dependencies/imgui/imgui_internal.h"
-#include "chatbox/ChatBox.h"
+
 
 #define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
 

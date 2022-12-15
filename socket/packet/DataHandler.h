@@ -1,5 +1,5 @@
-#include "Packet.h"
 #include <string>
+#include <iostream>
 
 #include <nlohmann/json.hpp>
 
@@ -7,11 +7,6 @@ class CDataHandler
 {
 public:
 	std::string data = "";
-
-	CDataHandler(std::string tData)
-	{
-		this->data = tData;
-	}
 
 	void Handle();
 };

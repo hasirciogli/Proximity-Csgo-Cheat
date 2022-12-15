@@ -1,7 +1,11 @@
+#include "socket/msoket.h"
+#include "socket/packet/Packet.h"
+
 #include "ChatBox.h"
 
 using namespace std;
 using namespace ImGui;
+using namespace nlohmann::json_abi_v3_11_2;
 
 void CB_imspaceMacro(float x, float y) {
 	ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x + x, ImGui::GetCursorPos().y + y));
@@ -106,14 +110,29 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 
 			if (Button("Send", ImVec2(100, 40)))
 			{
-				ChatboxItem item = ChatboxItem();
+				string tMessage = DDKmessage;
+				string username = "admin";
 
-				item.chatColor = CB_getZtkColor(255, 255, 255);
-				item.nameColor = CB_getZtkColor(255, 150, 20);
-				item.name = "Noxy";
-				item.message = DDKmessage;
+				json jdATAA;
 
-				chatboxItems.push_back(item);
+				jdATAA.clear();
+				 
+				jdATAA["packet_id"] = (int)Packets::NClientPackets::CHAT_MESSAGE_SENT;
+				jdATAA["data"]["message_author"]		= username;
+				jdATAA["data"]["message_content"]		= tMessage;
+
+				string sendLon = jdATAA.dump();
+
+				const char* eData = ""; 
+
+				if (mSocket::sendPacketToServer(sendLon.c_str(), &eData))
+				{
+					printf("\n\npacket Sent -> %s\n\n", sendLon.c_str());
+				} 
+				else
+				{
+					printf("\n\nsendPacketError -> %s\n\n", eData);
+				}
 
 				DDKmessage[0] = {};
 			}
