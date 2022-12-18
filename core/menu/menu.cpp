@@ -746,6 +746,97 @@ void renderMiscPage() {
 	ImGui::EndChild();
 }
 
+void renderConfigsPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
+	ImGui::BeginChild("#SettingsMenu", cMenuSize, true);
+	{
+		ImGui::BeginChild("#settings-state-left", ImVec2(cMenuSize.x, cMenuSize.y), false);
+		{
+
+			auto renderConfigItem = [&](int configID, ImVec2 menusize, bool isLoaded = false)
+			{
+				std::string configName = "top 8 hvh";
+				std::string dateText = "28 jul 2018";
+				std::string authorName = (std::string("Author: ") + std::string("hasirciogli"));
+
+				ImVec2 configNameSize = ImGui::CalcTextSize(configName.c_str());
+				ImVec2 dateTextSize = ImGui::CalcTextSize(dateText.c_str());
+				ImVec2 authorNameSize = ImGui::CalcTextSize(authorName.c_str());
+
+				imspaceMacro(5, 5);
+
+				ImGui::BeginChild(std::string(std::string("#cfg-item") + std::to_string(configID)).c_str(), ImVec2(menusize.x - 10, 75), false);
+				{
+					ImGui::BeginChild(std::string(std::string("#cfg-item-text-side") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 60), false);
+					{
+						ImGui::BeginChild(std::string(std::string("#cfg-item-text-inside") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 40), false);
+						{
+							imspaceMacro(10, 60 / 2 - configNameSize.y / 2);
+							ImGui::Text(configName.c_str());
+							ImGui::SameLine();
+							ImGui::Text(authorName.c_str());
+							ImGui::SameLine();
+						}
+						ImGui::EndChild();
+
+						imspaceMacro(15, 0);
+						ImGui::Text(dateText.c_str());
+					}
+					ImGui::EndChild();
+
+					ImGui::SameLine();
+
+					ImVec2 rsSize = ImVec2((menusize.x - 10) - (configNameSize.x + 20 + authorNameSize.x + 20), 60);
+
+					ImGui::BeginChild(std::string(std::string("#cfg-item-right-side") + std::to_string(configID)).c_str(), ImVec2(rsSize), false);
+					{
+						imspaceMacro(rsSize.x - 120 - 5, 75 / 2 - (30 / 2));
+						if (isLoaded)
+						{
+							if (ImGui::Button("Save Config", ImVec2(120, 30)))
+							{
+
+							}
+						}
+						else
+						{
+							if (ImGui::Button("Load Config", ImVec2(120, 30)))
+							{
+
+							}
+						}
+
+					}
+					ImGui::EndChild();
+					imspaceMacro(0, 14);
+
+					ImGui::Separator();
+
+				}
+				ImGui::EndChild();
+			};
+
+
+			renderConfigItem(0, cMenuSize);
+			renderConfigItem(1, cMenuSize);
+			renderConfigItem(12, cMenuSize);
+			renderConfigItem(13, cMenuSize);
+			renderConfigItem(14, cMenuSize);
+			renderConfigItem(15, cMenuSize);
+			renderConfigItem(16, cMenuSize);
+			renderConfigItem(17, cMenuSize);
+			renderConfigItem(18, cMenuSize);
+			renderConfigItem(19, cMenuSize);
+			renderConfigItem(111, cMenuSize);
+			renderConfigItem(122, cMenuSize);
+			renderConfigItem(133, cMenuSize);
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
 
 void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -756,8 +847,13 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 	windowSize wsz;
 
 	GetWindowSize(wsz, pDevice);
+	
+	std::string loadString = "";
 
-	std::string loadString = "Connecting to server";
+	if (!mSocket::cfg::authed && mSocket::cfg::socketIsConnected)
+		loadString = "Waiting authentication...";
+	else
+		loadString = "Connecting to server";
 
 	ImVec2 cTSize = ImGui::CalcTextSize(loadString.c_str());
 	ImVec2 cWSize = ImVec2(0, 0);
@@ -868,7 +964,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	
 
-	if (!mSocket::cfg::socketIsConnected)
+	if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
 	{
 		renderConnectingToServer(pDevice);
 		//return;
@@ -928,15 +1024,21 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	imguiStyles.WindowRounding = 8;
 	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
-		if (!mSocket::cfg::socketIsConnected)
+		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
 		{
 
 			ImVec2 nPos = {};
 			ImVec2 nPos2 = {};
+			std::string thd = "";
 
 			getMenuPos(nPos);
 			getCursorPos(nPos2);
-			std::string thd = "Cheat need to connect to server";
+
+			if (!mSocket::cfg::authed && mSocket::cfg::socketIsConnected)
+				thd = "Waiting authentication..."; 
+			else
+				thd = "Cheat need to connect to server";
+
 			ImVec2 sthd = ImGui::CalcTextSize(thd.c_str());
 			imspaceMacro(variables::Menu_Settings::ui_width_s / 2 - sthd.x / 2, variables::Menu_Settings::ui_height_s / 2 - sthd.y / 2);
 			ImGui::Text(thd.c_str());
@@ -1062,7 +1164,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 					renderMiscPage();
 					break;
 
-
+				case 8:
+					renderConfigsPage();
+					break;
 
 
 					///////////////////////
@@ -1089,6 +1193,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		{
 			ImGui::SliderFloat("test", &variables::Menu_Settings::uiSelectedDPI, -10.f, 10.f);
 			ImGui::Text(std::to_string(ImGui::GetIO().FontGlobalScale).c_str());
+			ImGui::Text(std::to_string(mSocket::cfg::authed).c_str());
 			//customComboBox(variables::Menu_Settings::uiSelectedScalarID, variables::Menu_Settings::uiSelectedScalarName);
 			if (ImGui::Button("reset", ImVec2(150, 50)))
 				variables::Menu_Settings::uiSelectedDPI = 1;

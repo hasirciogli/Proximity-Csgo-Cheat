@@ -38,7 +38,7 @@ namespace mSocket
 		inline bool socketInited = false;
 
 
-		inline bool tokenGrabbed = false;
+		inline bool authed = false;
 		inline std::string grabbedToken = "";
 
 		inline HANDLE socketThreadHandle;
@@ -57,5 +57,5 @@ namespace mSocket
 	bool initSoket(const char** errStr);
 	bool cleanup();
 	int socketThread(HMODULE hModule);
-	bool sendPacketToServer(const char* data, const char** iError);
+	bool sendPacketToServer(const char* data, const char** iError, bool = false);
 };

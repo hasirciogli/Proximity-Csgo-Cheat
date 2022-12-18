@@ -10,13 +10,6 @@
 
 using namespace nlohmann::json_abi_v3_11_2;
 
-
-
-volatile constexpr const char fuck_skids[] = /* :^) */
-	"Hey! If you are reading this maybe you looked through the source code or maybe you are reversing this DLL! "
-	"Either way you need to know that this project is open source and you can find the code at: "
-	"https://github.com/r4v10l1/Rogsoftware or https://github.com/Rogsoftware/Rogsoftware";
-
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll"))
 		Sleep(150);
@@ -65,7 +58,7 @@ unsigned long WINAPI release() {
 }
 
 std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsigned long reason, const void* reserved [[maybe_unused]] ) {
-	int fuck_you = strlen((const char*)fuck_skids);	// Need to call var so shit ass compiler does not ignore it
+	//int fuck_you = strlen((const char*)fuck_skids);	// Need to call var so shit ass compiler does not ignore it
 	
 	DisableThreadLibraryCalls(instance);
 

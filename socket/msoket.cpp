@@ -36,31 +36,34 @@ int mSocket::socketThread(HMODULE hModule)
 	while (!cfg::closingTO)
 	{
 		if (mSocket::cfg::socketInited && !cfg::closingTO) 
-		{
+		{ 
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
 				mSocket::cfg::iResult = recv(mSocket::cfg::ConnectSocket, mSocket::cfg::recvbuf, mSocket::cfg::recvbuflen, 0);
 				if (mSocket::cfg::iResult > 0)
 				{
-#ifdef _DEBUG
 					std::string test = "";
-					for (size_t i = 0; i < mSocket::cfg::iResult; i++)
+					for (size_t i = 0; i < mSocket::cfg::iResult; i++) 
 					{
 						test += mSocket::cfg::recvbuf[i];
 					}
-					
-					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << mSocket::cfg::iResult << std::endl << std::endl;
+
+#ifdef _DEBUG
+					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << mSocket::cfg::recvbuf << std::endl;
 #endif
 
-					CDataHandler cdh = CDataHandler(); 
+					CDataHandler cdh = CDataHandler();
 					cdh.data = test;
 					cdh.Handle();
 
-					mSocket::cfg::recvbuf[0] = {}; 
+					test = "";
+					mSocket::cfg::recvbuf[0] = {};
 				}
 				else if (mSocket::cfg::iResult == 0)
 				{
 					mSocket::cfg::socketIsConnected = false;
+					mSocket::cfg::authed = false;
+					mSocket::cfg::grabbedToken = "";
 #ifdef _DEBUG 
 					printf("Connection closed\n\n");
 #endif	
@@ -68,6 +71,8 @@ int mSocket::socketThread(HMODULE hModule)
 				}
 				else
 				{
+					mSocket::cfg::authed = false;
+					mSocket::cfg::grabbedToken = "";
 					mSocket::cfg::socketReconnect		= true;
 					mSocket::cfg::socketIsConnected		= false;
 #ifdef _DEBUG
@@ -78,6 +83,8 @@ int mSocket::socketThread(HMODULE hModule)
 			}
 			else if (mSocket::cfg::socketReconnect && !cfg::closingTO)
 			{
+				mSocket::cfg::authed = false;
+				mSocket::cfg::grabbedToken = "";
 #ifdef _DEBUG
 				variables::cheat::logboxLists.push_front("Socket connection failed | reconnecting...");
 #endif
@@ -137,13 +144,14 @@ int mSocket::socketThread(HMODULE hModule)
 	return 0;
 }
 
-bool mSocket::sendPacketToServer(const char* data, const char** iError)
+bool mSocket::sendPacketToServer(const char* data, const char** iError, bool force_send)
 {
 	if (!mSocket::cfg::socketIsConnected)
 	{
 		*iError = "Socket isn't connected";
 		return false;
 	}
+
 	mSocket::cfg::iResult = send(mSocket::cfg::ConnectSocket, data, (int)strlen(data), 0);
 	if (mSocket::cfg::iResult == SOCKET_ERROR) {
 

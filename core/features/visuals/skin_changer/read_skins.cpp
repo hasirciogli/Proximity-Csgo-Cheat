@@ -13,7 +13,7 @@ void load_custom_models(rapidjson::Document& doc, std::pair<std::string, int> it
 
 void skins::read_skins() {
 	constexpr const char* skin_file_name = "\\skins.json";
-	const std::string skin_file_path = config::nullhooks_config_folder + std::string(skin_file_name);
+	const std::string skin_file_path = "config::nullhooks_config_folder" + std::string(skin_file_name);
 
 	DWORD exitst = GetFileAttributesA(skin_file_path.c_str());
 	if (exitst == INVALID_FILE_ATTRIBUTES)		// Path does not exist

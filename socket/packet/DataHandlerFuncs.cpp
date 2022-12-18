@@ -1,108 +1,138 @@
 #include "DataHandler.h"
+#include "Packet.h"
 #include "../msoket.h"
 #include "core/menu/chatbox/ChatBox.h"
 #include "dependencies/imgui/imgui.h"
+#include "core/config/config.hpp"
 //#include "../../core/menu/chatbox/ChatBox.h"
 //#include "dependencies/imgui/imgui.h"
 
 using namespace nlohmann;
 
 
-void CDataHandlerFuncs::FirstAuth(std::string fullData)
+void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 {
-	
+	json j = json();
+
+	j["packet_id"] = Packets::NClientPackets::USER_AUTH;
+	j["data"]["hwid"] = "9963"; // Your hwid data
+
+	const char* sError = "";
+
+	mSocket::sendPacketToServer(j.dump().c_str(), &sError);
 }
 
 void CDataHandlerFuncs::UserAuth(std::string fullData)
 {
-	json faj = json::parse(fullData);
 
-	int packetID = (int)faj["packet_id"];//faj["packet_id"];
+	std::cout << "My data: " << fullData << std::endl;
+
+	json faj = json::parse(fullData);
+	int packetID = faj["packet_id"];//faj["packet_id"];
 	std::string dataSTR = faj["data"].dump();
 	bool isSuccess = faj["data"]["isSuccess"];
 	std::string token = faj["data"]["token"];
 
-	std::cout << std::endl << dataSTR << std::endl;
+	std::cout << "My data: " << dataSTR << std::endl;
+
+	std::cout << "success: " << isSuccess << std::endl;
+	std::cout << "token: " << token << std::endl;
 
 	if (isSuccess)
 	{
 		if (token != "")
 		{
-			mSocket::cfg::tokenGrabbed = true;
+			mSocket::cfg::authed = true;
 			mSocket::cfg::grabbedToken = token;
 		}
 		else
 		{
-			mSocket::cfg::tokenGrabbed = false;
+			mSocket::cfg::authed = false;
 			mSocket::cfg::grabbedToken = "";
 		}
 	}
 	else
 	{
-		mSocket::cfg::tokenGrabbed = false;
+		mSocket::cfg::authed = false;
 		mSocket::cfg::grabbedToken = "";
 	}
 
-	if (!mSocket::cfg::tokenGrabbed)
+	if (!mSocket::cfg::authed)
 		mSocket::cleanup();
 }
 
 void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 {
-	
-	json faj = json::parse(fullData);
+	try
+	{
+		json faj = json::parse(fullData);
 
-	int packetID = (int)faj["packet_id"];//faj["packet_id"];
-	std::string dataSTR					= faj["data"].dump();
-	int message_id					= faj["data"]["message_id"];
-	std::string message_uthor		= faj["data"]["message_author"];
-	std::string message_content		= faj["data"]["message_content"];
-	std::string message_date		= faj["data"]["message_date"];
-
-
-	faj = NULL;
+		int packetID = faj["packet_id"];//faj["packet_id"];
+		std::string dataSTR = faj["data"].dump();
+		int message_id = faj["data"]["message_id"];
+		std::string message_author = faj["data"]["message_author"];
+		std::string message_content = faj["data"]["message_content"];
+		std::string message_date = faj["data"]["message_date"];
 
 
-	/*
-	unsigned int message_content_color;
-	unsigned int message_author_color;
+		float message_color_x = faj["data"]["message_content_color"]["x"];
+		float message_color_y = faj["data"]["message_content_color"]["y"];
+		float message_color_z = faj["data"]["message_content_color"]["z"];
 
-	std::stringstream ss;
-	ss << std::hex << bscc;
-	ss >> message_content_color;
-
-	std::stringstream ss2;
-	ss2 << std::hex << bsac;
-	ss2 >> message_author_color;
+		float author_color_x = faj["data"]["message_author_color"]["x"];
+		float author_color_y = faj["data"]["message_author_color"]["y"];
+		float author_color_z = faj["data"]["message_author_color"]["z"];
 
 
-	ImVec4 rgbColorAuthor;
-	rgbColorAuthor.x = ((message_author_color >> 16) & 0xFF) / 255.0f;  // Extract the RR byte
-	rgbColorAuthor.y = ((message_author_color >> 8) & 0xFF) / 255.0f;   // Extract the GG byte
-	rgbColorAuthor.z = ((message_author_color) & 0xFF) / 255.0f;        // Extract the BB byte
-	rgbColorAuthor.w = 1.0f;
 
-	ImVec4 rgbColorContent;
-	rgbColorContent.x = ((message_content_color >> 16) & 0xFF) / 255.0f;  // Extract the RR byte
-	rgbColorContent.y = ((message_content_color >> 8) & 0xFF) / 255.0f;   // Extract the GG byte
-	rgbColorContent.z = ((message_content_color) & 0xFF) / 255.0f;        // Extract the BB by te
-	rgbColorContent.w = 1.0f;
+		faj = NULL;
 
-	*/
 
-	
-	
-	 
-	
-	ChatBox::ChatboxItem cbItem;
+		/*
+		unsigned int message_content_color;
+		unsigned int message_author_color;
 
-	cbItem.messageID		= message_id;
-	cbItem.name				= message_uthor;
-	cbItem.message			= message_content;
-	cbItem.date				= message_date;
+		std::stringstream ss;
+		ss << std::hex << bscc;
+		ss >> message_content_color;
 
-	cbItem.chatColor		= ImColor(255, 255, 255, 255);
-	cbItem.nameColor		= ImColor( 255, 50, 50, 255);
+		std::stringstream ss2;
+		ss2 << std::hex << bsac;
+		ss2 >> message_author_color;
+		*/
 
-	ChatBox::chatboxItems.push_back(cbItem);
+		ImVec4 rgbColorAuthor;
+		rgbColorAuthor.x = author_color_x / 255.f;
+		rgbColorAuthor.y = author_color_y / 255.f;
+		rgbColorAuthor.z = author_color_z / 255.f;
+		rgbColorAuthor.w = 1.0f;
+
+		ImVec4 rgbColorContent;
+		rgbColorContent.x = message_color_x / 255.f;
+		rgbColorContent.y = message_color_y / 255.f;
+		rgbColorContent.z = message_color_z / 255.f;
+		rgbColorContent.w = 1.0f;
+
+
+
+
+
+
+
+		ChatBox::ChatboxItem cbItem;
+
+		cbItem.messageID = message_id;
+		cbItem.name = message_author;
+		cbItem.message = message_content;
+		cbItem.date = message_date;
+
+		cbItem.chatColor = rgbColorContent;
+		cbItem.nameColor = rgbColorAuthor;
+
+		ChatBox::chatboxItems.push_back(cbItem);
+	}
+	catch (json::parse_error& ex)
+	{
+		std::cout << "func chat err" << ex.what() << std::endl;
+	}
 }

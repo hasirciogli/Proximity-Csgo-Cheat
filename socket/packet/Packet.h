@@ -6,8 +6,8 @@ namespace Packets
 	{
 		enum EFromServerToClient
 		{
-			FIRST_AUTH,
-			USER_AUTH,
+			USER_AUTH_RESPONSE,
+			NEED_USER_AUTH,
 			CONFIG_CREATE,
 			CONFIG_LOAD,
 			CONFIG_REFRESH,
@@ -20,7 +20,6 @@ namespace Packets
 	{
 		enum EFromClientToServer
 		{
-			FIRST_AUTH,
 			USER_AUTH,
 			CONFIG_CREATE,
 			CONFIG_LOAD,
