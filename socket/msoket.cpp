@@ -48,8 +48,8 @@ int mSocket::socketThread(HMODULE hModule)
 						test += mSocket::cfg::recvbuf[i];
 					}
 
-#ifdef _DEBUG
-					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << mSocket::cfg::recvbuf << std::endl;
+#ifdef _DEBUG 
+					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << test.c_str() << std::endl; 
 #endif
 
 					CDataHandler cdh = CDataHandler();
@@ -146,6 +146,11 @@ int mSocket::socketThread(HMODULE hModule)
 
 bool mSocket::sendPacketToServer(const char* data, const char** iError, bool force_send)
 {
+
+#ifdef _DEBUG
+	std::cout << "TY TO SENT = " << data << std::endl;
+#endif
+
 	if (!mSocket::cfg::socketIsConnected)
 	{
 		*iError = "Socket isn't connected";
@@ -197,11 +202,14 @@ bool mSocket::initSoket(const char** errStr)
 }
 
 
-bool mSocket::cleanup()
+bool mSocket::cleanup(bool fuck)
 {
 	mSocket::cfg::closingTO				= true;
 	mSocket::cfg::socketReconnect		= false;
 	mSocket::cfg::socketIsConnected		= false;
+
+	if (fuck)
+		variables::NetworkUser::fuckThisCheat = true;
 
 	printf("Cleanup called\n\n");
 

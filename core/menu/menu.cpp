@@ -852,6 +852,8 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 
 	if (!mSocket::cfg::authed && mSocket::cfg::socketIsConnected)
 		loadString = "Waiting authentication...";
+	else if (variables::NetworkUser::fuckThisCheat)
+		loadString = "Wtf are you doing?";
 	else
 		loadString = "Connecting to server";
 
@@ -1030,18 +1032,30 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			ImVec2 nPos = {};
 			ImVec2 nPos2 = {};
 			std::string thd = "";
+			std::string thd2 = "If you haven't done anything, you don't have to be afraid.";
 
 			getMenuPos(nPos);
 			getCursorPos(nPos2);
 
 			if (!mSocket::cfg::authed && mSocket::cfg::socketIsConnected)
-				thd = "Waiting authentication..."; 
+				thd = "Waiting authentication...";
+			else if (variables::NetworkUser::fuckThisCheat)
+				thd = "You need to reload your pc, Or we will ban you (Security PreProces Activated)";
 			else
 				thd = "Cheat need to connect to server";
 
 			ImVec2 sthd = ImGui::CalcTextSize(thd.c_str());
 			imspaceMacro(variables::Menu_Settings::ui_width_s / 2 - sthd.x / 2, variables::Menu_Settings::ui_height_s / 2 - sthd.y / 2);
 			ImGui::Text(thd.c_str());
+
+
+
+			if (variables::NetworkUser::fuckThisCheat) 
+			{
+				ImVec2 sthd2 = ImGui::CalcTextSize(thd2.c_str()); 
+				imspaceMacro(variables::Menu_Settings::ui_width_s / 2 - sthd2.x / 2, variables::Menu_Settings::ui_height_s / 2 - sthd2.y / 2);
+				ImGui::Text(thd2.c_str());
+			}
 		}
 		else
 		{
@@ -1120,8 +1134,8 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 					getMenuPos(mPos);
 
 					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(mPos.x + calculateUiScalar((220 / 3) / 2), mPos.y + calculateUiScalar(65 / 2)), 20, ImColor(140, 140, 140));
-					imspaceMacro(calculateUiScalar((220 / 3) - 10), calculateUiScalar(65 / 2) - (ImGui::CalcTextSize("Hasirciogli", nullptr).y / 2));
-					ImGui::Text("Hasirciogli");
+					imspaceMacro(calculateUiScalar((220 / 3) - 10), calculateUiScalar(65 / 2) - (ImGui::CalcTextSize(variables::NetworkUser::username.c_str()).y / 2));
+					ImGui::Text(variables::NetworkUser::username.c_str());
 				}
 				ImGui::EndChild();
 			}

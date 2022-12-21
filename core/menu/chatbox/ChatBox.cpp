@@ -117,6 +117,7 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 
 				jdATAA.clear();
 				 
+				jdATAA["who_i_am"] = "cheat";
 				jdATAA["packet_id"] = (int)Packets::NClientPackets::CHAT_MESSAGE_SENT;
 				jdATAA["data"]["message_author"]		= username;
 				jdATAA["data"]["message_content"]		= tMessage;

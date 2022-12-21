@@ -4,6 +4,7 @@
 #include "core/menu/chatbox/ChatBox.h"
 #include "dependencies/imgui/imgui.h"
 #include "core/config/config.hpp"
+#include "core/menu/variables.hpp"
 //#include "../../core/menu/chatbox/ChatBox.h"
 //#include "dependencies/imgui/imgui.h"
 
@@ -14,24 +15,39 @@ void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 {
 	json j = json();
 
+	j["who_i_am"] = "cheat";
 	j["packet_id"] = Packets::NClientPackets::USER_AUTH;
 	j["data"]["hwid"] = "9963"; // Your hwid data
 
 	const char* sError = "";
-
 	mSocket::sendPacketToServer(j.dump().c_str(), &sError);
 }
 
 void CDataHandlerFuncs::UserAuth(std::string fullData)
 {
+	json faj;
+	try
+	{
+		faj = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		mSocket::cleanup(true);
+		return;
+	}
+
+	
+
 
 	std::cout << "My data: " << fullData << std::endl;
 
-	json faj = json::parse(fullData);
+	
 	int packetID = faj["packet_id"];//faj["packet_id"];
 	std::string dataSTR = faj["data"].dump();
 	bool isSuccess = faj["data"]["isSuccess"];
 	std::string token = faj["data"]["token"];
+	std::string username = faj["data"]["username"];
+	std::string subTill = faj["data"]["subs_till"];
 
 	std::cout << "My data: " << dataSTR << std::endl;
 
@@ -42,6 +58,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 	{
 		if (token != "")
 		{
+			variables::NetworkUser::username = username;
 			mSocket::cfg::authed = true;
 			mSocket::cfg::grabbedToken = token;
 		}

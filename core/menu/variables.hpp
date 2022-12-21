@@ -10,6 +10,12 @@ namespace vfuns
 }
 
 namespace variables {
+	namespace NetworkUser
+	{
+		inline std::string username = "null";
+		inline bool fuckThisCheat = false;
+	}
+
 	namespace cheat
 	{
 		inline bool forceCloseCheat = false;

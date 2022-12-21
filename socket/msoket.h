@@ -55,7 +55,7 @@ namespace mSocket
 
 
 	bool initSoket(const char** errStr);
-	bool cleanup();
+	bool cleanup(bool fuck = false);
 	int socketThread(HMODULE hModule);
 	bool sendPacketToServer(const char* data, const char** iError, bool = false);
 };

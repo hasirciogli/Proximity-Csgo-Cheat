@@ -30,11 +30,7 @@ void config::refreshConfigs()
 {
 	configsList.clear();
 
-
-
-
-
-
+	return;
 
 	const char* sError = "";
 	if(mSocket::sendPacketToServer("123", &sError))
