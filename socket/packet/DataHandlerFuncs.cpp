@@ -15,6 +15,19 @@ void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 {
 	json j = json();
 
+	try
+	{
+		j = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
+		return;
+	}
+
 	j["who_i_am"] = "cheat";
 	j["packet_id"] = Packets::NClientPackets::USER_AUTH;
 	j["data"]["hwid"] = "9963"; // Your hwid data
@@ -32,15 +45,12 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 	}
 	catch (json::parse_error& err)
 	{
-		mSocket::cleanup(true);
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
 		return;
 	}
-
-	
-
-
-	std::cout << "My data: " << fullData << std::endl;
-
 	
 	int packetID = faj["packet_id"];//faj["packet_id"];
 	std::string dataSTR = faj["data"].dump();
@@ -80,9 +90,24 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 
 void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 {
+
+
 	try
 	{
-		json faj = json::parse(fullData);
+		json faj;
+
+		try
+		{
+			faj = json::parse(fullData);
+		}
+		catch (json::parse_error& err)
+		{
+			variables::NetworkUser::fuckThisCheat = true;
+			mSocket::cfg::authed = false;
+			mSocket::cfg::socketIsConnected = false;
+			mSocket::cfg::grabbedToken = "";
+			return;
+		}
 
 		int packetID = faj["packet_id"];//faj["packet_id"];
 		std::string dataSTR = faj["data"].dump();
@@ -150,6 +175,10 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 	}
 	catch (json::parse_error& ex)
 	{
-		std::cout << "func chat err" << ex.what() << std::endl;
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
+		return;
 	}
 }

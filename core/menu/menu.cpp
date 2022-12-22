@@ -1016,9 +1016,6 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		return;
 
 	setOurCustomImguiColorsAndEtc(pDevice);
-	 
-	
-
 
 	ImGui::GetIO().FontGlobalScale = variables::Menu_Settings::uiSelectedDPI;
 	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
@@ -1026,7 +1023,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	imguiStyles.WindowRounding = 8;
 	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
-		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
+		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat)
 		{
 
 			ImVec2 nPos = {};
@@ -1040,7 +1037,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			if (!mSocket::cfg::authed && mSocket::cfg::socketIsConnected)
 				thd = "Waiting authentication...";
 			else if (variables::NetworkUser::fuckThisCheat)
-				thd = "You need to reload your pc, Or we will ban you (Security PreProces Activated)";
+				thd = "You need to reload your pc or we will ban you (Security PreProces Activated)";
 			else
 				thd = "Cheat need to connect to server";
 
@@ -1053,7 +1050,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			if (variables::NetworkUser::fuckThisCheat) 
 			{
 				ImVec2 sthd2 = ImGui::CalcTextSize(thd2.c_str()); 
-				imspaceMacro(variables::Menu_Settings::ui_width_s / 2 - sthd2.x / 2, variables::Menu_Settings::ui_height_s / 2 - sthd2.y / 2);
+				imspaceMacro(variables::Menu_Settings::ui_width_s / 2 - sthd2.x / 2, 20);
 				ImGui::Text(thd2.c_str());
 			}
 		}
@@ -1196,122 +1193,8 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			}
 			ImGui::EndChild();
 		}
-	}
+	} 
 	ImGui::End();
-
-	ImGui::SetNextWindowSize(ImVec2(700, 500));
-
-	ImGui::Begin("Debug Window");
-	{
-		ImGui::BeginChild("#Debug window", ImVec2(350, 500));
-		{
-			ImGui::SliderFloat("test", &variables::Menu_Settings::uiSelectedDPI, -10.f, 10.f);
-			ImGui::Text(std::to_string(ImGui::GetIO().FontGlobalScale).c_str());
-			ImGui::Text(std::to_string(mSocket::cfg::authed).c_str());
-			//customComboBox(variables::Menu_Settings::uiSelectedScalarID, variables::Menu_Settings::uiSelectedScalarName);
-			if (ImGui::Button("reset", ImVec2(150, 50)))
-				variables::Menu_Settings::uiSelectedDPI = 1;
-
-			if (ImGui::Button("Load Map", ImVec2(50, 50)))
-			{
-				interfaces::engine->execute_cmd("map aim_botz");
-				variables::Menu_Settings::isOpened = false;
-			}
-
-			if (false && interfaces::engine->is_in_game() && interfaces::engine->is_connected() && csgo::local_player && csgo::local_player->is_alive())
-			{
-				auto wep = csgo::local_player->active_weapon();
-				if (wep)
-				{
-					int indes = wep->item_definition_index();
-
-					variables::Skin_Changer::SkinSetSt sst = variables::Skin_Changer::getValueFromList(indes);
-
-					ImGui::Text(std::to_string(skins::currWeapID).c_str());
-					ImGui::Text(std::to_string(sst.GameID).c_str());
-					ImGui::Text(std::to_string(sst.MenuID).c_str());
-					ImGui::Text(std::to_string(sst.isKnife).c_str());
-					ImGui::Text(std::to_string(sst.newKnifeID).c_str());
-					ImGui::Text(std::to_string(sst.PaintKit).c_str());
-					ImGui::Text(std::to_string(sst.isEnabled).c_str());
-				}
-			}
-			else
-			{
-
-				imspaceMacro(10, 10);
-				ImGui::ListBoxHeader("#hitbox-selection-menu", 4, 10);
-				{
-					for (size_t i = 0; i < IM_ARRAYSIZE(variables::Aimbot_Settings::selected_hitboxes); i++)
-					{
-						bool* isSelected = &variables::Aimbot_Settings::selected_hitboxes[i];
-
-						if (ImGui::Selectable(variables::Aimbot_Settings::selected_hitboxes_names[i], *isSelected))
-						{
-							*isSelected = !*isSelected;
-						}
-					}
-				}
-				ImGui::ListBoxFooter();
-			}
-
-
-			if (ImGui::Button("RESET LOAD"))
-			{
-				loaded = false;
-				firstanim = true;
-				currenttime = (float)(clock() / 1000.f);
-				startedtime = 0;
-				savetime = true;
-				initedFirstOpen = false;
-				speed = 300.0f;
-				alpha = 0.0f;
-			}
-		}
-		ImGui::EndChild();
-
-		ImGui::SameLine();
-
-		ImGui::BeginChild("#ONLINE TEST WINDOW", ImVec2(350, 500));
-		{
-			ImGui::BeginChild("#dkWindow", ImVec2(250, 400), true);
-			{
-				for (std::string item : variables::cheat::logboxLists)
-				{
-					ImGui::Text(item.c_str());
-				}
-			}
-			ImGui::EndChild();
-
-
-			ImGui::InputText("#debug-box-input", dcbText, IM_ARRAYSIZE(dcbText));
-
-			if (ImGui::Button("Send", ImVec2(100, 35)))
-			{
-				variables::cheat::logboxLists.push_front(std::string(dcbText));
-				strcat(dcbText, "");
-			}
-		}
-		ImGui::EndChild();
-	}
-	ImGui::End();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	ChatBox::runCustomGui(pDevice);
 }

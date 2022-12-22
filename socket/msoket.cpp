@@ -35,7 +35,7 @@ int mSocket::socketThread(HMODULE hModule)
 
 	while (!cfg::closingTO)
 	{
-		if (mSocket::cfg::socketInited && !cfg::closingTO) 
+		if (mSocket::cfg::socketInited && !cfg::closingTO && !variables::NetworkUser::fuckThisCheat)
 		{ 
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
@@ -135,6 +135,8 @@ int mSocket::socketThread(HMODULE hModule)
 				mSocket::cfg::socketIsConnected = true;
 			}
 		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(20)); 
 	}
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));

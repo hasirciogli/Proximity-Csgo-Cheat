@@ -47,13 +47,17 @@ void renderChatBoxItem(ChatBox::ChatboxItem item, std::string cName)
 
 void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 
+
+	if (!mSocket::cfg::socketIsConnected)
+		return;
+
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 6);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, CB_getZtkColor(20,20,20));
 	ImGui::PushStyleColor(ImGuiCol_BorderShadow, CB_getZtkColor(20, 160, 20)); 
 	ImGui::PushStyleColor(ImGuiCol_Border, CB_getZtkColor(35, 160, 35));
 
 
-
+	SetNextWindowSize(ImVec2(450, 600));
 	ImGui::Begin("#name", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
 		ImGui::BeginChild("#title", ImVec2(450, 40), false);

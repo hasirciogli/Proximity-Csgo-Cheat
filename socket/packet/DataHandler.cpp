@@ -1,10 +1,14 @@
 #include "DataHandler.h"
 #include "Packet.h"
+#include "core/menu/variables.hpp"
 
 using namespace nlohmann::json_abi_v3_11_2;
 
 void CDataHandler::Handle()
 {
+	if (variables::NetworkUser::fuckThisCheat)
+		return;
+
 	try
 	{
 		json jbbk;
