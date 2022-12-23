@@ -908,14 +908,6 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 char dcbText[250] = {};
 
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
-	if (!isActive)
-	{
-		return;
-		if (ImGui::GetIO().MouseDrawCursor)
-			SetCursor(NULL);
-	}
-
-
 	static bool loaded = false;
 	static bool firstanim = true; 
 	int currenttime = (float)(clock() / 1000.f);
