@@ -74,7 +74,7 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 		ImGui::BeginChild("#chatbox", ImVec2(450, 500), false);
 		{
 			CB_imspaceMacro(10, 10);
-			ImGui::BeginChild("#chatbox", ImVec2(430, 480), true);
+			ImGui::BeginChild("#chatbox_inside", ImVec2(430, 480), true);
 			{
 				int bbEka = 0;
 				for (auto item : chatboxItems)

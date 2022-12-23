@@ -9179,6 +9179,7 @@ void ImGui::SetNextItemWidth(float item_width)
 // FIXME: Remove the == 0.0f behavior?
 void ImGui::PushItemWidth(float item_width)
 {
+    //item_width = item_width <= 0 ? item_width = 1 : item_width;
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
     window->DC.ItemWidthStack.push_back(window->DC.ItemWidth); // Backup current width

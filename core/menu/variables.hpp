@@ -54,8 +54,8 @@ namespace variables {
 
 		inline float aimbot_smoothing = 0.f;
 		inline bool target_friends = false;
-		inline bool non_rifle_aimpunch = true;
-		inline bool aimbot_noscope = true;
+		inline bool non_rifle_aimpunch = false;
+		inline bool aimbot_noscope = false;
 		inline bool autorevolver = false;
 
 		inline float min_damage = 60.f;
@@ -165,14 +165,14 @@ namespace variables {
 		inline int sleeve_chams_mat_id = 0;
 
 		// Backtrack
-		inline bool backtrack_chams = true;
+		inline bool backtrack_chams = false;
 	}
 
 	namespace misc_visuals {
 		inline float noflash_alpha = 0.f;
 		inline bool wireframe_smoke = false;
-		inline bool nade_predict = true;
-		inline bool noscope = true;
+		inline bool nade_predict = false;
+		inline bool noscope = false;
 		inline bool crosshair = false;
 		inline bool recoil_crosshair = false;
 		inline bool worldcolor = false;
@@ -202,7 +202,7 @@ namespace variables {
 	namespace misc {
 		// Movement
 		inline bool infinite_duck = false;
-		inline bool bhop = true;
+		inline bool bhop = false;
 
 		inline std::vector<std::string> autostrafe_options = {
 			"None",
@@ -252,13 +252,13 @@ namespace variables {
 			{ "Ping",		true }
 		};
 		inline multicombobox_toggle_t watermark(watermark_options);*/
-		inline bool clean_screenshots = true;
-		inline bool reveal_ranks = true;
+		inline bool clean_screenshots = false;
+		inline bool reveal_ranks = false;
 	}
 
 	namespace ui {
 		namespace spectators {
-			inline bool spectator_list = true;
+			inline bool spectator_list = false;
 			inline int x = 10, y = 560;
 			inline int w = 100, h = 10;
 		}
@@ -278,8 +278,8 @@ namespace variables {
 	}
 
 	namespace crosshair {
-		const inline bool only_engine_crosshair = true;		// Edit here
-		inline bool using_cs_crosshair = true;
+		const inline bool only_engine_crosshair = false;		// Edit here
+		inline bool using_cs_crosshair = false;
 
 		inline float crosshair_len = 3;		// 2-20
 		inline float crosshair_w = 2;		// 2-15

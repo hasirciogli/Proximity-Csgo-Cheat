@@ -378,7 +378,11 @@ int calculateUiScalar(int scalaDef) {
 			return scalaDef;
 	}
 
-	return (scalaDef * variables::Menu_Settings::ui_scalar) / 100;
+	int bclakcX = (scalaDef * variables::Menu_Settings::ui_scalar) / 100;
+
+	if (bclakcX < 0)
+		bclakcX = 0;
+	return bclakcX;
 }
 
 void customComboBox(int& selectedItemID, std::vector<const char*>& lList) {
@@ -491,30 +495,31 @@ void renderAimbotPage() {
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
-			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("").x + 30));
-
-			imspaceMacro(10, 10);
-			ImGui::ListBoxHeader("#aimbot-hitboxes-list-box :)", 4, 10);
+		ImGui::BeginChild("#AimbotMenuRight", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			ImGui::PushItemWidth(cMenuSize.x / 2 - 30);
 			{
-				for (size_t i = 0; i < IM_ARRAYSIZE(variables::Aimbot_Settings::selected_hitboxes); i++)
+				imspaceMacro(10, 10);
+				ImGui::ListBoxHeader("#aimbot_hitboxes_list", 4, 10);
 				{
-					bool* isSelected = &variables::Aimbot_Settings::selected_hitboxes[i];
-
-					if (ImGui::Selectable(variables::Aimbot_Settings::selected_hitboxes_names[i], *isSelected))
+					for (size_t i = 0; i < IM_ARRAYSIZE(variables::Aimbot_Settings::selected_hitboxes); i++)
 					{
-						*isSelected = !*isSelected;
+						bool* isSelected = &variables::Aimbot_Settings::selected_hitboxes[i];
+
+						if (ImGui::Selectable(variables::Aimbot_Settings::selected_hitboxes_names[i], *isSelected))
+						{
+							*isSelected = !*isSelected;
+						}
 					}
 				}
+				ImGui::ListBoxFooter();
 			}
-			ImGui::ListBoxFooter();
 			ImGui::PopItemWidth();
 		}
 		ImGui::EndChild();
 	}
 	ImGui::EndChild();
 }
-
+ 
 void renderAntiAimPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 
@@ -751,7 +756,7 @@ void renderConfigsPage() {
 	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
 	ImGui::BeginChild("#SettingsMenu", cMenuSize, true);
 	{
-		ImGui::BeginChild("#settings-state-left", ImVec2(cMenuSize.x, cMenuSize.y), false);
+		ImGui::BeginChild("#settings_state_left", ImVec2(cMenuSize.x, cMenuSize.y), false);
 		{
 
 			auto renderConfigItem = [&](int configID, ImVec2 menusize, bool isLoaded = false)
@@ -766,11 +771,11 @@ void renderConfigsPage() {
 
 				imspaceMacro(5, 5);
 
-				ImGui::BeginChild(std::string(std::string("#cfg-item") + std::to_string(configID)).c_str(), ImVec2(menusize.x - 10, 75), false);
+				ImGui::BeginChild(std::string(std::string("#cfg_item") + std::to_string(configID)).c_str(), ImVec2(menusize.x - 10, 75), false);
 				{
-					ImGui::BeginChild(std::string(std::string("#cfg-item-text-side") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 60), false);
+					ImGui::BeginChild(std::string(std::string("#cfg_item_text_side") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 60), false);
 					{
-						ImGui::BeginChild(std::string(std::string("#cfg-item-text-inside") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 40), false);
+						ImGui::BeginChild(std::string(std::string("#cfg_item_text_inside") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 40), false);
 						{
 							imspaceMacro(10, 60 / 2 - configNameSize.y / 2);
 							ImGui::Text(configName.c_str());
@@ -903,8 +908,16 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 char dcbText[250] = {};
 
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
+	if (!isActive)
+	{
+		return;
+		if (ImGui::GetIO().MouseDrawCursor)
+			SetCursor(NULL);
+	}
+
+
 	static bool loaded = false;
-	static bool firstanim = true;
+	static bool firstanim = true; 
 	int currenttime = (float)(clock() / 1000.f);
 	static int startedtime = 0;
 	static bool savetime = true;
@@ -921,7 +934,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (false)
+	if (true)
 	{
 
 		if (savetime) {
@@ -952,7 +965,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		}
 
 		//Erasing
-		if (currenttime > startedtime + (firstanim ? 5.f : 1.f)) {
+		if (currenttime > startedtime + (firstanim ? 5.f : 1.f)) { 
 			loaded = true;
 			firstanim = false;
 		}
@@ -1013,7 +1026,10 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	imguiStyles.Alpha = alpha / 255.f;
 
 	if (imguiStyles.Alpha <= 0.0f)
+	{
+		//ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 		return;
+	}
 
 	setOurCustomImguiColorsAndEtc(pDevice);
 

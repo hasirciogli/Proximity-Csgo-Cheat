@@ -161,7 +161,7 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 
 			if (true) {
 				// If "Only visible" and we can't see it, ignore hitbox
-				if (variables::Aimbot_Settings::auto_wall && !csgo::local_player->can_see_player_pos(entity, hitbox_pos))
+				if (!variables::Aimbot_Settings::auto_wall && !csgo::local_player->can_see_player_pos(entity, hitbox_pos))
 					continue;
 
 				// Get autowall data and check if we can make enough damage or kill. autowall::handle_walls() takes care of stuff like "bodyaim if lethal" and "only visible",

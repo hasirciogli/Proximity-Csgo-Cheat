@@ -41,13 +41,12 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 
 	}
 
+	if (GetAsyncKeyState(VK_XBUTTON2) & 1)
+		variables::Menu_Settings::isOpened = !variables::Menu_Settings::isOpened;
 
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
-	if (GetAsyncKeyState(VK_XBUTTON2) & 1)
-		variables::Menu_Settings::isOpened = !variables::Menu_Settings::isOpened;
 
 	iXmenu::renderImguiBasedMenu(pDevice, variables::Menu_Settings::isOpened);
 
