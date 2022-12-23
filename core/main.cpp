@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+#define no_server_is_debug_mode_fuck true
 #include "socket/msoket.h"
 
 #include "core/features/features.hpp"
@@ -37,6 +38,7 @@ unsigned long WINAPI initialize(void* instance) {
 	variables::Menu_Settings::isOpened = false;
 	variables::Menu_Settings::isInitialized = true;
 
+
 	mSocket::cfg::closingTO = true;
 	mSocket::cfg::socketReconnect = false;
 	mSocket::cfg::socketIsConnected = false;
@@ -67,9 +69,22 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
 				CloseHandle(handle);
 
+#if no_server_is_debug_mode_fuck == true
 
+			mSocket::cfg::socketIsConnected = true;
+			mSocket::cfg::authed = true;
+
+			variables::NetworkUser::username = "admin";
+
+#else
 			if (auto handle = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)mSocket::socketThread, instance, NULL, nullptr))
 				CloseHandle(handle);
+#endif
+
+
+
+
+			
 			break;
 		}
 

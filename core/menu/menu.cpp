@@ -420,25 +420,25 @@ void renderAimbotPage() {
 	{
 		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
+			ImGui::CheckboxTypeB("Enabled", &variables::Aimbot_Settings::enabled);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Team Check", &variables::Aimbot_Settings::teamCheck);
+			ImGui::CheckboxTypeB("Team Check", &variables::Aimbot_Settings::teamCheck);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("No Scope", &variables::Aimbot_Settings::noScope);
+			ImGui::CheckboxTypeB("No Scope", &variables::Aimbot_Settings::noScope);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Fire", &variables::Aimbot_Settings::autofire);
+			ImGui::CheckboxTypeB("Auto Fire", &variables::Aimbot_Settings::autofire);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Silent Aim", &variables::Aimbot_Settings::silentAim);
+			ImGui::CheckboxTypeB("Silent Aim", &variables::Aimbot_Settings::silentAim);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Non Rifle Aim Punch", &variables::Aimbot_Settings::non_rifle_aimpunch);
+			ImGui::CheckboxTypeB("Non Rifle Aim Punch", &variables::Aimbot_Settings::non_rifle_aimpunch);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
+			ImGui::CheckboxTypeB("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Draw Fov", &variables::Aimbot_Settings::drawFov);
+			ImGui::CheckboxTypeB("Draw Fov", &variables::Aimbot_Settings::drawFov);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Priorize Lethal Targets", &variables::Aimbot_Settings::priorize_lethal_targets);
+			ImGui::CheckboxTypeB("Priorize Lethal Targets", &variables::Aimbot_Settings::priorize_lethal_targets);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+			ImGui::CheckboxTypeB("Auto Wall", &variables::Aimbot_Settings::auto_wall);
 
 
 
@@ -467,7 +467,7 @@ void renderAimbotPage() {
 			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Smoothness").x + 30));
 
 			imspaceMacro(10, 10);
-			ImGui::SliderFloat("Smoothness", &variables::Aimbot_Settings::aimbot_smoothing,0, 200);
+			ImGui::SliderFloat("Smoothness", &variables::Aimbot_Settings::aimbot_smoothing,0.f, 1.f);
 
 			ImGui::PopItemWidth();
 
@@ -926,7 +926,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (true)
+	if (false)
 	{
 
 		if (savetime) {

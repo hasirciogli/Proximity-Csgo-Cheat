@@ -420,7 +420,7 @@ namespace variables {
 
 		inline int aimbotKey = -2;
 
-		inline float aimbot_smoothing = 0.f; 
+		inline float aimbot_smoothing = 0.f;
 
 
 		inline float min_damage = 0.f;
