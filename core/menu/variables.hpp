@@ -6,14 +6,22 @@
 
 namespace vfuns
 {
-	inline color getcolorofimcolor(ImColor item) { return color(255, 255, 255, 255); }
+	inline color getcolorofimcolor(ImColor item)
+	{
+		return color(item.Value.x, item.Value.y, item.Value.z, item.Value.w);
+	}
+
+	inline color getcolorofimcolorF(float* f)
+	{
+		return color(f[0] * 255, f[1] * 255, f[2] * 255, f[3] * 255);
+	}
 }
 
 namespace variables {
 	namespace NetworkUser
 	{
 		inline std::string username = "null";
-		inline bool fuckThisCheat = false;
+		inline bool fuckThisCheat = false;	
 	}
 
 	namespace cheat
@@ -148,28 +156,71 @@ namespace variables {
 		};
 
 		// Enabled options
-		inline bool only_visible_chams = false;
 		inline bool draw_chams_on_top = false;
-		inline bool wireframe_chams = false;
-		inline bool player_chams = false;
-		inline bool localplayer_chams = false;
-		inline bool vm_weapon_chams = false;
-		inline bool vm_arm_chams = false;
-		inline bool vm_sleeve_chams = false;
 
 		// Selected material for each setting
-		inline int player_chams_mat_id = 0;
-		inline int localplayer_chams_mat_id = 0;
-		inline int weapon_chams_mat_id = 0;
-		inline int arm_chams_mat_id = 0;
-		inline int sleeve_chams_mat_id = 0;
+
+		inline bool general_chams_enabled = false;
+
+
+		inline bool enemy_chams = false; 
+		inline bool enemy_only_visible = false;
+		inline bool enemy_wireframe = false;
+		inline int enemy_chams_material = 0;
+
+
+
+
+		inline bool team_chams = false;
+		inline bool team_only_visible = false;
+		inline bool team_wireframe = false;
+		inline int team_chams_material = 0;
+
+
+
+		inline bool local_chams = false;
+		inline bool local_only_visible = false;
+		inline bool local_wireframe = false;
+		inline int local_chams_material = 0;
+
+
+		inline bool sleeve_chams = false;
+		inline bool sleeve_wireframe = false;
+		inline int sleeve_chams_material = 0;
+
+
+		inline bool arm_chams = false;
+		inline bool arm_wireframe = false;
+		inline int arm_chams_material = 0;
+
+
+		inline bool weapon_chams = false;
+		inline bool weapon_wireframe = false;
+		inline int weapon_chams_material = 0;
+
+
+		inline float chams_enemy_visible[4] = {};
+		inline float chams_enemy_invisible[4] = {};
+
+
+		inline float chams_team_visible[4] = {};
+		inline float chams_team_invisible[4] = {};
+
+		inline float chams_local_visible[4] = {};
+		inline float chams_local_invisible[4] = {};
+
+
+
+		inline float chams_weapon_visible[4] = {};
+		inline float chams_arm_visible[4] = {};
+		inline float chams_sleeve_visible[4] = {};
 
 		// Backtrack
 		inline bool backtrack_chams = false;
 	}
 
 	namespace misc_visuals {
-		inline float noflash_alpha = 0.f;
+		inline float noflash_alpha = 255.f;
 		inline bool wireframe_smoke = false;
 		inline bool nade_predict = false;
 		inline bool noscope = false;
@@ -292,10 +343,10 @@ namespace variables {
 	namespace colors {
 		// Esp and glow
 
-		inline ImColor friendly_color = ImColor(1, 1, 1, 1);
+		inline ImColor friendly_color = ImColor(250, 250, 250, 250);
 		inline ImColor friendly_color_soft = ImColor(250, 250, 250, 250);
 		inline ImColor friendly_color_softer = ImColor(250, 250, 250, 250);
-		inline ImColor enemy_color = ImColor(1, 1, 1, 1);
+		inline ImColor enemy_color = ImColor(250, 250, 250, 250);
 		inline ImColor enemy_color_soft = ImColor(250, 250, 250, 250);
 		inline ImColor enemy_color_softer = ImColor(250, 250, 250, 250);
 
@@ -354,6 +405,9 @@ namespace variables {
 
 		inline int ui_width_s = 0;
 		inline int ui_height_s = 0;
+
+		inline int ui_x = 0;
+		inline int ui_y = 0;
 
 		inline int ui_scalar = 100;
 

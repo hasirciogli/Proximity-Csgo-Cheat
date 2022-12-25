@@ -17,6 +17,8 @@
 
 void setOurCustomImguiColorsAndEtc(LPDIRECT3DDEVICE9);
 
+
+
 struct windowSize {
 	float width;
 	float height;
@@ -638,6 +640,331 @@ void renderEspPage() {
 	ImGui::EndChild();
 }
 
+
+void renderChamsPage() {
+	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
+	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
+	ImGui::BeginChild("#ChamsMenu", cMenuSize, false);
+	{
+		ImGui::BeginChild("#ChamsMenu-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			if (variables::Esp_Settings::selected_team == 0)
+				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
+
+			imspaceMacro(10, 10);
+			ImGui::CheckboxTypeB("Chams General", &variables::chams::general_chams_enabled);
+			imspaceMacro(10, 10);
+			ImGui::CheckboxTypeB("Draw Top", &variables::chams::draw_chams_on_top);
+
+			imspaceMacro(10, 30);
+			ImGui::CheckboxTypeB("Enemy Chams", &variables::chams::enemy_chams);
+			if (variables::chams::enemy_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Enemy Only Visible", &variables::chams::enemy_only_visible);
+
+
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Enemy Wireframe", &variables::chams::enemy_wireframe);
+
+
+				imspaceMacro(10, 10);
+				if (ImGui::BeginCombo("##enemy-material", variables::chams::materials[variables::chams::enemy_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+				{
+					for (int n = 0; n < variables::chams::materials.size(); n++) 
+					{
+						bool is_selected = (variables::chams::enemy_chams_material == n); // You can store your selection however you want, outside or inside your objects
+						if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+						{
+							variables::chams::enemy_chams_material = n;
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			imspaceMacro(0, 15);
+			ImGui::Separator();
+
+
+
+			imspaceMacro(10, 15);
+			ImGui::CheckboxTypeB("Team Chams", &variables::chams::team_chams);
+
+			if (variables::chams::team_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Team Only Visible", &variables::chams::team_only_visible);
+
+
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Team Wireframe", &variables::chams::team_wireframe);
+				imspaceMacro(10, 10);
+
+				if (ImGui::BeginCombo("##team-material", variables::chams::materials[variables::chams::team_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+				{
+					for (int n = 0; n < variables::chams::materials.size(); n++)
+					{
+						bool is_selected = (variables::chams::team_chams_material == n); // You can store your selection however you want, outside or inside your objects
+						if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+						{
+							variables::chams::team_chams_material = n;
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			imspaceMacro(0, 15);
+			ImGui::Separator();
+
+
+			imspaceMacro(10, 15);
+			ImGui::CheckboxTypeB("Local Chams", &variables::chams::local_chams);
+
+			if (variables::chams::local_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Local Only Visible", &variables::chams::local_wireframe);
+
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Local Wireframe", &variables::chams::local_wireframe);
+
+
+				imspaceMacro(10, 10);
+
+				if (ImGui::BeginCombo("##local-material", variables::chams::materials[variables::chams::local_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+				{
+					for (int n = 0; n < variables::chams::materials.size(); n++)
+					{
+						bool is_selected = (variables::chams::local_chams_material == n); // You can store your selection however you want, outside or inside your objects
+						if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+						{
+							variables::chams::local_chams_material = n;
+							if (is_selected)
+								ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+
+			imspaceMacro(0, 15);
+			ImGui::Separator();
+
+			imspaceMacro(10, 15);
+			ImGui::CheckboxTypeB("Weapon Chams", &variables::chams::weapon_chams);
+			if (variables::chams::weapon_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Weapon Wireframe", &variables::chams::weapon_wireframe);
+
+				{
+					imspaceMacro(10, 10);
+
+					if (ImGui::BeginCombo("##weapon-material", variables::chams::materials[variables::chams::weapon_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+					{
+						for (int n = 0; n < variables::chams::materials.size(); n++)
+						{
+							bool is_selected = (variables::chams::weapon_chams_material == n); // You can store your selection however you want, outside or inside your objects
+							if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+							{
+								variables::chams::weapon_chams_material = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();
+							}
+						}
+						ImGui::EndCombo();
+					}
+				}
+
+			}
+
+
+			imspaceMacro(0, 15);
+			ImGui::Separator();
+
+
+			imspaceMacro(10, 15);
+			ImGui::CheckboxTypeB("Arm Chams", &variables::chams::arm_chams);
+			if (variables::chams::arm_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Arm Wireframe", &variables::chams::arm_wireframe);
+
+				{
+					imspaceMacro(10, 10);
+
+					if (ImGui::BeginCombo("##arm-material", variables::chams::materials[variables::chams::arm_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+					{
+						for (int n = 0; n < variables::chams::materials.size(); n++)
+						{
+							bool is_selected = (variables::chams::arm_chams_material == n); // You can store your selection however you want, outside or inside your objects
+							if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+							{
+								variables::chams::arm_chams_material = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();
+							}
+						}
+						ImGui::EndCombo();
+					}
+				}
+
+			}
+
+
+			imspaceMacro(0, 15);
+			ImGui::Separator();
+
+
+			imspaceMacro(10, 15);
+
+			ImGui::CheckboxTypeB("Sleeve Chams", &variables::chams::sleeve_chams);
+
+			if (variables::chams::sleeve_chams)
+			{
+				imspaceMacro(10, 10);
+				ImGui::CheckboxTypeB("Sleeve Wireframe", &variables::chams::sleeve_wireframe);
+
+				{
+					imspaceMacro(10, 10);
+
+					if (ImGui::BeginCombo("##sleeve-material", variables::chams::materials[variables::chams::sleeve_chams_material].c_str())) // The second parameter is the label previewed before opening the combo.
+					{
+						for (int n = 0; n < variables::chams::materials.size(); n++)
+						{
+							bool is_selected = (variables::chams::sleeve_chams_material == n); // You can store your selection however you want, outside or inside your objects
+							if (ImGui::Selectable(variables::chams::materials[n].c_str(), is_selected))
+							{
+								variables::chams::sleeve_chams_material = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();
+							}
+						}
+						ImGui::EndCombo();
+					}
+				}
+
+			}
+
+
+
+			ImVec2 nPos = {};
+
+			getMenuPos(nPos);
+
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + 5), ImVec2(nPos.x + (cMenuSize.x / 2) - 2, nPos.y + cMenuSize.y - 10), ImColor(150, 150, 150), 2);
+
+			}
+			ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		ImGui::BeginChild("#ChamsMenu-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
+		{
+			if (variables::chams::general_chams_enabled)
+			{
+				if (variables::chams::enemy_chams)
+				{
+
+					imspaceMacro(10, 10);
+					ImGui::Text("Enemy Chams Visible Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##enemy_chams_visible", variables::chams::chams_enemy_visible);
+
+					if (!variables::chams::enemy_only_visible)
+					{
+						imspaceMacro(10, 10);
+						ImGui::Text("Enemy Chams Hidden Color");
+						imspaceMacro(10, 2);
+						ImGui::ColorEdit4("##enemy_chams_invisible", variables::chams::chams_enemy_invisible);
+					}
+				}
+
+				imspaceMacro(0, 15);
+				ImGui::Separator();
+
+				if (variables::chams::team_chams)
+				{
+					imspaceMacro(10, 15);
+					ImGui::Text("Team Chams Visible Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##team_chams_visible", variables::chams::chams_team_visible);
+
+					if (!variables::chams::team_only_visible)
+					{
+						imspaceMacro(10, 10);
+						ImGui::Text("Team Chams Hidden Color");
+						imspaceMacro(10, 2);
+						ImGui::ColorEdit4("##team_chams_invisible", variables::chams::chams_team_invisible);
+					}
+
+				}
+
+				imspaceMacro(0, 15);
+				ImGui::Separator();
+
+				if (variables::chams::local_chams)
+				{
+					imspaceMacro(10, 15);
+					ImGui::Text("Local Chams Visible Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##local_chams_visible", variables::chams::chams_local_visible);
+
+					if (!variables::chams::team_only_visible)
+					{
+						imspaceMacro(10, 10);
+						ImGui::Text("Local Chams Hidden Color");
+						imspaceMacro(10, 2);
+						ImGui::ColorEdit4("##local_chams_invisible", variables::chams::chams_local_invisible);
+					}
+
+				}
+
+				imspaceMacro(0, 15);
+				ImGui::Separator();
+
+				if (variables::chams::weapon_chams)
+				{
+					imspaceMacro(10, 15);
+					ImGui::Text("Weapon Chams Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##weapon_chams_visible", variables::chams::chams_weapon_visible);
+				}
+
+				imspaceMacro(0, 10);
+				ImGui::Separator();
+
+				if (variables::chams::arm_chams)
+				{
+					imspaceMacro(10, 15);
+					ImGui::Text("Arm Chams Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##arm_chams_visible", variables::chams::chams_arm_visible);
+				}
+
+				imspaceMacro(0, 15);
+				ImGui::Separator();
+
+				if (variables::chams::sleeve_chams)
+				{
+					imspaceMacro(10, 15);
+					ImGui::Text("Sleeve Chams Color");
+					imspaceMacro(10, 2);
+					ImGui::ColorEdit4("##sleeve_chams_visible", variables::chams::chams_sleeve_visible);
+				}
+			}
+
+		}
+		ImGui::EndChild();
+	}
+	ImGui::EndChild();
+}
+
 void renderSkinsPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 
@@ -1029,11 +1356,10 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
 
 	imguiStyles.WindowRounding = 8;
-	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
+	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	{
 		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat)
 		{
-
 			ImVec2 nPos = {};
 			ImVec2 nPos2 = {};
 			std::string thd = "";
@@ -1177,6 +1503,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 					break;
 				case 2:
 					renderEspPage();
+					break;
+				case 3:
+					renderChamsPage();
 					break;
 
 				case 5:

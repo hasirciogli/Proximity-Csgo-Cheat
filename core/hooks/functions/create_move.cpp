@@ -57,6 +57,11 @@ bool hooks::create_move::hook(float input_sample_frametime, c_usercmd *cmd, bool
 		aim::triggerbot(cmd);
 		aim::run_aimbot(cmd);
 
+		old_forwardmove = cmd->forwardmove;
+		old_sidemove = cmd->sidemove;
+
+		
+
 		antiaim::run_antiaim(cmd, send_packet);
 		aim::auto_revolver(cmd);			// Autorevolver after antiaim to avoid flickering
 

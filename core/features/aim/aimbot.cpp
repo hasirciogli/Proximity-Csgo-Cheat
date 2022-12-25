@@ -213,6 +213,20 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 	return final_target;		// vec3_t position of the best bone/hitbox. Zero if not found.
 }
 
+void StopMovement(c_usercmd& cmd)
+{
+	if (cmd.sidemove > 20.f)
+		cmd.sidemove = 56.f;
+	if (cmd.sidemove < -56.f)
+		cmd.sidemove = -56.f;
+
+	if (cmd.forwardmove > 56.f)
+		cmd.forwardmove = 56.f;
+	if (cmd.forwardmove < -56.f)
+		cmd.forwardmove = -56.f;
+}
+
+
 void aim::run_aimbot(c_usercmd* cmd) {
 	if (!(variables::Aimbot_Settings::autofire && input::global_input.IsHeld(variables::Aimbot_Settings::aimbotKey))	// Not holding aimbot key
 		&& !(!variables::Aimbot_Settings::autofire && (cmd->buttons & cmd_buttons::in_attack))) return;			// or not attacking
@@ -246,8 +260,8 @@ void aim::run_aimbot(c_usercmd* cmd) {
 		}
 	}
 
-	if (hitchance(csgo::local_player->active_weapon()) < variables::Aimbot_Settings::aimbot_hitchance)
-		return;
+
+	
 
 	vec3_t enemy_angle = (aim_angle - local_aim_punch) - cmd->viewangles;
 	enemy_angle.clamp();
@@ -258,6 +272,11 @@ void aim::run_aimbot(c_usercmd* cmd) {
 	vec3_t final_angle = cmd->viewangles + angle_diff;		// The current angle before the aimbot + what we should move
 	if (!variables::Aimbot_Settings::silentAim)
 		interfaces::engine->set_view_angles(final_angle);
+
+	StopMovement(*cmd);
+
+	if (hitchance(csgo::local_player->active_weapon()) < variables::Aimbot_Settings::aimbot_hitchance)
+		return;
 	
 	cmd->viewangles = final_angle;
 
@@ -300,7 +319,7 @@ void aim::draw_fov() {
 	float x2 = tan(DEG2RAD(screen_fov) / 2);
 	float rad = (x1 / x2) * (sw/2);
 	
-	render::draw_circle(sw/2, sh/2, rad, 255, vfuns::getcolorofimcolor(variables::colors::aimbot_fov_c));
+	render::draw_circle(sw/2, sh/2, rad, 255, color::white());
 }
 
 // Used in createmove after aa
