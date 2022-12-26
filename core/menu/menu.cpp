@@ -1253,7 +1253,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (false)
+	if (true)
 	{
 
 		if (savetime) {

@@ -3,23 +3,29 @@
 
 #pragma region CONSOLE
 void helpers::console::state_to_console(const char* tag, const char* text) {
-	interfaces::console->printf("[Rogsoftware] [%s] %s\n", tag, text);
+#if _DEBUG
+	interfaces::console->printf("[Proximity] [%s] %s\n", tag, text);
+#endif
 }
 
 void helpers::console::state_to_console_color(const char* tag, const char* text) {
+#if _DEBUG
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "[");
-	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Rogsoftware");
+	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Proximity");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] [");
 	interfaces::console->color_printf(valve_color_t{   0, 165, 230, 255 }, tag);
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] %s\n", text);
+#endif
 }
 
 void helpers::console::error_to_console(const char* text) {
+#if _DEBUG
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "[");
-	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Rogsoftware");
+	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Proximity");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] [");
 	interfaces::console->color_printf(valve_color_t{ 230, 130,  50, 255 }, "Error");
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "] %s\n", text);
+#endif
 }
 #pragma endregion
 

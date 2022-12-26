@@ -1,5 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
-#define no_server_is_debug_mode_fuck true
+#define no_server_is_debug_mode_fuck false
 #include "socket/msoket.h"
 
 #include "core/features/features.hpp"
@@ -7,16 +7,23 @@
 #include "dependencies/utilities/renderer/renderer.hpp"
 
 #include <nlohmann/json.hpp>
+#include <steam/steam_api.h>
+#include <steam/isteamuser.h>
+#include <steam/isteamfriends.h>
 
+#pragma comment(lib, "steam_api64.lib")
+#pragma comment(lib, "steam_api.lib")
 
 using namespace nlohmann::json_abi_v3_11_2;
 
 unsigned long WINAPI initialize(void* instance) {
-	while (!GetModuleHandleA("serverbrowser.dll"))
+	while (!GetModuleHandleA("serverbrowser.dll") && !GetModuleHandleA("steam_api.dll")) 
 		Sleep(150);
 
+	SteamAPI_Init();
+
 #ifdef _DEBUG
-	console::initialize("Rogsoftware console");
+	console::initialize("Proximity console");
 #endif
 
 	try {
@@ -26,13 +33,34 @@ unsigned long WINAPI initialize(void* instance) {
 	}
 
 	catch (const std::runtime_error & error) {
-		MessageBoxA(nullptr, error.what(), "Rogsoftware error!", MB_OK | MB_ICONERROR);
+		MessageBoxA(nullptr, error.what(), "Proximity error!", MB_OK | MB_ICONERROR);
 		FreeLibraryAndExitThread(static_cast<HMODULE>(instance), 0);
 	}
 
+
+#if _DEBUG
 	// VK_END to unhook. We use IsHeld() because don't need to check the "first frame"
 	while (!input::global_input.IsHeld(VK_END) && !variables::cheat::forceCloseCheat)
+	{
+		if (false)
+		{
+			player_info_t lpInfo_t;
+			if (csgo::local_player)
+			{
+				interfaces::engine->get_player_info(csgo::local_player->index(), &lpInfo_t);
+
+				console::log(std::to_string(lpInfo_t.xuid).c_str());
+			}
+		}
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+#else	
+	// VK_END to unhook. We use IsHeld() because don't need to check the "first frame"
+	while (!variables::cheat::forceCloseCheat)
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+#endif
+
 	
 	//close menu so input is restored to user in the hooks::paint_traverse::hook hook.
 	variables::Menu_Settings::isOpened = false;
@@ -56,6 +84,8 @@ unsigned long WINAPI release() {
 #ifdef _DEBUG
 	console::release();
 #endif
+
+	SteamAPI_Shutdown();
 	return TRUE;
 }
 

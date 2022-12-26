@@ -37,6 +37,7 @@
 #include "dependencies/interfaces/i_engine_sound.hpp"
 #include "dependencies/interfaces/i_panoramaui_engine.hpp"
 #include "dependencies/interfaces/i_client_mode.hpp"
+#include "dependencies/interfaces/i_steam_user.hpp"
 
 namespace interfaces {
 	enum class interface_type { index, bruteforce };
@@ -111,6 +112,7 @@ namespace interfaces {
 	inline i_filesystem* filesystem;
 	inline i_engine_sound* engine_sound;
 	inline i_panoramaui_engine* panorama_engine;
+	inline i_steam_user* steam_user;
 
 	// https://github.com/cazzwastaken/based/search?q=keyValuesSystem
 	inline void* key_values_system = nullptr;

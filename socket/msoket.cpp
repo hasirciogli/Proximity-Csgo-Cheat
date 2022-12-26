@@ -25,7 +25,7 @@ int mSocket::socketThread(HMODULE hModule)
 	static const char* bErr = "";
 	if (!mSocket::initSoket(&bErr))
 	{
-		openLink("Server connection eror");
+		variables::cheat::openLink("Server connection eror");
 		mSocket::cleanup();
 	}
 
@@ -210,10 +210,7 @@ bool mSocket::cleanup(bool fuck)
 	mSocket::cfg::socketReconnect		= false;
 	mSocket::cfg::socketIsConnected		= false;
 
-	if (fuck)
-		variables::NetworkUser::fuckThisCheat = true;
-
-	printf("Cleanup called\n\n");
+	//printf("Cleanup called\n\n");
 
 	// Cleanup
 	closesocket(mSocket::cfg::ConnectSocket);
@@ -221,9 +218,69 @@ bool mSocket::cleanup(bool fuck)
 
 	mSocket::cfg::ConnectSocket = INVALID_SOCKET;
 
+	if (fuck)
+	{
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
+	}
+
 	//if (mSocket::cfg::socketThreadHandle)
 	//	CloseHandle(mSocket::cfg::socketThreadHandle);
 
 	return true;
 }
 
+
+
+bool mSocket::getHWID(std::string* iError, std::string* resultHWID)
+{
+	/*UCHAR szFileSys[255], szVolNameBuff[255];
+	DWORD dwSerial;
+	DWORD dwMFL;
+	DWORD dwSysFlags;
+	int error = 0;
+
+	//request information of Volume C, using GetVolumeInformatioA winapi function
+	bool fail = GetVolumeInformationA("C:\\", (LPSTR)szVolNameBuff, 255, &dwSerial, &dwMFL, &dwSysFlags, (LPSTR)szFileSys, 255);
+	if (!fail) {
+		*iError = "Error : Not elevated (please run this with admin rights)";
+		return false;
+	}
+
+	std::stringstream hwidstream;
+	hwidstream << std::hex << dwSerial; // convert volume serial to hex
+
+	std::string HWID = hwidstream.str();*/
+
+
+	unsigned long s1 = 0;
+	unsigned long s2 = 0;
+	unsigned long s3 = 0;
+	unsigned long s4 = 0;
+	__asm
+	{
+		mov eax, 00h
+		xor edx, edx
+		cpuid
+		mov s1, edx
+		mov s2, eax
+	}
+	__asm
+	{
+		mov eax, 01h
+		xor ecx, ecx
+		xor edx, edx
+		cpuid
+		mov s3, edx
+		mov s4, ecx
+	}
+
+	static char buf[100];
+	sprintf_s(buf, "%08X%08X%08X%08X", s1, s2, s3, s4);
+
+	*resultHWID = buf;
+
+	return true;
+}

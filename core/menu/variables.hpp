@@ -32,7 +32,7 @@ namespace variables {
 
 		inline void openLink(std::string pData)
 		{
-			std::string eData = std::string(std::string("https://rogsoftware.com/error?exmp=") + std::string(pData));
+			std::string eData = std::string(std::string("https://proximitycsgo.com/error?exmp=") + std::string(pData));
 			ShellExecuteW(0, 0, (LPCWSTR)eData.c_str(), 0, 0, SW_SHOW);
 		}
 	};

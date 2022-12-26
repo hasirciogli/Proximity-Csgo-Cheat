@@ -32,18 +32,18 @@ bool hooks::initialize() {
 
 	{
 		config::init();						// Initialize config folder and skins
-		helpers::console::state_to_console_color("Init", "Config initialized!");
+		//helpers::console::state_to_console_color("Init", "Config initialized!");
 		//menu::init_windows();				// For window positions on smaller screens
-		helpers::console::state_to_console_color("Init", "Windows initialized!");
+		//helpers::console::state_to_console_color("Init", "Windows initialized!");
 		backtrack::init();					// Init backtrack cvars
-		helpers::console::state_to_console_color("Init", "Backtrack initialized!");
+		//helpers::console::state_to_console_color("Init", "Backtrack initialized!");
 		input::global_input.Init();			// Start arrays empty and all that, needed before WndProc
-		helpers::console::state_to_console_color("Init", "Global input initialized!");
+		//helpers::console::state_to_console_color("Init", "Global input initialized!");
 
 		// WndProc
 		WndProc_hook::csgo_window = FindWindowW(L"Valve001", nullptr);		// Get window for SetWindowLongPtrW()
 		WndProc_hook::original = WNDPROC(SetWindowLongPtrW(WndProc_hook::csgo_window, GWLP_WNDPROC, LONG_PTR(WndProc_hook::WndProc)));	// Replace wnproc with our own, call original later
-		helpers::console::state_to_console_color("Hooks", "WndProc initialized!");
+		//helpers::console::state_to_console_color("Hooks", "WndProc initialized!");
 	}
 
 	{
@@ -54,8 +54,8 @@ bool hooks::initialize() {
 		#define MAKE_HOOK(target, new_function, original, function_name) \
 			if ( MH_CreateHook( target, &new_function, reinterpret_cast< void** >( &original ) ) != MH_OK ) \
 				throw std::runtime_error( std::string("failed to initialize ").append(function_name) ); \
-			else \
-				helpers::console::state_to_console_color( "Hooks", std::string(function_name).append(" initialized!").c_str());
+			//else \
+			//	helpers::console::state_to_console_color( "Hooks", std::string(function_name).append(" initialized!").c_str());
 
 		// @todo - organise order of hooks based on what interface (clientmode, client, engine, surface etc...)
 		MAKE_HOOK(end_scene_target, end_scene::hook, end_scene::original, "end_scene");

@@ -1,3 +1,5 @@
+#include <steam/isteamfriends.h>
+
 #include "DataHandler.h"
 #include "Packet.h"
 #include "../msoket.h"
@@ -5,6 +7,10 @@
 #include "dependencies/imgui/imgui.h"
 #include "core/config/config.hpp"
 #include "core/menu/variables.hpp"
+
+
+#include "steam/isteamuser.h"
+
 //#include "../../core/menu/chatbox/ChatBox.h"
 //#include "dependencies/imgui/imgui.h"
 
@@ -21,16 +27,24 @@ void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 	}
 	catch (json::parse_error& err)
 	{
-		variables::NetworkUser::fuckThisCheat = true;
-		mSocket::cfg::authed = false;
-		mSocket::cfg::socketIsConnected = false;
-		mSocket::cfg::grabbedToken = "";
+		mSocket::cleanup(true);
 		return;
 	}
 
+	std::string errstr = "";
+	std::string resstr = "";
+
+	if (!mSocket::getHWID(&errstr, &resstr))
+	{
+		mSocket::cleanup(true);
+		return;
+	}
+	
 	j["who_i_am"] = "cheat";
 	j["packet_id"] = Packets::NClientPackets::USER_AUTH;
-	j["data"]["hwid"] = "9963"; // Your hwid data
+	j["data"]["hwid"] = resstr; // Your hwid data
+	j["data"]["steam_id"] = SteamUser()->GetSteamID().ConvertToUint64();
+	j["data"]["steam_name"] = SteamFriends()->GetPersonaName();
 
 	const char* sError = "";
 	mSocket::sendPacketToServer(j.dump().c_str(), &sError);
