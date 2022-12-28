@@ -5,6 +5,12 @@
 #include "packet/DataHandler.h"
 #include <core/menu/variables.hpp>
 
+#include <iostream>
+#include <string>
+
+#undef UTF8_WINAPI
+#define UTF8_WINAPI
+
 int bebeka = 0;
 
 using nlohmann::json;
@@ -36,7 +42,7 @@ int mSocket::socketThread(HMODULE hModule)
 	while (!cfg::closingTO)
 	{
 		if (mSocket::cfg::socketInited && !cfg::closingTO && !variables::NetworkUser::fuckThisCheat)
-		{ 
+		{
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
 				mSocket::cfg::iResult = recv(mSocket::cfg::ConnectSocket, mSocket::cfg::recvbuf, mSocket::cfg::recvbuflen, 0);
@@ -48,9 +54,21 @@ int mSocket::socketThread(HMODULE hModule)
 						test += mSocket::cfg::recvbuf[i];
 					}
 
-#ifdef _DEBUG 
-					std::cout << "DR ["<< mSocket::cfg::iResult << "] - " << test.c_str() << std::endl; 
-#endif
+					console::log("DR [");
+					console::log(std::to_string(mSocket::cfg::iResult).c_str());
+					console::log("] - ");
+					console::log(test.c_str());
+					console::log("\n\n");
+
+					/*test = mSocket::getEncrypt(test);
+
+					console::log("DR2222 [");
+					console::log(std::to_string(mSocket::cfg::iResult).c_str());
+					console::log("] - ");
+					console::log(test.c_str());
+					console::log("\n\n");*/
+
+
 
 					CDataHandler cdh = CDataHandler();
 					cdh.data = test;
@@ -134,7 +152,7 @@ int mSocket::socketThread(HMODULE hModule)
 				variables::cheat::logboxLists.push_front("Connected!");
 				mSocket::cfg::socketIsConnected = true;
 			}
-		}
+		} 
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20)); 
 	}
@@ -146,13 +164,119 @@ int mSocket::socketThread(HMODULE hModule)
 	return 0;
 }
 
-bool mSocket::sendPacketToServer(const char* data, const char** iError, bool force_send)
+std::string ___allowedCharsCheck(std::string dest, int len)
 {
 
-#ifdef _DEBUG
-	std::cout << "TY TO SENT = " << data << std::endl;
-#endif
+	std::string allowedChars = "abcdefghijklmnoprstuvyzwxqABCDEFGHIJKLMNOPRSTUVYZWXQ0123456789{},:[]\"_?.";
 
+	std::string tData = dest;
+
+	for (int i = 0; i < len; i++)
+	{
+		if (allowedChars.find(tData.at(i)) != std::string::npos)
+		{
+			
+		}
+		else
+		{
+			console::log(std::to_string(tData.at(i)).c_str());
+
+			if (tData[i] == '\u015f')
+			{
+				tData[i] = 's';
+			}
+			else if (tData.at(i) == '\u015e')
+			{
+				tData[i] = 'S';
+			}
+			else if (tData.at(i) == 'ð')
+			{
+				tData.at(i) = 'g';
+			}
+			else if (tData.at(i) == 'Ð')
+			{
+				tData.at(i) = 'G';
+			}
+
+			else if (tData.at(i) == 'ý')
+			{
+				tData.at(i) = 'i';
+			}
+			else if (tData.at(i) == 'Ý')
+			{
+				tData.at(i) = 'I';
+			}
+
+
+			else if (tData.at(i) == 'ð')
+			{
+				tData.at(i) = 'i';
+			}
+			else if (tData.at(i) == 'ð')
+			{
+				tData.at(i) = 'i';
+			}
+
+
+			else if (tData.at(i) == 'þ')
+			{
+				tData.at(i) = 's';
+			}
+			else if (tData.at(i) == 'Þ')
+			{
+				tData.at(i) = 'S';
+			}
+
+			else if (tData.at(i) == 'ö')
+			{
+				tData.at(i) = 'o';
+			}
+			else if (tData.at(i) == 'Ö')
+			{
+				tData.at(i) = 'O';
+			}
+
+			else if (tData.at(i) == 'ç')
+			{
+				tData.at(i) = 'c';
+			}
+			else if (tData.at(i) == 'Ç')
+			{
+				tData.at(i) = 'C';
+			}
+
+			else if (tData.at(i) == 'ü')
+			{
+				tData.at(i) = 'u';
+			}
+			else if (tData.at(i) == 'Ü')
+			{
+				tData.at(i) = 'U';
+			}
+			else if (tData.at(i) == '\0')
+			{
+
+			}
+			else
+			{
+				tData.at(i) = '?';
+			}
+		}
+	}
+	return tData;
+}
+
+
+
+bool mSocket::sendPacketToServer(const char* data, const char** iError, bool force_send)
+{
+	//std::string needCryptData = std::string(data);
+	//needCryptData = mSocket::getEncrypt(needCryptData);
+#ifdef _DEBUG
+	console::log("try sent   | ");
+	console::log(data);
+#endif
+	 
 	if (!mSocket::cfg::socketIsConnected)
 	{
 		*iError = "Socket isn't connected";
@@ -283,4 +407,25 @@ bool mSocket::getHWID(std::string* iError, std::string* resultHWID)
 	*resultHWID = buf;
 
 	return true;
+}
+
+std::string mSocket::getEncrypt(std::string plaintext)
+{
+	// Anahtar deðerini belirtin
+	std::string key = "PCMK";
+
+	// Þifrelenmiþ veri için yer ayýrýn
+	std::string ciphertext;
+
+	// Þifreleme iþlemini gerçekleþtirin
+	for (int i = 0; i < plaintext.length(); i++) {
+		ciphertext += plaintext[i] ^ key[i % key.length()];
+	}
+
+	return ciphertext;
+}
+
+std::string mSocket::__getDecrypt(std::string& tData)
+{
+	return "";
 }

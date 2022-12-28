@@ -77,7 +77,7 @@ bool hooks::initialize() {
 		MAKE_HOOK(is_depth_of_field_enabled_target, is_depth_of_field_enabled::hook, is_depth_of_field_enabled::original, "is_depth_of_field_enabled");
 		MAKE_HOOK(get_client_model_renderable_target, get_client_model_renderable::hook, get_client_model_renderable::original, "get_client_model_renderable");
 		MAKE_HOOK(supports_resolve_depth_target, supports_resolve_depth::hook, supports_resolve_depth::original, "supports_resolve_depth");
-		//MAKE_HOOK(fire_event_target, fire_event::hook, fire_event::original, "fire_event");
+		MAKE_HOOK(fire_event_target, fire_event::hook, fire_event::original, "fire_event");
 		MAKE_HOOK(viewmodel_sequence_target, viewmodel_sequence::hook, viewmodel_sequence::original, "fire_event");
 
 		if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)

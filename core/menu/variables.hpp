@@ -15,6 +15,87 @@ namespace vfuns
 	{
 		return color(f[0] * 255, f[1] * 255, f[2] * 255, f[3] * 255);
 	}
+
+	inline std::string allowedCharsCheck(std::string dest, int len)
+	{
+		std::string allowedChars = "abcdefghijklmnoprstuvyzwxqABCDEFGHIJKLMNOPRSTUVYZWXQ0123456789{},:[]\"_?.";
+
+		std::string tData = dest;
+
+		for (int i = 0; i < len; i++)	
+		{
+			if (!(allowedChars.find(tData.at(i)) != std::string::npos) && tData.at(i) != '\0')
+			{
+				if (tData.at(i) == 'ð')
+				{
+					tData.at(i) = 'g';
+				}
+				else if (tData.at(i) == 'Ð')
+				{
+					tData.at(i) = 'G';
+				}
+
+
+				else if (tData.at(i) == 'ý')
+				{
+					tData.at(i) = 'i';
+				}
+				else if (tData.at(i) == 'Ý')
+				{
+					tData.at(i) = 'I';
+				}
+
+
+				else if (tData.at(i) == 'ð')
+				{
+					tData.at(i) = 'i';
+				}
+				else if (tData.at(i) == 'ð')
+				{
+					tData.at(i) = 'i';
+				}
+
+
+				else if (tData.at(i) == 'þ')
+				{
+					tData.at(i) = 's';
+				}
+				else if (tData.at(i) == 'Þ')
+				{
+					tData.at(i) = 'S';
+				}
+
+				else if (tData.at(i) == 'ö')
+				{
+					tData.at(i) = 'o';
+				}
+				else if (tData.at(i) == 'Ö')
+				{
+					tData.at(i) = 'O';
+				}
+
+				else if (tData.at(i) == 'ç')
+				{
+					tData.at(i) = 'c';
+				}
+				else if (tData.at(i) == 'Ç')
+				{
+					tData.at(i) = 'C';
+				}
+
+
+				else if (tData.at(i) == 'ü')
+				{
+					tData.at(i) = 'u';
+				}
+				else if (tData.at(i) == 'Ü')
+				{
+					tData.at(i) = 'U';
+				}
+			}
+		}
+		return tData;
+	}
 }
 
 namespace variables {

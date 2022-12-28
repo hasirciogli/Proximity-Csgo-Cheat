@@ -14,12 +14,16 @@
 #pragma comment(lib, "steam_api64.lib")
 #pragma comment(lib, "steam_api.lib")
 
+
+#include <iostream>
+#include <clocale>
+ 
 using namespace nlohmann::json_abi_v3_11_2;
 
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll") && !GetModuleHandleA("steam_api.dll")) 
 		Sleep(150);
-
+	setlocale(LC_ALL, "Turkish");
 	SteamAPI_Init();
 
 #ifdef _DEBUG
@@ -31,7 +35,6 @@ unsigned long WINAPI initialize(void* instance) {
 		render::initialize();
 		hooks::initialize();
 	}
-
 	catch (const std::runtime_error & error) {
 		MessageBoxA(nullptr, error.what(), "Proximity error!", MB_OK | MB_ICONERROR);
 		FreeLibraryAndExitThread(static_cast<HMODULE>(instance), 0);
@@ -85,7 +88,7 @@ unsigned long WINAPI release() {
 	console::release();
 #endif
 
-	SteamAPI_Shutdown();
+	//SteamAPI_Shutdown();
 	return TRUE;
 }
 
@@ -96,6 +99,7 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
+			setlocale(LC_ALL, "Turkish");
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
 				CloseHandle(handle);
 

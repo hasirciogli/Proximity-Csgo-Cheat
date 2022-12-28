@@ -1253,7 +1253,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (true)
+	if (false)
 	{
 
 		if (savetime) {
@@ -1534,6 +1534,34 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	ImGui::End();
 
 	ChatBox::runCustomGui(pDevice);
+
+
+	ImGui::Begin("Debug Window");
+	{
+		if (ImGui::Button("Load Map", ImVec2(150, 50)))
+		{
+			interfaces::engine->execute_cmd("map 848137275");
+		} 
+
+		if (ImGui::Button("ht", ImVec2(150, 50)))
+		{
+			interfaces::engine->execute_cmd("exec ht");
+		}
+
+		if (ImGui::Button("h_ct", ImVec2(150, 50)))
+		{
+			interfaces::engine->execute_cmd("exec h_ct");
+		}
+
+		if (ImGui::Button("h_t", ImVec2(150, 50)))
+		{
+			interfaces::engine->execute_cmd("exec h_t");
+		}if (ImGui::Button("h_twice", ImVec2(150, 50)))
+		{
+			interfaces::engine->execute_cmd("exec h_twice");
+		}
+	}
+	ImGui::End();
 }
 
 

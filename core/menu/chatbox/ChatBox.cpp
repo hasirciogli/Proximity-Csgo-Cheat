@@ -1,5 +1,6 @@
 #include "socket/msoket.h"
 #include "socket/packet/Packet.h"
+#include "core/menu/variables.hpp"
 
 #include "ChatBox.h"
 
@@ -27,6 +28,11 @@ void renderChatBoxItem(ChatBox::ChatboxItem item, std::string cName)
 			{
 				CB_imspaceMacro(10, 0);
 				TextColored(item.nameColor, item.name.c_str());
+
+				SameLine();
+
+				CB_imspaceMacro(5, 0);
+				TextColored(ImVec4(255, 255, 255, 255), item.date.c_str());
 			}
 			ImGui::EndChild();
 
@@ -99,6 +105,9 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 					PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 10));
 					PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 10));
 					{
+						string revSTR = std::string(DDKmessage);
+						//std::string tC = vfuns::allowedCharsCheck(revSTR, revSTR.length());
+						//strcpy(DDKmessage, tC.c_str());
 						ImGui::InputText("#chatbox-inputtext", DDKmessage, IM_ARRAYSIZE(DDKmessage));
 					}
 					PopStyleVar();
@@ -115,7 +124,6 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 			if (Button("Send", ImVec2(100, 40)))
 			{
 				string tMessage = DDKmessage;
-				string username = "admin";
 
 				json jdATAA;
 
@@ -123,7 +131,6 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 				 
 				jdATAA["who_i_am"] = "cheat";
 				jdATAA["packet_id"] = (int)Packets::NClientPackets::CHAT_MESSAGE_SENT;
-				jdATAA["data"]["message_author"]		= username;
 				jdATAA["data"]["message_content"]		= tMessage;
 
 				string sendLon = jdATAA.dump();
@@ -138,6 +145,8 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 				{
 					printf("\n\nsendPacketError -> %s\n\n", eData);
 				}
+
+				
 
 				DDKmessage[0] = {};
 			}

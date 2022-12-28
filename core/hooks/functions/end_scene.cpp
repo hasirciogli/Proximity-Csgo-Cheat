@@ -27,14 +27,23 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 		ImGuiIO& io = ImGui::GetIO();
 
 		ImGui::StyleColorsDark();
+		static const ImWchar icons_ranges_Turkish[] = {
+			0x0020, 0x00FF, // Basic Latin + Latin Supplement
+			0x00c7, 0x00c7, // Ç
+			0x00e7, 0x00e7, // ç
+			0x011e, 0x011e, // Ð
+			0x011f, 0x011f, // ð
+			0x0130, 0x0130,// Ý
+			0x0131, 0x0131, // ý
+			0x00d6, 0x00d6, // Ö
+			0x00f6, 0x00f6, // ö
+			0x015e, 0x015e, // Þ
+			0x015f, 0x015f, // þ
+			0x00dc, 0x00dc, // Ü
+			0x00fc, 0x00fc, // ü
 
-		//add font's Etc
-
-		ImFont* ff = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Candara.ttf", 13);
-		ImFont* fontVerdana = io.Fonts->AddFontFromFileTTF("C://Windows/Fonts/Verdana.ttf", 13);
-		io.FontDefault = fontVerdana;
-
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 18);
+			0, }; 
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 18, 0, icons_ranges_Turkish);
 
 		variables::Menu_Settings::fonts_GUIBIGFONT = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 150);
 		variables::Menu_Settings::fonts_GUIBIGFONT2 = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 50);

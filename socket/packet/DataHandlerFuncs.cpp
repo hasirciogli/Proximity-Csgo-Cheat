@@ -1,4 +1,7 @@
-#include <steam/isteamfriends.h>
+#undef UTF8_WINAPI
+#define UTF8_WINAPI
+
+#include <steam/isteamfriends.h>	
 
 #include "DataHandler.h"
 #include "Packet.h"
@@ -17,7 +20,7 @@
 using namespace nlohmann;
 
 
-void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
+void CDataHandlerFuncs::NeedUserAuth(std::string fullData) 
 {
 	json j = json();
 
@@ -104,8 +107,6 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 
 void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 {
-
-
 	try
 	{
 		json faj;
@@ -123,7 +124,7 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 			return;
 		}
 
-		int packetID = faj["packet_id"];//faj["packet_id"];
+		int packetID = faj["packet_id"]; //faj["packet_id"];
 		std::string dataSTR = faj["data"].dump();
 		int message_id = faj["data"]["message_id"];
 		std::string message_author = faj["data"]["message_author"];
@@ -138,6 +139,8 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 		float author_color_x = faj["data"]["message_author_color"]["x"];
 		float author_color_y = faj["data"]["message_author_color"]["y"];
 		float author_color_z = faj["data"]["message_author_color"]["z"];
+
+		//MessageBoxA(0, message_content.c_str(), "", 0);
 
 
 
@@ -168,11 +171,6 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 		rgbColorContent.y = message_color_y / 255.f;
 		rgbColorContent.z = message_color_z / 255.f;
 		rgbColorContent.w = 1.0f;
-
-
-
-
-
 
 
 		ChatBox::ChatboxItem cbItem;

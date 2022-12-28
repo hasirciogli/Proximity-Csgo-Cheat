@@ -14,7 +14,6 @@
 #include <string.h>
 #include <iostream>
 
-
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -26,6 +25,7 @@
 #define DEFAULT_BUFLEN 8192
 #define DEFAULT_PORT "6655"
 #define DEFAULT_IP "127.0.0.1"
+
 
 namespace mSocket
 {
@@ -59,4 +59,6 @@ namespace mSocket
 	int socketThread(HMODULE hModule);
 	bool sendPacketToServer(const char* data, const char** iError, bool = false);
 	bool getHWID(std::string* iError, std::string* resultHWID);
+	std::string getEncrypt(std::string strX);
+	std::string __getDecrypt(std::string& strX);
 };
