@@ -31,8 +31,12 @@ void renderChatBoxItem(ChatBox::ChatboxItem item, std::string cName)
 
 				SameLine();
 
-				CB_imspaceMacro(5, 0);
-				TextColored(ImVec4(255, 255, 255, 255), item.date.c_str());
+				PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+				{
+					CB_imspaceMacro(5, 0);
+					TextColored(ImVec4(255, 255, 255, 255), item.date.c_str());
+				}
+				PopFont();
 			}
 			ImGui::EndChild();
 

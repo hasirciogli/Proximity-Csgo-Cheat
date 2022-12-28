@@ -300,8 +300,6 @@ bool mSocket::sendPacketToServer(const char* data, const char** iError, bool for
 	return true;
 }
 
-
-
 bool mSocket::initSoket(const char** errStr)
 {
 	// Initialize Winsock
@@ -326,7 +324,6 @@ bool mSocket::initSoket(const char** errStr)
 	//mSocket::cfg::socketThreadHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)mSocket::socketThread, 0, 0, 0);
 	return true;
 }
-
 
 bool mSocket::cleanup(bool fuck)
 {
@@ -355,8 +352,6 @@ bool mSocket::cleanup(bool fuck)
 
 	return true;
 }
-
-
 
 bool mSocket::getHWID(std::string* iError, std::string* resultHWID)
 {

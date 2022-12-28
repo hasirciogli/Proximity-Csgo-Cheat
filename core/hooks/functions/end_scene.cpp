@@ -45,8 +45,9 @@ HRESULT __stdcall hooks::end_scene::hook(LPDIRECT3DDEVICE9 pDevice) {
 			0, }; 
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 18, 0, icons_ranges_Turkish);
 
-		variables::Menu_Settings::fonts_GUIBIGFONT = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 150);
-		variables::Menu_Settings::fonts_GUIBIGFONT2 = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 50);
+		variables::Menu_Settings::fonts_gubi_14_font = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 14, 0, icons_ranges_Turkish);
+		variables::Menu_Settings::fonts_GUIBIGFONT = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 150, 0, icons_ranges_Turkish);
+		variables::Menu_Settings::fonts_GUIBIGFONT2 = io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Verdana.ttf", 50, 0, icons_ranges_Turkish);
 
 	}
 

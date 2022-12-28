@@ -27,7 +27,7 @@ bool hooks::initialize() {
 	const auto is_depth_of_field_enabled_target = reinterpret_cast<void*>(utilities::pattern_scan("client.dll", sig_depth_of_field));
 	const auto get_client_model_renderable_target = reinterpret_cast<void*>(utilities::pattern_scan("client.dll", sig_client_model_renderable));
 	const auto supports_resolve_depth_target = reinterpret_cast<void*>(utilities::pattern_scan("shaderapidx9.dll", sig_supports_resolve_depth));
-	const auto fire_event_target = reinterpret_cast<void*>(utilities::pattern_scan("engine.dll", sig_fire_event));
+	//const auto fire_event_target = reinterpret_cast<void*>(utilities::pattern_scan("engine.dll", sig_fire_event));
 	const auto viewmodel_sequence_target = reinterpret_cast<void*>(utilities::pattern_scan("client.dll", sig_viewmodel_sequence));
 
 	{
@@ -77,8 +77,8 @@ bool hooks::initialize() {
 		MAKE_HOOK(is_depth_of_field_enabled_target, is_depth_of_field_enabled::hook, is_depth_of_field_enabled::original, "is_depth_of_field_enabled");
 		MAKE_HOOK(get_client_model_renderable_target, get_client_model_renderable::hook, get_client_model_renderable::original, "get_client_model_renderable");
 		MAKE_HOOK(supports_resolve_depth_target, supports_resolve_depth::hook, supports_resolve_depth::original, "supports_resolve_depth");
-		MAKE_HOOK(fire_event_target, fire_event::hook, fire_event::original, "fire_event");
-		MAKE_HOOK(viewmodel_sequence_target, viewmodel_sequence::hook, viewmodel_sequence::original, "fire_event");
+		//MAKE_HOOK(fire_event_target, fire_event::hook, fire_event::original, "fire_event");
+		MAKE_HOOK(viewmodel_sequence_target, viewmodel_sequence::hook, viewmodel_sequence::original, "viewmodel_sequence");
 
 		if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
 			throw std::runtime_error("failed to enable hooks.");
@@ -93,6 +93,7 @@ bool hooks::initialize() {
 		interfaces::engine->execute_cmd("crosshair 1");
 		helpers::console::state_to_console_color("Crosshair", "Crosshair reset!");
 	}
+	
 
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "--------------- ");
 	interfaces::console->color_printf(valve_color_t{ 200,   0,   0, 255 }, "Welcome to Rogsoftware");
@@ -103,7 +104,6 @@ bool hooks::initialize() {
 
 void hooks::release() {
 	helpers::console::state_to_console_color("Unhook", "Unhooking the cheat...\n");
-
 	// Restore thirdperson
 	variables::misc::thirdperson = false;
 	misc::reset_thirdperson();

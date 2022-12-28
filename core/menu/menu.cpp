@@ -11,7 +11,7 @@
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
 #include "core/config/config.hpp"
 #include "dependencies/imgui/imgui_internal.h"
-
+#include "snowflake/snowflake.hpp"
 
 #define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
 
@@ -521,7 +521,7 @@ void renderAimbotPage() {
 	}
 	ImGui::EndChild();
 }
- 
+
 void renderAntiAimPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 
@@ -1086,11 +1086,11 @@ void renderConfigsPage() {
 		ImGui::BeginChild("#settings_state_left", ImVec2(cMenuSize.x, cMenuSize.y), false);
 		{
 
-			auto renderConfigItem = [&](int configID, ImVec2 menusize, bool isLoaded = false)
+			auto renderConfigItem = [&](int configID, ImVec2 menusize, config::c_config tCfg)
 			{
-				std::string configName = "top 8 hvh";
-				std::string dateText = "28 jul 2018";
-				std::string authorName = (std::string("Author: ") + std::string("hasirciogli"));
+				std::string configName = tCfg.configName;
+				std::string dateText = tCfg.date;
+				std::string authorName = (std::string("Author: ") + std::string(tCfg.author));
 
 				ImVec2 configNameSize = ImGui::CalcTextSize(configName.c_str());
 				ImVec2 dateTextSize = ImGui::CalcTextSize(dateText.c_str());
@@ -1124,18 +1124,18 @@ void renderConfigsPage() {
 					ImGui::BeginChild(std::string(std::string("#cfg-item-right-side") + std::to_string(configID)).c_str(), ImVec2(rsSize), false);
 					{
 						imspaceMacro(rsSize.x - 120 - 5, 75 / 2 - (30 / 2));
-						if (isLoaded)
+						if (tCfg.isLoaded)
 						{
 							if (ImGui::Button("Save Config", ImVec2(120, 30)))
 							{
-
+								config::saveConfig(tCfg);
 							}
 						}
 						else
 						{
 							if (ImGui::Button("Load Config", ImVec2(120, 30)))
 							{
-
+								config::loadConfig(tCfg);
 							}
 						}
 
@@ -1149,20 +1149,10 @@ void renderConfigsPage() {
 				ImGui::EndChild();
 			};
 
-
-			renderConfigItem(0, cMenuSize);
-			renderConfigItem(1, cMenuSize);
-			renderConfigItem(12, cMenuSize);
-			renderConfigItem(13, cMenuSize);
-			renderConfigItem(14, cMenuSize);
-			renderConfigItem(15, cMenuSize);
-			renderConfigItem(16, cMenuSize);
-			renderConfigItem(17, cMenuSize);
-			renderConfigItem(18, cMenuSize);
-			renderConfigItem(19, cMenuSize);
-			renderConfigItem(111, cMenuSize);
-			renderConfigItem(122, cMenuSize);
-			renderConfigItem(133, cMenuSize);
+			for (auto config : config::configsList)
+			{
+				renderConfigItem(config.configId, cMenuSize, config);
+			}
 		}
 		ImGui::EndChild();
 	}
@@ -1233,6 +1223,8 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 	imguiStyles.WindowRounding = FirstRadius;
 }
 char dcbText[250] = {};
+#define SNOW_LIMIT 600
+std::vector<Snowflake::Snowflake> snow;
 
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	static bool loaded = false;
@@ -1248,12 +1240,22 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	static float alpha = 0.0f;
 
+	static int initSnowFlakes = false;
+	int xxx, yyy;
+
+	interfaces::engine->get_screen_size(xxx, yyy);
+	if (!initSnowFlakes)
+	{
+		initSnowFlakes = true;
+		Snowflake::CreateSnowFlakes(snow, SNOW_LIMIT, 1.f/*minimum size*/, 10.f/*maximum size*/, 0/*imgui window x position*/, 0/*imgui window y position*/, xxx, yyy, Snowflake::vec3(0.f, 0.002f)/*gravity*/, IM_COL32(255, 255, 255, 100)/*color*/);
+	}
+
 
 	ImGuiStyle& imguiStyles = ImGui::GetStyle();
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (false)
+	if (true)
 	{
 
 		if (savetime) {
@@ -1295,8 +1297,37 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
 	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
-
 	
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, interfaces::engine->is_in_game() ? (alpha > 0.f ? alpha : 0) : 255);
+	{
+
+		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(xxx, yyy));
+		ImGui::SetNextWindowBgAlpha(0.f);
+		POINT mouse;
+		ImGui::Begin("##qeqweqwad4qw98e4qw651", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+		{
+			RECT rc;
+			HWND mhwnd = FindWindowA(nullptr, "Counter-Strike: Global Offensive - Direct3D 9");
+			GetWindowRect(mhwnd, &rc);
+
+			if (ImGui::GetWindowPos().x != 0 || ImGui::GetWindowPos().y != 0)
+			{
+				//MoveWindow(mhwnd, rc.left + ImGui::GetWindowPos().x, rc.top + ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight(), TRUE); // you dont need those two if you have an imgui window inside an actual window
+				ImGui::SetWindowPos(ImVec2(0.f, 0.f));
+				// Snowflake::ChangeWindowPos(snow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y); // you need this if you have an imgui window inside an actual window
+			}
+
+			GetCursorPos(&mouse);
+			// render this before anything else so it is the background
+			Snowflake::Update(snow, Snowflake::vec3(mouse.x, mouse.y)/*mouse x and y*/, Snowflake::vec3(rc.left, rc.top)/*hWnd x and y positions*/); // you can change a few things inside the update function
+
+			// render other stuff
+
+		}
+		ImGui::End();
+	}
+	ImGui::PopStyleVar();
 
 	if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
 	{
@@ -1354,9 +1385,8 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImGui::GetIO().FontGlobalScale = variables::Menu_Settings::uiSelectedDPI;
 	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
-
 	imguiStyles.WindowRounding = 8;
-	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
 		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat)
 		{
@@ -1533,6 +1563,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	} 
 	ImGui::End();
 
+
 	ChatBox::runCustomGui(pDevice);
 
 
@@ -1541,7 +1572,8 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		if (ImGui::Button("Load Map", ImVec2(150, 50)))
 		{
 			interfaces::engine->execute_cmd("map 848137275");
-		} 
+			variables::Menu_Settings::isOpened = false;
+		}
 
 		if (ImGui::Button("ht", ImVec2(150, 50)))
 		{

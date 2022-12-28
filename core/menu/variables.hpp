@@ -322,7 +322,7 @@ namespace variables {
 		inline multicombobox_toggle_t bulletracer_draw_target(bulletracer_draw_options);
 		inline multicombobox_toggle_t bulletracer_team_target(bulletracer_team_options);*/
 
-		inline bool bulletracer_team_target[] = { false, false, false };
+		inline bool bulletracer_team_target[] = { true, true, true };
 		inline int bulletracer_type = 0;
 
 		inline bool chickenpride = false;
@@ -494,6 +494,7 @@ namespace variables {
 
 		inline int selected_page = 0;
 
+		inline ImFont* fonts_gubi_14_font;
 		inline ImFont* fonts_GUIBIGFONT;
 		inline ImFont* fonts_GUIBIGFONT2;
 

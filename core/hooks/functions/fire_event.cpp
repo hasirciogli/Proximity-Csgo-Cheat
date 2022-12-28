@@ -10,7 +10,7 @@ void __fastcall hooks::fire_event::hook(void* thisptr, void* edx, i_game_event* 
         // Event list: https://wiki.alliedmods.net/Counter-Strike:_Global_Offensive_Events
         switch(fnv::hash(name)) {
             case fnv::hash("bullet_impact"):
-                //visuals::bullet_tracer(gameEvent);
+                visuals::bullet_tracer(gameEvent);
                 break;
             case fnv::hash("round_end"):
                 globals::round_ended = true;

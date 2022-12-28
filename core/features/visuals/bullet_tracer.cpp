@@ -1,6 +1,7 @@
 #include "dependencies/utilities/csgo.hpp"
 #include "core/features/features.hpp"
 #include "core/menu/variables.hpp"
+#include "dependencies/interfaces/interfaces.hpp"
 
 // https://www.unknowncheats.me/forum/counterstrike-global-offensive/235892-bullet-tracer.html
 
@@ -13,7 +14,7 @@ void visuals::bullet_tracer(i_game_event* event) {
 	bool isLocalPlayer = false;
 	bool isEnemy = false;
 	bool isTeamMate = false;
-
+	
 
 	if (variables::misc_visuals::bulletracer_team_target[0] && entity == csgo::local_player)
 		isLocalPlayer = true;
@@ -23,9 +24,6 @@ void visuals::bullet_tracer(i_game_event* event) {
 		isTeamMate = true;
 	else
 		return;
-
-
-
 
 	vec3_t hit = { event->get_float("x"), event->get_float("y"), event->get_float("z") };
 	auto eyes = entity->get_eye_pos();
@@ -47,5 +45,5 @@ void visuals::bullet_tracer(i_game_event* event) {
 
 	//if (variables::misc_visuals::bulletracer_type == 0)
 		
-	interfaces::debug_overlay->add_box_overlay(hit, vec3_t(-2, -2, -2), vec3_t(2, 2, 2), vec3_t(0, 0, 0), vfuns::getcolorofimcolor(variables::colors::bulletBeamColor[0]), time);
+	interfaces::debug_overlay->add_box_overlay(hit, vec3_t(-2, -2, -2), vec3_t(2, 2, 2), vec3_t(0, 0, 0), color::white(255), time);
 }
