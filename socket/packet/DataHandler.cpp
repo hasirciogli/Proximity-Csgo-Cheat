@@ -37,6 +37,18 @@ void CDataHandler::Handle()
 			cdhf.ChatMessageSent(this->data);
 			break;
 
+		case Packets::NServerPackets::EFromServerToClient::CONFIG_CREATE_RESPONSE:
+			cdhf.ConfigCreate(this->data);
+			break;
+
+		case Packets::NServerPackets::EFromServerToClient::CONFIG_LOAD_RESPONSE:
+			cdhf.ConfigLoad(this->data);
+			break;
+
+		case Packets::NServerPackets::EFromServerToClient::CONFIG_REFRESH_RESPONSE:
+			cdhf.ConfigRefresh(this->data);
+			break;
+
 			default:
 				break;
 		}

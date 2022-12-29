@@ -5,6 +5,7 @@
 #include "./chatbox/ChatBox.h"
 
 #include "socket/msoket.h"
+#include "socket/packet/Packet.h"
 
 #include "core/features/features.hpp"
 #include "core/menu/menu.hpp"
@@ -17,7 +18,34 @@
 
 void setOurCustomImguiColorsAndEtc(LPDIRECT3DDEVICE9);
 
-
+//float alertboxX = 10.0f;
+//float alertboxY = 10.0f;
+//float alertboxWidth = 300.0f;
+//float alertboxHeight = 100.0f;
+//float lineLength = 300.0f;
+//float lineThickness = 2.0f;
+//float alpha = 255.0f;
+//
+//// Bu fonksiyon, alertbox'ý animasyonlu bir þekilde gösterir
+//void showAlertBox() {
+//	// Alertbox'ýn pozisyonunu ve özelliklerini güncelle
+//	alertboxX += (targetX - alertboxX) * 0.1f;
+//	alertboxY += (targetY - alertboxY) * 0.1f;
+//	lineLength -= 3.0f * Time.deltaTime;
+//	alpha -= Time.deltaTime * 255.0f;
+//
+//	// Alertbox'ý çiz
+//	ImGui.SetNextWindowPos(new Vector2(alertboxX, alertboxY));
+//	ImGui.SetNextWindowSize(new Vector2(alertboxWidth, alertboxHeight));
+//	ImGui.Begin("Alert Box", ref showAlertBox, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
+//
+//	// Ufak çizgi çiz
+//	ImGui.GetWindowDrawList().AddLine(new Vector2(lineLength, alertboxHeight - lineThickness), new Vector2(lineLength, alertboxHeight), ImGui.GetColorU32(new Vector4(1, 1, 1, alpha / 255.0f)), lineThickness);
+//
+//	// Alertbox'ýn içeriðini oluþtur
+//	ImGui.Text("This is an alert box!");
+//	ImGui.End();
+//}
 
 struct windowSize {
 	float width;
@@ -1081,16 +1109,15 @@ void renderMiscPage() {
 void renderConfigsPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
-	ImGui::BeginChild("#SettingsMenu", cMenuSize, true);
+	ImGui::BeginChild("#SettingsMenu", cMenuSize, false);
 	{
 		ImGui::BeginChild("#settings_state_left", ImVec2(cMenuSize.x, cMenuSize.y), false);
 		{
-
-			auto renderConfigItem = [&](int configID, ImVec2 menusize, config::c_config tCfg)
+			for (auto item : config::configsList)
 			{
-				std::string configName = tCfg.configName;
-				std::string dateText = tCfg.date;
-				std::string authorName = (std::string("Author: ") + std::string(tCfg.author));
+				std::string configName = item.configName;
+				std::string dateText = item.date;
+				std::string authorName = (std::string("By ") + std::string(item.author));
 
 				ImVec2 configNameSize = ImGui::CalcTextSize(configName.c_str());
 				ImVec2 dateTextSize = ImGui::CalcTextSize(dateText.c_str());
@@ -1098,47 +1125,60 @@ void renderConfigsPage() {
 
 				imspaceMacro(5, 5);
 
-				ImGui::BeginChild(std::string(std::string("#cfg_item") + std::to_string(configID)).c_str(), ImVec2(menusize.x - 10, 75), false);
+				ImGui::BeginChild(std::string(std::string("#cfg_item") + std::to_string(item.configId)).c_str(), ImVec2(cMenuSize.x - 10, 75), false);
 				{
-					ImGui::BeginChild(std::string(std::string("#cfg_item_text_side") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 60), false);
+					ImGui::BeginChild(std::string(std::string("#cfg_item_text_side") + std::to_string(item.configId)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 60), false);
 					{
-						ImGui::BeginChild(std::string(std::string("#cfg_item_text_inside") + std::to_string(configID)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20, 40), false);
+						ImGui::BeginChild(std::string(std::string("#cfg_item_text_inside") + std::to_string(item.configId)).c_str(), ImVec2(configNameSize.x + 20 + authorNameSize.x + 20 + 10, 40), false);
 						{
 							imspaceMacro(10, 60 / 2 - configNameSize.y / 2);
 							ImGui::Text(configName.c_str());
-							ImGui::SameLine();
-							ImGui::Text(authorName.c_str());
-							ImGui::SameLine();
 						}
 						ImGui::EndChild();
 
-						imspaceMacro(15, 0);
-						ImGui::Text(dateText.c_str());
+						imspaceMacro(10, 0);
+
+						ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+						{
+							ImGui::Text(authorName.c_str());
+
+							ImGui::SameLine();
+
+							imspaceMacro(1, 0);
+							ImGui::Text(" - ");
+
+							ImGui::SameLine();
+
+							imspaceMacro(1, 0);
+							ImGui::Text(dateText.c_str());
+						}
+						ImGui::PopFont();
 					}
 					ImGui::EndChild();
 
 					ImGui::SameLine();
 
-					ImVec2 rsSize = ImVec2((menusize.x - 10) - (configNameSize.x + 20 + authorNameSize.x + 20), 60);
+					ImVec2 rsSize = ImVec2((cMenuSize.x - 10) - (configNameSize.x + 20 + authorNameSize.x + 20), 60);
 
-					ImGui::BeginChild(std::string(std::string("#cfg-item-right-side") + std::to_string(configID)).c_str(), ImVec2(rsSize), false);
+					ImGui::BeginChild(std::string(std::string("#cfg-item-right-side") + std::to_string(item.configId)).c_str(), ImVec2(rsSize), false);
 					{
-						imspaceMacro(rsSize.x - 120 - 5, 75 / 2 - (30 / 2));
-						if (tCfg.isLoaded)
+						ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
 						{
-							if (ImGui::Button("Save Config", ImVec2(120, 30)))
+							imspaceMacro(rsSize.x - 146 - 5, 75 / 2 - (30 / 2));
+							if (ImGui::Button("Save", ImVec2(60, 30)))
 							{
-								config::saveConfig(tCfg);
+								config::saveConfig(item);
 							}
-						}
-						else
-						{
-							if (ImGui::Button("Load Config", ImVec2(120, 30)))
-							{
-								config::loadConfig(tCfg);
-							}
-						}
 
+							ImGui::SameLine();
+							imspaceMacro(10, 0);
+
+							if (ImGui::Button("Load", ImVec2(60, 30)))
+							{
+								config::loadConfigFromServer(item);
+							}
+						}
+						ImGui::PopFont();
 					}
 					ImGui::EndChild();
 					imspaceMacro(0, 14);
@@ -1147,11 +1187,6 @@ void renderConfigsPage() {
 
 				}
 				ImGui::EndChild();
-			};
-
-			for (auto config : config::configsList)
-			{
-				renderConfigItem(config.configId, cMenuSize, config);
 			}
 		}
 		ImGui::EndChild();
@@ -1255,7 +1290,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (true)
+	if (false)
 	{
 
 		if (savetime) {
@@ -1305,7 +1340,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		ImGui::SetNextWindowSize(ImVec2(xxx, yyy));
 		ImGui::SetNextWindowBgAlpha(0.f);
 		POINT mouse;
-		ImGui::Begin("##qeqweqwad4qw98e4qw651", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+		ImGui::Begin("##qeqweqwad4qw98e4qw651", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
 		{
 			RECT rc;
 			HWND mhwnd = FindWindowA(nullptr, "Counter-Strike: Global Offensive - Direct3D 9");
@@ -1508,10 +1543,41 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 			imspaceMacro(12, 0);
 			ImGui::BeginChild("#right-side", cMenuSize);
 			{
-
 				imguiStyles.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
 
 				ImGui::BeginChild("#state-upper", ImVec2(cMenuSize.x, 50), false); {
+
+
+					{
+						switch (variables::Menu_Settings::selected_page)
+						{
+							case 8:
+							{
+								ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+								{
+									imspaceMacro(5, 5);
+									if (ImGui::Button("Refresh Configs", ImVec2(100, 35)))
+									{
+										config::reInitOnlyList();
+									}
+
+									ImGui::SameLine();
+									imspaceMacro(10, 0);
+
+									if (ImGui::Button("Create Config", ImVec2(100, 35)))
+									{
+										config::createConfig();
+									}
+								}
+								ImGui::PopFont();
+							}
+							break;
+						}
+					}
+
+
+
+
 					ImVec2 nPos = {};
 					ImVec2 nPos2 = {};
 

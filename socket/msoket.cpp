@@ -15,7 +15,20 @@ int bebeka = 0;
 
 using nlohmann::json;
 
-int mSocket::socketThread(HMODULE hModule) 
+void goWork(char* data2, int len)
+{
+	std::string recvData = "";
+	std::copy(data2, data2 + len, std::back_inserter(recvData));
+
+	console::log(recvData.c_str());
+	console::log("\n");
+
+	CDataHandler cdh = CDataHandler();
+	cdh.data = recvData;
+	cdh.Handle();
+}
+
+int mSocket::socketThread(HMODULE hModule)
 {
 #ifdef _DEBUG
 	static const char* bErr = "";
@@ -48,34 +61,14 @@ int mSocket::socketThread(HMODULE hModule)
 				mSocket::cfg::iResult = recv(mSocket::cfg::ConnectSocket, mSocket::cfg::recvbuf, mSocket::cfg::recvbuflen, 0);
 				if (mSocket::cfg::iResult > 0)
 				{
-					std::string test = "";
-					for (size_t i = 0; i < mSocket::cfg::iResult; i++) 
-					{
-						test += mSocket::cfg::recvbuf[i];
-					}
+					//std::string recvData = "";
 
-					console::log("DR [");
-					console::log(std::to_string(mSocket::cfg::iResult).c_str());
-					console::log("] - ");
-					console::log(test.c_str());
-					console::log("\n\n");
+					//std::copy(mSocket::cfg::recvbuf, mSocket::cfg::recvbuf + mSocket::cfg::iResult, std::back_inserter(recvData));
 
-					/*test = mSocket::getEncrypt(test);
+					std::future<void> ret = std::async(std::launch::async, goWork, mSocket::cfg::recvbuf, mSocket::cfg::iResult);
 
-					console::log("DR2222 [");
-					console::log(std::to_string(mSocket::cfg::iResult).c_str());
-					console::log("] - ");
-					console::log(test.c_str());
-					console::log("\n\n");*/
-
-
-
-					CDataHandler cdh = CDataHandler();
-					cdh.data = test;
-					cdh.Handle();
-
-					test = "";
-					mSocket::cfg::recvbuf[0] = {};
+					//mSocket::cfg::recvbuf[0] = {};
+					//recvData = "";
 				}
 				else if (mSocket::cfg::iResult == 0)
 				{
@@ -85,7 +78,6 @@ int mSocket::socketThread(HMODULE hModule)
 #ifdef _DEBUG 
 					printf("Connection closed\n\n");
 #endif	
-					
 				}
 				else
 				{
@@ -272,10 +264,6 @@ bool mSocket::sendPacketToServer(const char* data, const char** iError, bool for
 {
 	//std::string needCryptData = std::string(data);
 	//needCryptData = mSocket::getEncrypt(needCryptData);
-#ifdef _DEBUG
-	console::log("try sent   | ");
-	console::log(data);
-#endif
 	 
 	if (!mSocket::cfg::socketIsConnected)
 	{

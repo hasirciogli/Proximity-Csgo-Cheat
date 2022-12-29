@@ -76,15 +76,11 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 	std::string username = faj["data"]["username"];
 	std::string subTill = faj["data"]["subs_till"];
 
-	std::cout << "My data: " << dataSTR << std::endl;
-
-	std::cout << "success: " << isSuccess << std::endl;
-	std::cout << "token: " << token << std::endl;
-
 	if (isSuccess)
 	{
 		if (token != "")
 		{
+			config::reInitOnlyList();
 			variables::NetworkUser::username = username;
 			mSocket::cfg::authed = true;
 			mSocket::cfg::grabbedToken = token;
@@ -194,3 +190,117 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 		return;
 	}
 }
+
+
+
+
+
+
+void CDataHandlerFuncs::ConfigCreate(std::string fullData)
+{
+	json faj = json();
+
+	try
+	{
+		faj = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
+		return;
+	}
+
+	config::c_config _config = config::c_config();
+
+	_config.configId = faj["data"]["config_id"];
+	_config.author = faj["data"]["config_author"];
+	_config.configName = faj["data"]["config_name"];
+	_config.date = faj["data"]["config_date"];
+
+	config::configsList.push_front(_config);
+}
+
+void CDataHandlerFuncs::ConfigRefresh(std::string fullData)
+{
+	json faj = json();
+
+	try
+	{
+		faj = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = "";
+		return;
+	}
+
+	config::c_config _config = config::c_config();
+
+	_config.configId = faj["data"]["config_id"];
+	_config.author = faj["data"]["config_author"];
+	_config.configName = faj["data"]["config_name"];
+	_config.date = faj["data"]["config_date"];
+
+	bool needPush = true;
+
+	for (auto& item : config::configsList)
+	{
+		if (item.configId == _config.configId)
+		{
+			needPush = false;
+			item = _config;
+		}
+
+		if (!needPush)
+			break;
+	}
+
+	if (needPush)
+	{
+		config::configsList.push_front(_config);
+	}
+}
+
+void CDataHandlerFuncs::ConfigLoad(std::string fullData)
+{
+	json faj = json();
+
+	try
+	{
+		faj = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		variables::NetworkUser::fuckThisCheat = true;
+		mSocket::cfg::authed = false;
+		mSocket::cfg::socketIsConnected = false;
+		mSocket::cfg::grabbedToken = ""; 
+		return;
+	}
+
+	config::c_config _config = config::c_config();
+
+	_config.data = faj["data"]["config_data"];
+	_config.configId = faj["data"]["config_id"];
+
+	loadConfig(_config);
+
+	for (auto item : config::configsList)
+	{
+		if (item.isLoaded)
+		{
+			item.isLoaded = false;
+		}
+
+		if (item.configId == _config.configId)
+		{
+			item.isLoaded = true;
+		}
+	}
+} 

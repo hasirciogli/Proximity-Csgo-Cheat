@@ -47,8 +47,13 @@ namespace config {
 	inline std::list<c_config> configsList;
 	inline std::list<c_config_item> configItems;
 
+	inline c_config* LoadedConfig;
+
 	void loadConfig(c_config config);
+	void loadConfigFromServer(c_config config);
 	void saveConfig(c_config config, bool silentSave = false);
 	void refreshConfigs();
+	void createConfig();
 	void init();
+	void reInitOnlyList();
 }
