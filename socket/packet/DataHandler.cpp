@@ -55,6 +55,8 @@ void CDataHandler::Handle()
 	}
 	catch (json::parse_error& ex)
 	{
-		printf("json parse error = %i\n\n", ex.byte);
+		console::log("json parse error =");
+		console::log(this->data.c_str());
+		console::log("\n");
 	}
 }

@@ -1,7 +1,7 @@
 #undef UTF8_WINAPI
 #define UTF8_WINAPI
 
-#include <steam/isteamfriends.h>	
+#include <steam/isteamfriends.h>
 
 #include "DataHandler.h"
 #include "Packet.h"

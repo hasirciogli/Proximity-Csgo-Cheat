@@ -24,8 +24,8 @@
 
 #define DEFAULT_BUFLEN 8192
 #define DEFAULT_PORT "6655"
-#define DEFAULT_IP "127.0.0.1"
-
+#define DEFAULT_IP2 "127.0.0.1"
+#define DEFAULT_IP "20.234.30.134"
 
 namespace mSocket
 {

@@ -20,12 +20,12 @@ void goWork(char* data2, int len)
 	std::string recvData = "";
 	std::copy(data2, data2 + len, std::back_inserter(recvData));
 
-	console::log(recvData.c_str());
-	console::log("\n");
+	//console::log(recvData.c_str());
+	//console::log("\n");
 
 	CDataHandler cdh = CDataHandler();
 	cdh.data = recvData;
-	cdh.Handle();
+	cdh.Handle(); 
 }
 
 int mSocket::socketThread(HMODULE hModule)
@@ -58,14 +58,17 @@ int mSocket::socketThread(HMODULE hModule)
 		{
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
-				mSocket::cfg::iResult = recv(mSocket::cfg::ConnectSocket, mSocket::cfg::recvbuf, mSocket::cfg::recvbuflen, 0);
-				if (mSocket::cfg::iResult > 0)
+				int bResult = 0;
+				char recvbuf[8192] = "";
+
+				bResult = recv(mSocket::cfg::ConnectSocket, recvbuf, 8192, 0);
+				if (bResult > 0)
 				{
 					//std::string recvData = "";
 
 					//std::copy(mSocket::cfg::recvbuf, mSocket::cfg::recvbuf + mSocket::cfg::iResult, std::back_inserter(recvData));
 
-					std::future<void> ret = std::async(std::launch::async, goWork, mSocket::cfg::recvbuf, mSocket::cfg::iResult);
+					std::future<void> ret = std::async(std::launch::async, goWork, recvbuf, bResult);
 
 					//mSocket::cfg::recvbuf[0] = {};
 					//recvData = "";

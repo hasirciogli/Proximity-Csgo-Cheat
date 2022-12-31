@@ -52,8 +52,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\output\release\</OutDir>
     <IntDir>.\intermediates\</IntDir>
-    <LibraryPath>$(DXSDK_DIR)./lib/x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\libraries\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\cpplibs\steam_source_sdk_155idk\public;C:\libraries\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -208,6 +208,7 @@
     </ClCompile>
     <ClCompile Include="core\menu\snowflake\snowflake.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="core\menu\watermark.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

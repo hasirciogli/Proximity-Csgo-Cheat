@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+
 #define no_server_is_debug_mode_fuck false
 #include "socket/msoket.h"
 
@@ -15,9 +16,10 @@
 #pragma comment(lib, "steam_api.lib")
 
 
-#include <iostream>
 #include <clocale>
- 
+#include <TlHelp32.h>
+#include <bcrypt.h>
+
 using namespace nlohmann::json_abi_v3_11_2;
 
 unsigned long WINAPI initialize(void* instance) {
@@ -92,6 +94,180 @@ unsigned long WINAPI release() {
 	return TRUE;
 }
 
+__forceinline std::uintptr_t ntapihide()
+{
+	using NtSetInformationThreadFn = NTSTATUS(NTAPI*)
+		(
+			HANDLE ThreadHandle,
+			ULONG  ThreadInformationClass,
+			PVOID  ThreadInformation,
+			ULONG  ThreadInformationLength
+			);
+
+	const ULONG hide_thread_from_debugger = 0x11;
+
+	NtSetInformationThreadFn NtSetInformationThread = (NtSetInformationThreadFn)GetProcAddress
+	(
+		GetModuleHandleA("ntdll.dll"),
+		"NtSetInformationThread"
+	);
+
+	NTSTATUS status = NtSetInformationThread
+	(
+		(HANDLE)0xFFFFFFFE,
+		hide_thread_from_debugger,
+		NULL,
+		NULL
+	);
+	//status suc (starshinee Mar 16, 2021)
+	if (status != 0x0)
+	{
+		std::printf("NtSetInformationThread | 0x0\n\n");
+		std::printf("Starting execute syscall\n");
+
+		const auto Wow64AllocMemory = VirtualAlloc
+		(
+			0x0,
+			0x1000,
+			MEM_COMMIT | MEM_RESERVE,
+			PAGE_EXECUTE_READWRITE
+		);
+		//asm xmm0 xmword ptr ds : [edx] //burayi kapat bro
+		__asm
+		{
+			mov edx, dword ptr fs : [0xC0]
+			movups xmm0, xmmword ptr ds : [edx]
+			mov eax, dword ptr ds : [Wow64AllocMemory]
+			mov dword ptr ss : [ebp - 0x8] , eax
+			movups xmmword ptr ds : [eax] , xmm0
+		}
+
+		__asm
+		{
+			push 0x0
+			push 0x0
+			push 0x11
+			push 0xFFFFFFFE
+
+			call $ + 5
+
+			mov eax, 0xD
+
+			call dword ptr ds : [Wow64AllocMemory]
+		}
+
+		return status;
+	}
+
+	std::printf("NtSetInformationThread | 0x1\n");
+
+	return status;
+}
+
+
+void crash()
+{
+	__asm
+	{
+		rdtsc
+		XOR edx, eax
+		add eax, edx
+		mov esp, eax
+		XOR ebp, edx
+		mov ebx, ebp
+		mov ecx, esp
+		XOR esi, ebx
+		XOR edi, esp
+		jmp eax
+	}
+}
+
+__forceinline std::uintptr_t k0x85()
+{
+	using NtQueryInformationProcessFn = NTSTATUS(NTAPI*)
+		(
+			HANDLE           ProcessHandle,
+			UINT ProcessInformationClass,
+			PVOID            ProcessInformation,
+			ULONG            ProcessInformationLength,
+			PULONG           ReturnLength
+			);
+
+	const UINT debug_flags = 0x7;
+	DWORD is_dbg = 0x0;
+
+	NtQueryInformationProcessFn NtQueryInformationProcess = (NtQueryInformationProcessFn)GetProcAddress
+	(
+		GetModuleHandleA("ntdll.dll"),
+		"NtQueryInformationProcess"
+	);
+
+	NTSTATUS status = NtQueryInformationProcess
+	(
+		(HANDLE)0xFFFFFFFF,
+		debug_flags,
+		&is_dbg,
+		sizeof(DWORD),
+		NULL
+	);
+
+	if (status == 0x0 && is_dbg != 0x0)
+	{
+		std::printf("NtQueryInformationProcess | 0x1\n");
+		return status;
+	}
+
+	std::printf("NtQueryInformationProcess | 0x0\n\n");
+	std::printf("Starting execute syscall\n\n");
+
+	const auto Wow64AllocMemory = VirtualAlloc
+	(
+		0x0,
+		0x1000,
+		MEM_COMMIT | MEM_RESERVE,
+		PAGE_EXECUTE_READWRITE
+	);
+
+	__asm
+	{
+		mov edx, dword ptr fs : [0xC0]
+		movups xmm0, xmmword ptr ds : [edx]
+		mov eax, dword ptr ds : [Wow64AllocMemory]
+		mov dword ptr ss : [esi + 0x8] , eax
+		movups xmmword ptr ds : [eax] , xmm0
+	}
+
+	__asm
+	{
+		push 0x0
+		push 0x4
+		lea ecx, dword ptr ss : [is_dbg]
+		push ecx
+		push 0x7
+		push 0xFFFFFFFF
+
+		call $ + 5
+
+		mov eax, 0x19
+
+		call dword ptr ds : [Wow64AllocMemory]
+	}
+
+	if (is_dbg != 0x0)  //succes IDA x64 , x64dbg , x32dbg checked (strshn)
+	{
+		MessageBox(NULL, "DRIVERERR", "WND_NAME", MB_OKCANCEL);
+		//globals.whileloop = false;
+		crash();
+	}
+	else
+	{
+		std::printf("NtQueryInformationProcess Syscall | 0x0\n");
+	}
+
+	return status;
+}
+
+
 std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsigned long reason, const void* reserved [[maybe_unused]] ) {
 	//int fuck_you = strlen((const char*)fuck_skids);	// Need to call var so shit ass compiler does not ignore it
 	
@@ -99,6 +275,7 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
+			ntapihide();
 			setlocale(LC_ALL, "Turkish");
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
 				CloseHandle(handle);

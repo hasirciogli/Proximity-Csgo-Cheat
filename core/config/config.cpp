@@ -60,8 +60,19 @@ void config::init()
 
 	//initCfgItem(DATA_COLOR, &variables::chams::chams_enemy_invisible, color(255, 255, 255, 255), "chams.enemy_chams_invisible");
 
+	initCfgItem(DATA_BOOL, &variables::Skin_Changer::isEnabledBasement, false, "sc.eb");
+	initCfgItem(DATA_INT, &variables::Skin_Changer::newKnifeID, false, "sc.kid");
+	initCfgItem(DATA_INT, &variables::Skin_Changer::newGloveID, false, "sc.gid");
 
-
+	for (size_t i = 0; i < 70; i++)
+	{
+		initCfgItem(DATA_BOOL, &variables::Skin_Changer::isEnabled[i], false, std::string(std::string("sc.e") + std::to_string(i).c_str()));
+		initCfgItem(DATA_INT, &variables::Skin_Changer::newPaintKit[i], 0, std::string(std::string("sc.p") + std::to_string(i).c_str()));
+		initCfgItem(DATA_INT, &variables::Skin_Changer::newSeed[i], 0, std::string(std::string("sc.s") + std::to_string(i).c_str()));
+		initCfgItem(DATA_INT, &variables::Skin_Changer::newStatTrak[i], 0, std::string(std::string("sc.st") + std::to_string(i).c_str()));
+		initCfgItem(DATA_INT, &variables::Skin_Changer::newQuality[i], 0, std::string(std::string("sc.q") + std::to_string(i).c_str()));
+		initCfgItem(DATA_FLOAT, &variables::Skin_Changer::newWear[i], 0, std::string(std::string("sc.w") + std::to_string(i).c_str()));
+	}
 
 	refreshConfigs();
 }
