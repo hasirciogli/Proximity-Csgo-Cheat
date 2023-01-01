@@ -89,7 +89,8 @@ void visuals::draw_chams(i_mat_render_context* ctx, const draw_model_state_t& st
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
 
 				if (!variables::chams::enemy_only_visible) {
-					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::chams::chams_enemy_invisible);	// So it uses the same alpha as normal col
+					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::chams::chams_enemy_invisible);
+					// So it uses the same alpha as normal col
 					override_material(true, variables::chams::enemy_wireframe, invisible_chams_col, player_material);						// Not visible - Enemy
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);								// Call original to draw the ignorez one
 				}

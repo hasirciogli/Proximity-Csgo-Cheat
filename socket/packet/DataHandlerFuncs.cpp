@@ -20,7 +20,26 @@
 using namespace nlohmann;
 
 
-void CDataHandlerFuncs::NeedUserAuth(std::string fullData) 
+void CDataHandlerFuncs::FunOk(std::string fullData)
+{
+	json j = json();
+
+	try
+	{
+		j = json::parse(fullData);
+	}
+	catch (json::parse_error& err)
+	{
+		mSocket::cleanup(true);
+		return;
+	}
+
+	if (mSocket::cfg::waiting_response)
+		mSocket::cfg::waiting_response = false;
+}
+
+
+void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 {
 	json j = json();
 
@@ -42,7 +61,7 @@ void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 		mSocket::cleanup(true);
 		return;
 	}
-	
+
 	j["who_i_am"] = "cheat";
 	j["packet_id"] = Packets::NClientPackets::USER_AUTH;
 	j["data"]["hwid"] = resstr; // Your hwid data
@@ -303,4 +322,6 @@ void CDataHandlerFuncs::ConfigLoad(std::string fullData)
 			item.isLoaded = true;
 		}
 	}
+
+	interfaces::clientstate->full_update();
 } 

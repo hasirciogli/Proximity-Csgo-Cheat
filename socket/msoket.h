@@ -20,12 +20,9 @@
 #pragma comment (lib, "AdvApi32.lib")
 
 
-
-
-#define DEFAULT_BUFLEN 8192
 #define DEFAULT_PORT "6655"
-#define DEFAULT_IP2 "127.0.0.1"
-#define DEFAULT_IP "20.234.30.134"
+#define DEFAULT_IP "127.0.0.1"
+#define DEFAULT_IP2 "20.234.30.134"
 
 namespace mSocket
 {
@@ -33,9 +30,12 @@ namespace mSocket
 	namespace cfg
 	{
 		inline bool socketIsConnected = false;
+		inline bool socketNeedProxiAuth = true;
 		inline bool closingTO = false;
 		inline bool socketReconnect = true;
 		inline bool socketInited = false;
+
+		inline bool waiting_response = false;
 
 
 		inline bool authed = false;

@@ -13,7 +13,7 @@ namespace vfuns
 
 	inline color getcolorofimcolorF(float* f)
 	{
-		return color(f[0] * 255, f[1] * 255, f[2] * 255, f[3] * 255);
+		return color((int)(f[0] * 255), (int)(f[1] * 255), (int)(f[2] * 255), (int)(f[3] * 255));
 	}
 
 	inline std::string allowedCharsCheck(std::string dest, int len)
@@ -581,9 +581,10 @@ namespace variables {
 	};
 
 	namespace Esp_Settings {
-		inline int espTeamState = 0;
 		inline int selected_team = 0;  
 		inline bool test = false;
+
+		// 0 enemy, 1 team, 2 local
 
 		inline bool enabledBase = false;
 		inline bool enabledNameesp[] = { false, false, false };
@@ -592,6 +593,15 @@ namespace variables {
 		inline bool enabledLine[] = { false, false, false };
 		inline bool enabledSkeleton[] = { false, false, false };
 		inline bool enabledGethers[] = { false, false, false };
+
+		// 0 enemy, 1 team, 2 local
+
+		inline float colors_box[3][4] = { {} };
+		inline float colors_name[3][4] = { {} };
+		inline float colors_health[3][4] = { {} };
+		inline float colors_line[3][4] = { {} };
+		inline float colors_skeleton[3][4] = { {} };
+		inline float colors_info[3][4] = { {} };
 	};
 
 
@@ -603,8 +613,6 @@ namespace variables {
 		inline int skinlistSelectedWeaponID = -1;
 
 		inline bool isEnabled[70];
-		inline int newKnifeID = 0;
-		inline int newGloveID = 0;
 
 		inline int newPaintKit[70];
 		inline int newSeed[70];
@@ -697,6 +705,7 @@ namespace variables {
 		};
 
 		inline int selectedKnifeNameID = 0;
+		inline int selectedGloveNameID = 0;
 
 		inline int getKnifeNewID()
 		{
@@ -797,7 +806,7 @@ namespace variables {
 				rbeka.isKnife = bBar == 0 ? true : false;
 				rbeka.isGlove = bBar == 1 ? true : false;
 				rbeka.newKnifeID = bBar == 0 ? getKnifeNewID() : 0;
-				rbeka.newGloveID = variables::Skin_Changer::newGloveID;
+				rbeka.newGloveID = variables::Skin_Changer::selectedGloveNameID; // bu kýsým eskiden newGloveID id belki hatýrlarsýn cfg yapýyordun...
 				rbeka.PaintKit = variables::Skin_Changer::newPaintKit[bBar];
 				rbeka.Seed = variables::Skin_Changer::newSeed[bBar];	
 				rbeka.StatTrack = variables::Skin_Changer::newStatTrak[bBar];

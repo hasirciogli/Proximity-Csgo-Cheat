@@ -1,4 +1,5 @@
 #include "socket/msoket.h"
+#include <socket/procr/ProCr.h>
 #include "socket/packet/Packet.h"
 #include "core/menu/variables.hpp"
 
@@ -125,34 +126,35 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 			SameLine();
 			CB_imspaceMacro(10, 0);
 
-			if (Button("Send", ImVec2(100, 40)))
+			if (!mSocket::cfg::waiting_response)
 			{
-				string tMessage = DDKmessage;
-
-				json jdATAA;
-
-				jdATAA.clear();
-				 
-				jdATAA["who_i_am"] = "cheat";
-				jdATAA["packet_id"] = (int)Packets::NClientPackets::CHAT_MESSAGE_SENT;
-				jdATAA["data"]["message_content"]		= tMessage;
-
-				string sendLon = jdATAA.dump();
-
-				const char* eData = ""; 
-
-				if (mSocket::sendPacketToServer(sendLon.c_str(), &eData))
+				if (Button("Send", ImVec2(100, 40)))
 				{
-					printf("\n\npacket Sent -> %s\n\n", sendLon.c_str());
-				} 
-				else
-				{
-					printf("\n\nsendPacketError -> %s\n\n", eData);
+					string tMessage = DDKmessage;
+
+					json jdATAA;
+
+					jdATAA.clear();
+
+					jdATAA["who_i_am"] = "cheat";
+					jdATAA["packet_id"] = (int)Packets::NClientPackets::CHAT_MESSAGE_SENT;
+					jdATAA["data"]["message_content"] = tMessage;
+
+					string sendLon = jdATAA.dump();
+
+					const char* eData = "";
+
+					if (mSocket::sendPacketToServer(sendLon.c_str(), &eData))
+					{
+						printf("\n\npacket Sent -> %s\n\n", sendLon.c_str());
+					}
+					else
+					{
+						printf("\n\nsendPacketError -> %s\n\n", eData);
+					}
+
+					DDKmessage[0] = {};
 				}
-
-				
-
-				DDKmessage[0] = {};
 			}
 		}
 		ImGui::EndChild();

@@ -441,8 +441,6 @@ void customComboBox(int& selectedItemID, std::vector<const char*>& lList) {
 	imguiStyles.FramePadding = ImVec2(1.2f, 1.2f);
 }
 
-
-
 void renderAimbotPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 
@@ -557,15 +555,15 @@ void renderAntiAimPage() {
 	{
 		ImGui::BeginChild("#state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			/*imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled", &variables::Aimbot_Settings::enabled);
+			ImGui::CheckboxTypeB("Enabled", &variables::Aimbot_Settings::enabled);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Team Check", &variables::Aimbot_Settings::teamCheck);
+			ImGui::CheckboxTypeB("Team Check", &variables::Aimbot_Settings::teamCheck);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Fire", &variables::Aimbot_Settings::autofire);
+			ImGui::CheckboxTypeB("Auto Fire", &variables::Aimbot_Settings::autofire);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
+			ImGui::CheckboxTypeB("Auto Revolver", &variables::Aimbot_Settings::auto_revolver);
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Auto Wall", &variables::Aimbot_Settings::auto_wall);
+			ImGui::CheckboxTypeB("Auto Wall", &variables::Aimbot_Settings::auto_wall);
 			imspaceMacro(10, 10);
 			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Min Damage").x + 30));
 			ImGui::SliderFloat("Min Damage", &variables::Aimbot_Settings::min_damage, 0, 120.f, "%.0f");
@@ -604,19 +602,21 @@ void renderEspPage() {
 
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled Base", &variables::Esp_Settings::enabledBase);
+			ImGui::CheckboxTypeB("Enabled Base", &variables::Esp_Settings::enabledBase);
 
 
 			imspaceMacro(10, 20);
-			if (ImGui::Button("Local", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+			if (ImGui::Button("Enemy", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 0;
+
 			ImGui::SameLine();
+
 			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
 
 			if (variables::Esp_Settings::selected_team == 1)
 				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
 			imspaceMacro(10, 0);
-			if (ImGui::Button("Enemy", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+			if (ImGui::Button("Team", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 1;
 			ImGui::SameLine();
 			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
@@ -625,27 +625,27 @@ void renderEspPage() {
 				imguiStyles2.Colors[ImGuiCol_Button] = ImColor(35, 90, 30);
 
 			imspaceMacro(10, 0);
-			if (ImGui::Button("Team", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
+			if (ImGui::Button("Local", ImVec2((cMenuSize.x / 2) / 3 - 13.3, 30)))
 				variables::Esp_Settings::selected_team = 2;
 			imguiStyles2.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Name", &variables::Esp_Settings::enabledNameesp[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Name", &variables::Esp_Settings::enabledNameesp[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Health", &variables::Esp_Settings::enabledHealthesp[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Health", &variables::Esp_Settings::enabledHealthesp[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Box", &variables::Esp_Settings::enabledBox[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Box", &variables::Esp_Settings::enabledBox[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Line", &variables::Esp_Settings::enabledLine[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Line", &variables::Esp_Settings::enabledLine[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Skeleton", &variables::Esp_Settings::enabledSkeleton[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Skeleton", &variables::Esp_Settings::enabledSkeleton[variables::Esp_Settings::selected_team]);
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Other Info", &variables::Esp_Settings::enabledGethers[variables::Esp_Settings::selected_team]);
+			ImGui::CheckboxTypeB("Other Info", &variables::Esp_Settings::enabledGethers[variables::Esp_Settings::selected_team]);
 
 
 
@@ -661,7 +661,52 @@ void renderEspPage() {
 		ImGui::SameLine();
 
 		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			{
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Box Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_box_color", variables::Esp_Settings::colors_box[0]);
 
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Name Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_name_color", variables::Esp_Settings::colors_name[0]);
+
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Line Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_line_color", variables::Esp_Settings::colors_line[0]);
+
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Skeleton Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_skeleton_color", variables::Esp_Settings::colors_skeleton[0]);
+
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Health Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_health_color", variables::Esp_Settings::colors_health[0]);
+
+				imspaceMacro(10, 10);
+				ImGui::Text("Enemy Info Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##enemy_info_color", variables::Esp_Settings::colors_info[0]);
+			}
+
+			imspaceMacro(10, 15);
+			ImGui::Separator();
+
+			{
+				imspaceMacro(10, 15);
+				ImGui::Text("Team Box Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##team_box_color", variables::Esp_Settings::colors_box[1]);
+
+				imspaceMacro(10, 10);
+				ImGui::Text("Team Line Color");
+				imspaceMacro(10, 2);
+				ImGui::ColorEdit4("##team_line_color", variables::Esp_Settings::colors_line[1]);
+			}
 		}
 		ImGui::EndChild();
 	}
@@ -997,13 +1042,13 @@ void renderSkinsPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 
 
-	ImGui::BeginChild("#EspMenu", cMenuSize, false);
+	ImGui::BeginChild("#SkinsMenu", cMenuSize, false);
 	{
-		ImGui::BeginChild("#esp-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
+		ImGui::BeginChild("#skins-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
 		{
 
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Enabled", &variables::Skin_Changer::isEnabledBasement);
+			ImGui::CheckboxTypeB("Enabled", &variables::Skin_Changer::isEnabledBasement);
 
 			int TsexVal = variables::Skin_Changer::skinlistSelectedWeaponID;
 			imspaceMacro(10, 10);
@@ -1024,12 +1069,12 @@ void renderSkinsPage() {
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
+		ImGui::BeginChild("#skins-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false);
 		{
 			if (variables::Skin_Changer::skinlistSelectedWeaponID != -1)
 			{
 				imspaceMacro(10, 10);
-				ImGui::Checkbox("Enabled", &variables::Skin_Changer::isEnabled[variables::Skin_Changer::skinlistSelectedWeaponID]);
+				ImGui::CheckboxTypeB("Enabled", &variables::Skin_Changer::isEnabled[variables::Skin_Changer::skinlistSelectedWeaponID]);
 
 				if (variables::Skin_Changer::skinlistSelectedWeaponID == 0)
 				{
@@ -1042,12 +1087,15 @@ void renderSkinsPage() {
 				}
 				else if (variables::Skin_Changer::skinlistSelectedWeaponID == 1)
 				{
-					imspaceMacro(10, 10);
+					/*imspaceMacro(10, 10);
 					ImGui::PushItemWidth(cMenuSize.x / 2 - 20);
 					{
 						customComboBox(variables::Skin_Changer::selectedKnifeNameID, variables::Skin_Changer::knifeNames);
 					}
-					ImGui::PopItemWidth();
+					ImGui::PopItemWidth();*/
+
+					imspaceMacro(10, 10);
+					ImGui::Text("Wait next update :)");
 				}
 
 				imspaceMacro(10, 10);
@@ -1083,7 +1131,7 @@ void renderMiscPage() {
 		ImGui::BeginChild("#misc-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			
 			imspaceMacro(10, 10);
-			ImGui::Checkbox("Thirdperson", &variables::misc::thirdperson);
+			ImGui::CheckboxTypeB("Thirdperson", &variables::misc::thirdperson);
 
 
 
@@ -1098,8 +1146,8 @@ void renderMiscPage() {
 
 		ImGui::SameLine();
 
-		ImGui::BeginChild("#esp-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
-
+		ImGui::BeginChild("#misc-state-right", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+			
 		}
 		ImGui::EndChild();
 	}
@@ -1164,18 +1212,21 @@ void renderConfigsPage() {
 					{
 						ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
 						{
-							imspaceMacro(rsSize.x - 146 - 5, 75 / 2 - (30 / 2));
-							if (ImGui::Button("Save", ImVec2(60, 30)))
+							if (!mSocket::cfg::waiting_response)
 							{
-								config::saveConfig(item);
-							}
+								imspaceMacro(rsSize.x - 146 - 5, 75 / 2 - (30 / 2));
+								if (ImGui::Button("Save", ImVec2(60, 30)))
+								{
+									config::saveConfig(item);
+								}
 
-							ImGui::SameLine();
-							imspaceMacro(10, 0);
+								ImGui::SameLine();
+								imspaceMacro(10, 0);
 
-							if (ImGui::Button("Load", ImVec2(60, 30)))
-							{
-								config::loadConfigFromServer(item);
+								if (ImGui::Button("Load", ImVec2(60, 30)))
+								{
+									config::loadConfigFromServer(item);
+								}
 							}
 						}
 						ImGui::PopFont();
@@ -1258,7 +1309,7 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 	imguiStyles.WindowRounding = FirstRadius;
 }
 char dcbText[250] = {};
-#define SNOW_LIMIT 600
+#define SNOW_LIMIT 60
 std::vector<Snowflake::Snowflake> snow;
 
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
@@ -1555,18 +1606,21 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 							{
 								ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
 								{
-									imspaceMacro(5, 5);
-									if (ImGui::Button("Refresh Configs", ImVec2(100, 35)))
+									if (!mSocket::cfg::waiting_response)	
 									{
-										config::reInitOnlyList();
-									}
+										imspaceMacro(5, 5);
+										if (ImGui::Button("Refresh Configs", ImVec2(100, 35)))
+										{
+											config::reInitOnlyList();
+										}
 
-									ImGui::SameLine();
-									imspaceMacro(10, 0);
+										ImGui::SameLine();
+										imspaceMacro(10, 0);
 
-									if (ImGui::Button("Create Config", ImVec2(100, 35)))
-									{
-										config::createConfig();
+										if (ImGui::Button("Create Config", ImVec2(100, 35)))
+										{
+											config::createConfig();
+										}
 									}
 								}
 								ImGui::PopFont();

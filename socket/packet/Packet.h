@@ -6,6 +6,7 @@ namespace Packets
 	{
 		enum EFromServerToClient
 		{
+			FUN_OK,
 			USER_AUTH_RESPONSE,
 			NEED_USER_AUTH,
 			CONFIG_CREATE_RESPONSE,
@@ -21,6 +22,7 @@ namespace Packets
 	{
 		enum EFromClientToServer
 		{
+			FUN_OK,
 			USER_AUTH,
 			CONFIG_CREATE,
 			CONFIG_LOAD,

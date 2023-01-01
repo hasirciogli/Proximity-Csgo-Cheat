@@ -9,11 +9,8 @@ LRESULT __stdcall hooks::WndProc_hook::WndProc(HWND hwnd, UINT msg, WPARAM wpara
 
 	input::global_input.WndProcUpdate(msg, wparam, lparam);
 
-	if (variables::Menu_Settings::isOpened)
-	{
-		ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
-			return true;
-	}
+	if (variables::Menu_Settings::isOpened && ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+		return 1L;
 
 	return CallWindowProcW(original, hwnd, msg, wparam, lparam);
 }

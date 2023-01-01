@@ -14,6 +14,7 @@ public:
 class CDataHandlerFuncs
 {
 public:
+	void FunOk(std::string fullData);
 	void NeedUserAuth(std::string fullData);
 	void UserAuth(std::string fullData);
 	void ChatMessageSent(std::string fullData);

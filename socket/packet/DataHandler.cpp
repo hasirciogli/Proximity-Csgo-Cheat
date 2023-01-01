@@ -24,7 +24,9 @@ void CDataHandler::Handle()
 
 		switch ((Packets::NServerPackets::EFromServerToClient)packetID)
 		{
-			
+		case Packets::NServerPackets::EFromServerToClient::FUN_OK:
+			cdhf.FunOk(this->data);
+			break;
 		case Packets::NServerPackets::EFromServerToClient::NEED_USER_AUTH:
 			cdhf.NeedUserAuth(this->data);
 			break;

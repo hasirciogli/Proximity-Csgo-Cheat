@@ -49,7 +49,7 @@ namespace config {
 
 	inline c_config* LoadedConfig;
 
-	void loadConfig(c_config config);
+	void loadConfig(c_config config, bool blankLoad = false);
 	void loadConfigFromServer(c_config config);
 	void saveConfig(c_config config, bool silentSave = false);
 	void refreshConfigs();

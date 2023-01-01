@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+#include "procr/ProCr.h"
+
 #undef UTF8_WINAPI
 #define UTF8_WINAPI
 
@@ -15,13 +17,28 @@ int bebeka = 0;
 
 using nlohmann::json;
 
+ProCr pc;
+
 void goWork(char* data2, int len)
 {
+	
 	std::string recvData = "";
 	std::copy(data2, data2 + len, std::back_inserter(recvData));
+	
+	console::log(recvData.c_str());
+	console::log("\n");
+	if (mSocket::cfg::socketNeedProxiAuth)
+	{
+		if (pc.Validate(recvData))
+			mSocket::cfg::socketNeedProxiAuth = false;
+		else
+			mSocket::cleanup(true);
 
-	//console::log(recvData.c_str());
-	//console::log("\n");
+		return;
+	}
+
+	console::log(recvData.c_str());
+	console::log("\n");
 
 	CDataHandler cdh = CDataHandler();
 	cdh.data = recvData;
@@ -76,6 +93,7 @@ int mSocket::socketThread(HMODULE hModule)
 				else if (mSocket::cfg::iResult == 0)
 				{
 					mSocket::cfg::socketIsConnected = false;
+					mSocket::cfg::socketNeedProxiAuth = true;
 					mSocket::cfg::authed = false;
 					mSocket::cfg::grabbedToken = "";
 #ifdef _DEBUG 
@@ -88,6 +106,7 @@ int mSocket::socketThread(HMODULE hModule)
 					mSocket::cfg::grabbedToken = "";
 					mSocket::cfg::socketReconnect		= true;
 					mSocket::cfg::socketIsConnected		= false;
+					mSocket::cfg::socketNeedProxiAuth = true;
 #ifdef _DEBUG
 					printf("recv failed with error: %d\n\n", WSAGetLastError());
 #endif
@@ -98,6 +117,7 @@ int mSocket::socketThread(HMODULE hModule)
 			{
 				mSocket::cfg::authed = false;
 				mSocket::cfg::grabbedToken = "";
+				mSocket::cfg::socketNeedProxiAuth = true;
 #ifdef _DEBUG
 				variables::cheat::logboxLists.push_front("Socket connection failed | reconnecting...");
 #endif
@@ -106,6 +126,7 @@ int mSocket::socketThread(HMODULE hModule)
 				mSocket::cfg::iResult = getaddrinfo(DEFAULT_IP, DEFAULT_PORT, &mSocket::cfg::hints, &mSocket::cfg::result);
 				if (mSocket::cfg::iResult != 0) {
 #ifdef _DEBUG
+					mSocket::cfg::socketNeedProxiAuth = true;
 					printf("getaddrinfo failed with error: %d\n\n", mSocket::cfg::iResult);
 #endif
 					WSACleanup();
@@ -118,6 +139,7 @@ int mSocket::socketThread(HMODULE hModule)
 					mSocket::cfg::ptr->ai_protocol);
 
 				if (mSocket::cfg::ConnectSocket == INVALID_SOCKET) {
+					mSocket::cfg::socketNeedProxiAuth = true;
 #ifdef _DEBUG
 					printf("socket failed with error: %ld\n\n", WSAGetLastError());
 #endif
@@ -136,6 +158,7 @@ int mSocket::socketThread(HMODULE hModule)
 				freeaddrinfo(mSocket::cfg::result);
 
 				if (mSocket::cfg::ConnectSocket == INVALID_SOCKET) {
+					mSocket::cfg::socketNeedProxiAuth = true;
 #ifdef _DEBUG
 					printf("Unable to connect to server!\n\n");
 #endif
@@ -144,8 +167,20 @@ int mSocket::socketThread(HMODULE hModule)
 					continue;
 				}
 
-				variables::cheat::logboxLists.push_front("Connected!");
 				mSocket::cfg::socketIsConnected = true;
+				mSocket::cfg::socketNeedProxiAuth = true;
+				variables::cheat::logboxLists.push_front("Connected!");
+
+				if (cfg::socketNeedProxiAuth && mSocket::cfg::socketIsConnected)
+				{
+					const char* sError = "";
+					if (!sendPacketToServer(pc.GetData().c_str(), &sError))
+					{
+						closesocket(cfg::ConnectSocket);
+						cfg::socketIsConnected = false;
+						cleanup(false);
+					}
+				}
 			}
 		} 
 
@@ -287,7 +322,7 @@ bool mSocket::sendPacketToServer(const char* data, const char** iError, bool for
 		//WSACleanup();
 		return false;
 	}
-
+	mSocket::cfg::waiting_response = true;
 	return true;
 }
 
