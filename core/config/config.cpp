@@ -13,7 +13,7 @@
 
 #pragma comment(lib, "shell32.lib")
 
-void initCfgItem_base(config::config_data_types cType, void* keyplus, std::string way);
+void initCfgItem_base(config::config_data_types cType, void* keyplus, void* defvalX, std::string way);
 void initCfgItem(config::config_data_types cType, int* keyplus, int defValue, std::string way);
 void initCfgItem(config::config_data_types cType, bool* keyplus, bool defValue, std::string way);
 void initCfgItem(config::config_data_types cType, float* keyplus, float defValue, std::string way);
@@ -111,24 +111,23 @@ void config::init()
 	initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBase, false, std::string(std::string("esp.eba")));
 
 	
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i <= 3; i++)
 	{
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBox[i], false, std::string(std::string("esp.ebo") + std::to_string(i)));
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledGethers[i], false, std::string(std::string("esp.ei") + std::to_string(i)));
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledHealthesp[i], false, std::string(std::string("esp.ehe") + std::to_string(i)));
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledLine[i], false, std::string(std::string("esp.el") + std::to_string(i)));
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledNameesp[i], false, std::string(std::string("esp.ene") + std::to_string(i)));
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledSkeleton[i], false, std::string(std::string("esp.sk") + std::to_string(i)));
 
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBox[i], false, std::string(std::string("esp.ebo")));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledGethers[i], false, std::string(std::string("esp.ei")));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledHealthesp[i], false, std::string(std::string("esp.ehe")));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledLine[i], false, std::string(std::string("esp.el")));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledNameesp[i], false, std::string(std::string("esp.ene")));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledSkeleton[i], false, std::string(std::string("esp.sk")));
-
-		for (size_t i2 = 0; i2 < 2; i2++)
+		for (size_t i2 = 0; i2 <= 3; i2++)
 		{
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_box[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_health[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_info[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_line[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_name[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_skeleton[i][i2], i2 == 2 ? 255.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_box[i][i2],  0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_health[i][i2], 0.0f, std::string(std::string("esp.he_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));    // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_info[i][i2], 0.0f, std::string(std::string("esp.in_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_line[i][i2], 0.0f, std::string(std::string("esp.li_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_name[i][i2], 0.0f, std::string(std::string("esp.na_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_skeleton[i][i2], 0.0f, std::string(std::string("esp.ske_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
 		}
 	}
 
@@ -183,11 +182,19 @@ void config::loadConfig(c_config config, bool blankLoad)
 					{
 						*(int*)clitem.value = jObject[clitem.getOneWay()][clitem.getSecondWay()];
 					}
+					else
+					{
+						*(int*)clitem.value = (int)clitem.dValue;
+					}
 					break;
 				case DATA_BOOL:
 					if (!jObject[clitem.getOneWay()][clitem.getSecondWay()].is_null() && jObject[clitem.getOneWay()][clitem.getSecondWay()].is_boolean())
 					{
 						*(bool*)clitem.value = jObject[clitem.getOneWay()][clitem.getSecondWay()];
+					}
+					else
+					{
+						*(bool*)clitem.value = (bool)clitem.dValue;
 					}
 					break;
 				case DATA_FLOAT:
@@ -195,11 +202,19 @@ void config::loadConfig(c_config config, bool blankLoad)
 					{
 						*(float*)clitem.value = jObject[clitem.getOneWay()][clitem.getSecondWay()];
 					}
+					else
+					{
+						*(float*)clitem.value = (float&)clitem.dValue;
+					}
 					break;
 				case DATA_STRING:
 					if (!jObject[clitem.getOneWay()][clitem.getSecondWay()].is_null() && jObject[clitem.getOneWay()][clitem.getSecondWay()].is_string())
 					{
 						*(std::string*)clitem.value = std::string(jObject[clitem.getOneWay()][clitem.getSecondWay()]).c_str();
+					}
+					else
+					{
+						*(std::string*)clitem.value = (std::string&)clitem.dValue;
 					}
 					break;
 				case DATA_COLOR:
@@ -326,37 +341,38 @@ void config::refreshConfigs()
 	}
 }
 
-void initCfgItem_base(config::config_data_types cType, void* keyPlus, std::string way)
+void initCfgItem_base(config::config_data_types cType, void* keyPlus, void* defvalX, std::string way)
 {
 	config::c_config_item cItem;
 
 	cItem.cDataType = cType;
 	cItem.way = way;
 	cItem.value = keyPlus;
+	cItem.dValue = defvalX;
 
 	config::configItems.push_front(cItem);
 }
 
 void initCfgItem(config::config_data_types cType, int* keyplus, int defValue, std::string way)
 {
-	initCfgItem_base(cType, keyplus, way);
+	initCfgItem_base(cType, keyplus, &defValue, way);
 	*keyplus = defValue;
 }
 
 void initCfgItem(config::config_data_types cType, bool* keyplus, bool defValue, std::string way)
 {
-	initCfgItem_base(cType, keyplus, way);
+	initCfgItem_base(cType, keyplus, &defValue, way);
 	*keyplus = defValue;
 }
 
 void initCfgItem(config::config_data_types cType, float* keyplus, float defValue, std::string way)
 {
-	initCfgItem_base(cType, keyplus, way);
+	initCfgItem_base(cType, keyplus, &defValue, way);
 	*keyplus = defValue;
 }
 
 void initCfgItem(config::config_data_types cType, std::string* keyplus, std::string defValue, std::string way)
 {
-	initCfgItem_base(cType, keyplus, way);
+	initCfgItem_base(cType, keyplus, &defValue, way);
 	*keyplus = defValue;
 }

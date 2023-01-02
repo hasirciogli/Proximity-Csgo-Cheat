@@ -31,6 +31,7 @@ namespace config {
 
 		config_data_types cDataType;
 
+		void* dValue;
 		void* value;
 
 		std::string getOneWay()
