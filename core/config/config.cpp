@@ -39,6 +39,7 @@ void config::init()
 	initCfgItem(DATA_BOOL, &variables::Aimbot_Settings::auto_revolver, false, "aimbot.auto_revolver");
 	initCfgItem(DATA_BOOL, &variables::Aimbot_Settings::drawFov, false, "aimbot.drawFov");
 	initCfgItem(DATA_BOOL, &variables::Aimbot_Settings::priorize_lethal_targets, false, "aimbot.priorize_lethal_targets");
+	initCfgItem(DATA_BOOL, &variables::Aimbot_Settings::auto_wall, false, "aimbot.awal");
 
 	initCfgItem(DATA_INT, &variables::Aimbot_Settings::aimbotKey, -2, "aimbot.aimbotKey");
 
@@ -49,46 +50,8 @@ void config::init()
 
 
 
-	initCfgItem(DATA_BOOL, &variables::chams::general_chams_enabled, false, "chms.gce");
 
-
-	initCfgItem(DATA_BOOL, &variables::chams::enemy_chams, false, "chms.e");
-	initCfgItem(DATA_BOOL, &variables::chams::draw_chams_on_top, false, "chms.dcot");
-
-
-	initCfgItem(DATA_BOOL, &variables::chams::enemy_only_visible, false, "chms.e_c_ov");
-	initCfgItem(DATA_BOOL, &variables::chams::enemy_wireframe, false, "chms.e_c_wi");
-	initCfgItem(DATA_INT, &variables::chams::enemy_chams_material, 0, "chms.e_c_m");
-
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_visible[0], 0.0f, "chms.c_e_vr"); // Enemy chams visible color
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_visible[1], 0.0f, "chms.c_e_vg");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_visible[2], 0.0f, "chms.c_e_vb");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_visible[3], 255.0f, "chms.c_e_va");
-
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_invisible[0], 0.0f, "chms.c_e_ivr"); // Enemy chams invisible color
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_invisible[1], 0.0f, "chms.c_e_ivg");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_invisible[2], 0.0f, "chms.c_e_ivb");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_enemy_invisible[3], 255.0f, "chms.c_e_iva");
-
-
-
-
-
-	initCfgItem(DATA_BOOL, &variables::chams::team_chams, false, "chms.t");
-	initCfgItem(DATA_BOOL, &variables::chams::team_only_visible, false, "chms.t_c_ov");
-	initCfgItem(DATA_BOOL, &variables::chams::team_wireframe, false, "chms.t_c_wi");
-	initCfgItem(DATA_INT, &variables::chams::team_chams_material, 0, "chms.t_c_m");
-
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_visible[0], 0.0f, "chms.t_e_vr"); // Team chams visible color
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_visible[1], 0.0f, "chms.t_e_vg");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_visible[2], 0.0f, "chms.t_e_vb");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_visible[3], 255.0f, "chms.t_e_va");
-
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_invisible[0], 0.0f, "chms.t_e_ivr"); // Team chams invisible color
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_invisible[1], 0.0f, "chms.t_e_ivg");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_invisible[2], 0.0f, "chms.t_e_ivb");
-	initCfgItem(DATA_FLOAT, &variables::chams::chams_team_invisible[3], 255.0f, "chms.t_e_iva");
-
+	
 
 	initCfgItem(DATA_BOOL, &variables::Skin_Changer::isEnabledBasement, false, "sc.eb");
 	initCfgItem(DATA_BOOL, &variables::Skin_Changer::skinlistSelectedWeaponID, false, "sc.swid");
@@ -108,26 +71,94 @@ void config::init()
 
 
 
-	initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBase, false, std::string(std::string("esp.eba")));
+
+
+	{
+
+
+		initCfgItem(DATA_BOOL, &variables::chams::general_chams_enabled, false, "chms.general"); // Chams general enabled
+		initCfgItem(DATA_BOOL, &variables::chams::draw_chams_on_top, false, "chms.d_top"); // Chams general enabled
+
+
+		initCfgItem(DATA_BOOL, &variables::chams::enemy_chams, false, "chms.e_e"); // Enemy chams enabled
+		initCfgItem(DATA_BOOL, &variables::chams::enemy_only_visible, false, "chms.e_o_v"); // Enemy chams only visible
+		initCfgItem(DATA_BOOL, &variables::chams::enemy_wireframe, false, "chms.e_wi"); // Enemy chams wireframe
+		initCfgItem(DATA_INT, &variables::chams::enemy_chams_material, false, "chms.e_mat"); // Enemy chams material
+
+		initCfgItem(DATA_BOOL, &variables::chams::team_chams, false, "chms.t_e"); // Team chams enabled
+		initCfgItem(DATA_BOOL, &variables::chams::team_only_visible, false, "chms.t_o_v"); // Team chams only visible
+		initCfgItem(DATA_BOOL, &variables::chams::team_wireframe, false, "chms.t_wi"); // Team chams wireframe
+		initCfgItem(DATA_INT, &variables::chams::team_chams_material, false, "chms.t_mat"); // Team chams material
+
+		initCfgItem(DATA_BOOL, &variables::chams::local_chams, false, "chms.l_e"); // Local chams enabled
+		initCfgItem(DATA_BOOL, &variables::chams::local_only_visible, false, "chms.l_o_v"); // Local chams only visible
+		initCfgItem(DATA_BOOL, &variables::chams::local_wireframe, false, "chms.l_wi"); // Local chams wireframe
+		initCfgItem(DATA_INT, &variables::chams::local_chams_material, false, "chms.l_mat"); // Local chams material
+
+
+
+		initCfgItem(DATA_BOOL, &variables::chams::weapon_chams, false, "chms.w_e"); // Enemy chams enabled
+		initCfgItem(DATA_BOOL, &variables::chams::weapon_wireframe, false, "chms.w_o_v"); // Enemy chams only visible
+		initCfgItem(DATA_INT, &variables::chams::weapon_chams_material, false, "chms.w_mat"); // Enemy chams material
+
+		initCfgItem(DATA_BOOL, &variables::chams::arm_chams, false, "chms.w_e"); // Enemy chams enabled
+		initCfgItem(DATA_BOOL, &variables::chams::arm_wireframe, false, "chms.w_o_v"); // Enemy chams only visible
+		initCfgItem(DATA_INT, &variables::chams::arm_chams_material, false, "chms.w_mat"); // Enemy chams material
+
+		initCfgItem(DATA_BOOL, &variables::chams::sleeve_chams, false, "chms.w_e"); // Sleeve enabled
+		initCfgItem(DATA_BOOL, &variables::chams::sleeve_wireframe, false, "chms.w_o_v"); // Sleeve wireframe
+		initCfgItem(DATA_INT, &variables::chams::sleeve_chams_material, false, "chms.w_mat"); // Sleeve chams material
+
+
+		for (size_t i = 0; i <= 3; i++)
+		{
+			initCfgItem(DATA_FLOAT, &variables::chams::colors_weapon[i], i == 3 ? 1.0f : 0.0f, std::string("chms.wcol") + std::to_string(i)); // weapon color
+			initCfgItem(DATA_FLOAT, &variables::chams::colors_arm[i], i == 3 ? 1.0f : 0.0f, std::string("chms.acol") + std::to_string(i)); // arm color
+			initCfgItem(DATA_FLOAT, &variables::chams::colors_sleeve[i], i == 3 ? 1.0f : 0.0f, std::string("chms.scol") + std::to_string(i)); // sleeve color
+		}
+
+		
+
+		for (size_t i = 0; i < 3; i++) // team for 0 = enemy, 1 = team, 2 = local;
+		{
+			for (size_t i2 = 0; i2 < 2; i2++) // visible or not for | 0 = vicibe, 1 = invicible;
+			{
+				for (size_t i3 = 0; i3 <= 3; i3++) // visible or not color for | 0 = r,     1 = g,     2 = b,    3 = a;
+				{
+					initCfgItem(DATA_FLOAT, &variables::chams::player_colors_chams[i][i2][i3], i3 == 3 ? 1.0f : 0.0f, std::string(std::string("chms.col_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str() + std::string("_") + std::to_string(i3).c_str()));      // chams colors
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+	{ // ALL ESP SETTINGS DEFINED HERE
+		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBase, false, std::string(std::string("esp.eba")));
 
 	
-	for (size_t i = 0; i <= 3; i++)
-	{
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBox[i], false, std::string(std::string("esp.ebo") + std::to_string(i)));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledGethers[i], false, std::string(std::string("esp.ei") + std::to_string(i)));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledHealthesp[i], false, std::string(std::string("esp.ehe") + std::to_string(i)));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledLine[i], false, std::string(std::string("esp.el") + std::to_string(i)));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledNameesp[i], false, std::string(std::string("esp.ene") + std::to_string(i)));
-		initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledSkeleton[i], false, std::string(std::string("esp.sk") + std::to_string(i)));
-
-		for (size_t i2 = 0; i2 <= 3; i2++)
+		for (size_t i = 0; i < 3; i++)
 		{
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_box[i][i2],  0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_health[i][i2], 0.0f, std::string(std::string("esp.he_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));    // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_info[i][i2], 0.0f, std::string(std::string("esp.in_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_line[i][i2], 0.0f, std::string(std::string("esp.li_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_name[i][i2], 0.0f, std::string(std::string("esp.na_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
-			initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_skeleton[i][i2], 0.0f, std::string(std::string("esp.ske_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledBox[i], false, std::string(std::string("esp.ebo") + std::to_string(i)));
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledGethers[i], false, std::string(std::string("esp.ei") + std::to_string(i)));
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledHealthesp[i], false, std::string(std::string("esp.ehe") + std::to_string(i)));
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledLine[i], false, std::string(std::string("esp.el") + std::to_string(i)));
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledNameesp[i], false, std::string(std::string("esp.ene") + std::to_string(i)));
+			initCfgItem(DATA_BOOL, &variables::Esp_Settings::enabledSkeleton[i], false, std::string(std::string("esp.sk") + std::to_string(i)));
+
+			for (size_t i2 = 0; i2 <= 3; i2++)
+			{
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_box[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.bx_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_health[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.he_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));    // esp box colors
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_info[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.in_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_line[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.li_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_name[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.na_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str()));      // esp box colors
+				initCfgItem(DATA_FLOAT, &variables::Esp_Settings::colors_skeleton[i][i2], i2 == 3 ? 1.0f : 0.0f, std::string(std::string("esp.ske_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str())); // esp box colors
+			}
 		}
 	}
 
@@ -184,7 +215,7 @@ void config::loadConfig(c_config config, bool blankLoad)
 					}
 					else
 					{
-						*(int*)clitem.value = (int)clitem.dValue;
+						*(int*)clitem.value = *(int*)clitem.dValue;
 					}
 					break;
 				case DATA_BOOL:
@@ -194,7 +225,7 @@ void config::loadConfig(c_config config, bool blankLoad)
 					}
 					else
 					{
-						*(bool*)clitem.value = (bool)clitem.dValue;
+						*(bool*)clitem.value = *(bool*)clitem.dValue;
 					}
 					break;
 				case DATA_FLOAT:
@@ -204,7 +235,7 @@ void config::loadConfig(c_config config, bool blankLoad)
 					}
 					else
 					{
-						*(float*)clitem.value = (float&)clitem.dValue;
+						*(float*)clitem.value = *(float*)clitem.dValue;
 					}
 					break;
 				case DATA_STRING:
@@ -214,7 +245,7 @@ void config::loadConfig(c_config config, bool blankLoad)
 					}
 					else
 					{
-						*(std::string*)clitem.value = (std::string&)clitem.dValue;
+						*(std::string*)clitem.value = *(std::string*)clitem.dValue;
 					}
 					break;
 				case DATA_COLOR:

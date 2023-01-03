@@ -215,15 +215,15 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 
 void StopMovement(c_usercmd& cmd)
 {
-	if (cmd.sidemove > 20.f)
-		cmd.sidemove = 56.f;
-	if (cmd.sidemove < -56.f)
-		cmd.sidemove = -56.f;
+	if (cmd.sidemove > 38.f)
+		cmd.sidemove = 38.f;
+	if (cmd.sidemove < -38.f)
+		cmd.sidemove = -38.f;
 
-	if (cmd.forwardmove > 56.f)
-		cmd.forwardmove = 56.f;
-	if (cmd.forwardmove < -56.f)
-		cmd.forwardmove = -56.f;
+	if (cmd.forwardmove > 38.f)
+		cmd.forwardmove = 38.f;
+	if (cmd.forwardmove < -38.f)
+		cmd.forwardmove = -38.f;
 }
 
 

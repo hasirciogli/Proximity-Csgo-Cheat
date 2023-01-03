@@ -290,6 +290,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bytes\LeftBarIcons.h" />
     <ClInclude Include="core\config\config.hpp" />
     <ClInclude Include="core\features\aim\autowall.hpp" />
     <ClInclude Include="core\features\features.hpp" />

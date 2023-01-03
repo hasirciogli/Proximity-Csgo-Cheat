@@ -4,6 +4,22 @@
 #include "source-sdk/misc/color.hpp"
 #include <shellapi.h>
 
+namespace ens
+{
+	enum TEAM
+	{
+		ENEMY = 0,
+		TEAM,
+		LOCAL,
+	};
+
+	enum VICIBILITY
+	{
+		VICIBLE,
+		INVICIBLE,
+	};
+}
+
 namespace vfuns
 {
 	inline color getcolorofimcolor(ImColor item)
@@ -265,6 +281,14 @@ namespace variables {
 		inline int local_chams_material = 0;
 
 
+
+
+
+
+
+
+
+
 		inline bool sleeve_chams = false;
 		inline bool sleeve_wireframe = false;
 		inline int sleeve_chams_material = 0;
@@ -280,21 +304,14 @@ namespace variables {
 		inline int weapon_chams_material = 0;
 
 
-		inline float chams_enemy_visible[4] = {};
-		inline float chams_enemy_invisible[4] = {};
+		inline float player_colors_chams[3][2][4] = { {{}} };
 
 
-		inline float chams_team_visible[4] = {};
-		inline float chams_team_invisible[4] = {};
-
-		inline float chams_local_visible[4] = {};
-		inline float chams_local_invisible[4] = {};
+		inline float colors_weapon[4] = { };
+		inline float colors_arm[4] = { };
+		inline float colors_sleeve[4] = { };
 
 
-
-		inline float chams_weapon_visible[4] = {};
-		inline float chams_arm_visible[4] = {};
-		inline float chams_sleeve_visible[4] = {};
 
 		// Backtrack
 		inline bool backtrack_chams = false;
@@ -435,22 +452,6 @@ namespace variables {
 		inline ImColor enemy_glow_c = ImColor(250, 250, 250, 250);
 		inline ImColor entity_glow_c = ImColor(250, 250, 250, 250);
 
-		// Chams
-		inline ImColor chams_localplayer = ImColor(250, 250, 250, 250);
-		inline ImColor chams_vis_enemy_c = ImColor(250, 250, 250, 250);
-		inline ImColor chams_inv_enemy_c = ImColor(250, 250, 250, 250);
-		inline ImColor chams_vis_friend_c = ImColor(250, 250, 250, 250);
-		inline ImColor chams_inv_friend_c = ImColor(250, 250, 250, 250);
-
-		inline ImColor chams_weapon_c = ImColor(250, 250, 250, 250);
-		inline ImColor chams_arms_c = ImColor(250, 250, 250, 250);
-		inline ImColor chams_sleeve_c = ImColor(250, 250, 250, 250);
-
-		inline ImColor bt_chams_enemy = ImColor(250, 250, 250, 250);
-		inline ImColor bt_chams_friend = ImColor(250, 250, 250, 250);
-		inline ImColor bt_chams_enemy_fade = ImColor(250, 250, 250, 250);
-		inline ImColor bt_chams_friend_fade = ImColor(250, 250, 250, 250);
-
 		// Misc
 		inline ImColor crosshair_c = ImColor(250, 250, 250, 250);
 		inline ImColor recoil_crosshair_c = ImColor(250, 250, 250, 250);
@@ -495,8 +496,36 @@ namespace variables {
 		inline int selected_page = 0;
 
 		inline ImFont* fonts_gubi_14_font;
+		inline ImFont* fonts_gubi_16_font;
+		inline ImFont* fonts_gubi_18_font;
+		inline ImFont* fonts_gubi_20_font;
 		inline ImFont* fonts_GUIBIGFONT;
 		inline ImFont* fonts_GUIBIGFONT2;
+
+		inline ImFont* fonts_icons_14;
+		inline ImFont* fonts_icons_16;
+		inline ImFont* fonts_icons_18;
+		inline ImFont* fonts_icons_20;
+		inline ImFont* fonts_icons_22;
+		inline ImFont* fonts_icons_24;
+		inline ImFont* fonts_icons_26;
+
+		inline LPDIRECT3DTEXTURE9 ragebotImage = nullptr;
+		inline LPDIRECT3DTEXTURE9 antiaimImage = nullptr;
+
+		inline LPDIRECT3DTEXTURE9 espImage = nullptr;
+		inline LPDIRECT3DTEXTURE9 chamsImage = nullptr;
+		inline LPDIRECT3DTEXTURE9 worldImage = nullptr;
+
+		inline LPDIRECT3DTEXTURE9 miscImage = nullptr;
+		inline LPDIRECT3DTEXTURE9 skinsImage = nullptr;
+
+		inline LPDIRECT3DTEXTURE9 scriptsImage = nullptr;
+		inline LPDIRECT3DTEXTURE9 settingsImage = nullptr;
+
+
+		inline LPDIRECT3DTEXTURE9 networkUserImage = nullptr;
+
 
 		inline int uiSelectedScalarID = 4;
 		inline float uiSelectedDPI = 1;

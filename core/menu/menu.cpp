@@ -14,6 +14,13 @@
 #include "dependencies/imgui/imgui_internal.h"
 #include "snowflake/snowflake.hpp"
 
+
+
+using namespace ens;
+
+
+
+
 #define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
 
 void setOurCustomImguiColorsAndEtc(LPDIRECT3DDEVICE9);
@@ -713,7 +720,6 @@ void renderEspPage() {
 	ImGui::EndChild();
 }
 
-
 void renderChamsPage() {
 	ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 60));
 	ImGuiStyle& imguiStyles2 = ImGui::GetStyle();
@@ -801,7 +807,7 @@ void renderChamsPage() {
 			if (variables::chams::local_chams)
 			{
 				imspaceMacro(10, 10);
-				ImGui::CheckboxTypeB("Local Only Visible", &variables::chams::local_wireframe);
+				ImGui::CheckboxTypeB("Local Only Visible", &variables::chams::local_only_visible);
 
 				imspaceMacro(10, 10);
 				ImGui::CheckboxTypeB("Local Wireframe", &variables::chams::local_wireframe);
@@ -947,88 +953,99 @@ void renderChamsPage() {
 					imspaceMacro(10, 10);
 					ImGui::Text("Enemy Chams Visible Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##enemy_chams_visible", variables::chams::chams_enemy_visible);
+					ImGui::ColorEdit4("##enemy_chams_visible", variables::chams::player_colors_chams[ENEMY][VICIBLE]);
 
 					if (!variables::chams::enemy_only_visible)
 					{
 						imspaceMacro(10, 10);
 						ImGui::Text("Enemy Chams Hidden Color");
 						imspaceMacro(10, 2);
-						ImGui::ColorEdit4("##enemy_chams_invisible", variables::chams::chams_enemy_invisible);
+						ImGui::ColorEdit4("##enemy_chams_invisible", variables::chams::player_colors_chams[ENEMY][INVICIBLE]);
 					}
 				}
 
 				imspaceMacro(0, 15);
-				ImGui::Separator();
 
 				if (variables::chams::team_chams)
 				{
+					ImGui::Separator();
+
+
 					imspaceMacro(10, 15);
 					ImGui::Text("Team Chams Visible Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##team_chams_visible", variables::chams::chams_team_visible);
+					ImGui::ColorEdit4("##team_chams_visible", variables::chams::player_colors_chams[TEAM][VICIBLE]);
 
 					if (!variables::chams::team_only_visible)
 					{
 						imspaceMacro(10, 10);
 						ImGui::Text("Team Chams Hidden Color");
 						imspaceMacro(10, 2);
-						ImGui::ColorEdit4("##team_chams_invisible", variables::chams::chams_team_invisible);
+						ImGui::ColorEdit4("##team_chams_invisible", variables::chams::player_colors_chams[TEAM][VICIBLE]);
 					}
 
 				}
 
 				imspaceMacro(0, 15);
-				ImGui::Separator();
 
 				if (variables::chams::local_chams)
 				{
+					ImGui::Separator();
+
+
 					imspaceMacro(10, 15);
 					ImGui::Text("Local Chams Visible Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##local_chams_visible", variables::chams::chams_local_visible);
+					ImGui::ColorEdit4("##local_chams_visible", variables::chams::player_colors_chams[LOCAL][VICIBLE]);
 
 					if (!variables::chams::team_only_visible)
 					{
 						imspaceMacro(10, 10);
 						ImGui::Text("Local Chams Hidden Color");
 						imspaceMacro(10, 2);
-						ImGui::ColorEdit4("##local_chams_invisible", variables::chams::chams_local_invisible);
+						ImGui::ColorEdit4("##local_chams_invisible", variables::chams::player_colors_chams[LOCAL][VICIBLE]);
 					}
 
 				}
 
 				imspaceMacro(0, 15);
-				ImGui::Separator();
 
 				if (variables::chams::weapon_chams)
 				{
+					ImGui::Separator();
+
+
 					imspaceMacro(10, 15);
 					ImGui::Text("Weapon Chams Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##weapon_chams_visible", variables::chams::chams_weapon_visible);
+					ImGui::ColorEdit4("##weapon_chams_visible", variables::chams::colors_weapon);
 				}
 
 				imspaceMacro(0, 10);
-				ImGui::Separator();
+
 
 				if (variables::chams::arm_chams)
 				{
+					ImGui::Separator();
+
+
 					imspaceMacro(10, 15);
 					ImGui::Text("Arm Chams Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##arm_chams_visible", variables::chams::chams_arm_visible);
+					ImGui::ColorEdit4("##arm_chams_visible", variables::chams::colors_arm);
 				}
 
 				imspaceMacro(0, 15);
-				ImGui::Separator();
 
 				if (variables::chams::sleeve_chams)
 				{
+					ImGui::Separator();
+
+
 					imspaceMacro(10, 15);
 					ImGui::Text("Sleeve Chams Color");
 					imspaceMacro(10, 2);
-					ImGui::ColorEdit4("##sleeve_chams_visible", variables::chams::chams_sleeve_visible);
+					ImGui::ColorEdit4("##sleeve_chams_visible", variables::chams::colors_sleeve);
 				}
 			}
 
@@ -1513,9 +1530,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 			getMenuPos(nPos);
 			getCursorPos(nPos2);
+			 
 
-
-			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(230), nPos.y + nPos2.y), ImVec2(nPos.x + calculateUiScalar(230), nPos.y + calculateUiScalar(variables::Menu_Settings::ui_height_s - 5)), ImColor(150, 150, 150), 2);
+			ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(230), nPos.y), ImVec2(nPos.x + calculateUiScalar(230), nPos.y + calculateUiScalar(variables::Menu_Settings::ui_height_s)), ImColor(150, 150, 150, 60), 2);
 
 
 			ImGui::BeginChild("#left-side", ImVec2(calculateUiScalar(220), calculateUiScalar(variables::Menu_Settings::ui_height_s - 10)), false);
@@ -1523,66 +1540,192 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 				ImGui::BeginChild("#left-upper", ImVec2(calculateUiScalar(220), calculateUiScalar(variables::Menu_Settings::ui_height_s - 75)), false);
 				{
-					ImGui::PushFont(variables::Menu_Settings::fonts_GUIBIGFONT);
-					imspaceMacro(calculateUiScalar(220) / 2 - (ImGui::CalcTextSize("PC", nullptr).x / 2), 5);
-					ImGui::Text("PC");
+					ImGui::PushFont(variables::Menu_Settings::fonts_GUIBIGFONT2);
+					imspaceMacro(calculateUiScalar(220) / 2 - (ImGui::CalcTextSize("POXIMITY", nullptr).x / 2), 5);
+					ImGui::Text("POXIMITY");
 					ImGui::PopFont();
 
 
 					//ImGui::Text(std::to_string(ImGui::GetIO().FontGlobalScale).c_str());
-
+					 
 
 
 					ImGui::GetStyle().FrameRounding = 4;
 
+					imspaceMacro(0, 20);
 
+					auto selButItem = [](std::string item_name, std::string item_id, int page_id, LPDIRECT3DTEXTURE9 theTexture = nullptr, int x = 13, int y = 13) {
+						ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(variables::Menu_Settings::selected_page == page_id ? 0.1f : 0.f, 0.5f));
+						{
+							if (theTexture != nullptr)
+							{
+								ImGui::BeginChild(std::string(std::string("##_zkdld_item-left-state1_") + item_id).c_str(), ImVec2(30, 30), false);
+								{
+									imspaceMacro(30 / 2 - x / 2, 30 / 2 - y / 2);
+									ImGui::Image(theTexture, ImVec2(x, y));
+								}
+								ImGui::EndChild();
 
-					auto selButItem = [](std::string item_name, int page_id, bool isFirst = false) {
-						imspaceMacro(5, 0);
-						if (ImGui::Button(item_name.c_str(), ImVec2(calculateUiScalar(210), calculateUiScalar(35))))
-							variables::Menu_Settings::selected_page = page_id;
+								ImGui::SameLine();
+
+								imspaceMacro(5, 0);
+								ImGui::BeginChild(std::string(std::string("##_zkdld_item-left-state2_") + item_id).c_str(), ImVec2(180, 30), false);
+								{
+									if (ImGui::Button(item_name.c_str(), ImVec2(calculateUiScalar(180), calculateUiScalar(30))))
+										variables::Menu_Settings::selected_page = page_id;
+								}
+								ImGui::EndChild();
+							}
+							else
+							{
+								imspaceMacro(5, 0);
+								if (ImGui::Button(item_name.c_str(), ImVec2(calculateUiScalar(180), calculateUiScalar(30))))
+									variables::Menu_Settings::selected_page = page_id;
+							}
+						}
+						ImGui::PopStyleVar();
 					};
 
-					selButItem("Aim Bot", 0, false);
-					selButItem("Anti Aim", 1);
+					ImGui::PushFont(variables::Menu_Settings::fonts_gubi_16_font);
+					{
+						{
+							ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+							{
+								imspaceMacro(5, 0);
+								ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Aimbot Side");
+							}
+							ImGui::PopFont();
+							ImVec2 nPos = {};
+							ImVec2 nPos2 = {};
+
+							getMenuPos(nPos);
+							getCursorPos(nPos2);
+
+							ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(5), nPos.y + nPos2.y + 4), ImVec2(nPos.x + calculateUiScalar(220 - 100), nPos.y + nPos2.y + 4), ImColor(150, 150, 150, 40), 1);
+							imspaceMacro(0, 10);
+						}
+
+						{
+							selButItem("Aim Bot", "aimbot", 0, variables::Menu_Settings::ragebotImage, 26, 26);
+							selButItem("Anti Aim", "antiaim", 1, variables::Menu_Settings::antiaimImage, 26, 26);
+							imspaceMacro(0, 10);
+						}
 
 
-					ImVec2 nPos = {};
-					ImVec2 nPos2 = {};
+						
+						{
+							ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+							{
+								imspaceMacro(5, 0);
+								ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Some Visuals Side");
+							}
+							ImGui::PopFont();
+							ImVec2 nPos = {};
+							ImVec2 nPos2 = {};
 
-					getMenuPos(nPos);
-					getCursorPos(nPos2);
+							getMenuPos(nPos);
+							getCursorPos(nPos2);
 
-					ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(40), nPos.y + nPos2.y + 9), ImVec2(nPos.x + calculateUiScalar(220 - 40), nPos.y + nPos2.y + 9), ImColor(150, 150, 150), 2);
-					imspaceMacro(0, 20);
+							ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(5), nPos.y + nPos2.y + 4), ImVec2(nPos.x + calculateUiScalar(220 - 100), nPos.y + nPos2.y + 4), ImColor(150, 150, 150, 40), 1);
+							imspaceMacro(0, 10);
+						}
 
-					selButItem("Esp", 2);
-					selButItem("Chams", 3);
-					selButItem("World", 4);
 
-					getMenuPos(nPos);
-					getCursorPos(nPos2);
-					ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(40), nPos.y + nPos2.y + 9), ImVec2(nPos.x + calculateUiScalar(220 - 40), nPos.y + nPos2.y + 9), ImColor(150, 150, 150), 2);
-					imspaceMacro(0, 20);
+						{
+							selButItem("Esp", "esp", 2, variables::Menu_Settings::espImage, 26, 26);
+							selButItem("Chams", "chams", 3, variables::Menu_Settings::chamsImage, 26, 26);
+							selButItem("World", "world", 4, variables::Menu_Settings::worldImage, 26, 26);
+							imspaceMacro(0, 10);
+						}
 
-					selButItem("Misc", 5);
-					selButItem("Skins", 6);
-					selButItem("Scripts", 7);
-					selButItem("Settings", 8);
+						
 
-					ImGui::GetStyle().FrameRounding = 4;
+						{
+							ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+							{
+								imspaceMacro(5, 0);
+								ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Other Thinks Side");
+							}
+							ImGui::PopFont();
+							ImVec2 nPos = {};
+							ImVec2 nPos2 = {};
+
+							getMenuPos(nPos);
+							getCursorPos(nPos2);
+
+							ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(5), nPos.y + nPos2.y + 4), ImVec2(nPos.x + calculateUiScalar(220 - 100), nPos.y + nPos2.y + 4), ImColor(150, 150, 150, 40), 1);
+							imspaceMacro(0, 10);
+						}
+
+						 
+						{
+							selButItem("Misc", "misc", 5, variables::Menu_Settings::miscImage, 26, 26);
+							selButItem("Skins", "skins", 6, variables::Menu_Settings::skinsImage, 26, 26);
+							imspaceMacro(0, 10);
+						}
+
+
+
+						{
+							ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+							{
+								imspaceMacro(5, 0);
+								ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Network Side");
+							}
+							ImGui::PopFont();
+							ImVec2 nPos = {};
+							ImVec2 nPos2 = {};
+
+							getMenuPos(nPos);
+							getCursorPos(nPos2);
+
+							ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + calculateUiScalar(5), nPos.y + nPos2.y + 4), ImVec2(nPos.x + calculateUiScalar(220 - 100), nPos.y + nPos2.y + 4), ImColor(150, 150, 150, 40), 1);
+							imspaceMacro(0, 10);
+						}
+
+						{
+							selButItem("Scripts", "scripts", 7, variables::Menu_Settings::scriptsImage, 26, 26);
+							selButItem("Settings", "settings", 8, variables::Menu_Settings::settingsImage, 26, 26);
+						}
+
+						ImGui::GetStyle().FrameRounding = 4;
+					}
+					ImGui::PopFont();
 				}
 				ImGui::EndChild();
 
-				ImGui::BeginChild("#left-bottomer", ImVec2(calculateUiScalar(220), calculateUiScalar(65)), false);
+				ImGui::BeginChild("#left-bottomer", ImVec2(calculateUiScalar(220), calculateUiScalar(65)));
 				{
-					ImVec2 mPos = {};
+					ImGui::BeginChild("#networkusernameside_11", ImVec2(220 / 5, 65));
+					{
+						imspaceMacro(3,  65 / 2 - 40 / 2);
+						ImGui::Image(variables::Menu_Settings::networkUserImage, ImVec2(40, 40));
+					}
+					ImGui::EndChild();
 
-					getMenuPos(mPos);
+					ImGui::SameLine();
 
-					ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(mPos.x + calculateUiScalar((220 / 3) / 2), mPos.y + calculateUiScalar(65 / 2)), 20, ImColor(140, 140, 140));
-					imspaceMacro(calculateUiScalar((220 / 3) - 10), calculateUiScalar(65 / 2) - (ImGui::CalcTextSize(variables::NetworkUser::username.c_str()).y / 2));
-					ImGui::Text(variables::NetworkUser::username.c_str());
+					ImGui::BeginChild("#networkusernameside_12", ImVec2((220 / 5) * 4, 65));
+					{
+						ImGui::PushFont(variables::Menu_Settings::fonts_gubi_16_font);
+						{
+							imspaceMacro(calculateUiScalar(5), 65 / 2 - ImGui::CalcTextSize(variables::NetworkUser::username.c_str()).y / 2);
+							ImGui::Text(variables::NetworkUser::username.c_str());
+
+							ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
+							{
+								imspaceMacro(5, 5);
+								ImGui::TextColored(ImVec4(0.8, 0.8, 0.8, 1), "Till:");
+								ImGui::SameLine();
+								imspaceMacro(5, 0);
+								ImGui::TextColored(ImVec4(1, 1, 1, 1), "08.07.2028 20:18:55");
+							}
+							ImGui::PopFont();
+
+						}
+						ImGui::PopFont();
+					}
+					ImGui::EndChild();
 				}
 				ImGui::EndChild();
 			}
@@ -1590,14 +1733,15 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 			ImGui::SameLine();
 
-			ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 - 8), calculateUiScalar(variables::Menu_Settings::ui_height_s - 10));
-			imspaceMacro(12, 0);
-			ImGui::BeginChild("#right-side", cMenuSize);
-			{
+			ImVec2 cMenuSize = ImVec2(calculateUiScalar(variables::Menu_Settings::ui_width_s - 235 + 2), calculateUiScalar(variables::Menu_Settings::ui_height_s - 10));
+
+			imspaceMacro(6, 0);
+
+			ImGui::BeginChild("#right-side", cMenuSize, false);
+			{ 
 				imguiStyles.Colors[ImGuiCol_Button] = ImColor(40, 40, 40);
 
 				ImGui::BeginChild("#state-upper", ImVec2(cMenuSize.x, 50), false); {
-
 
 					{
 						switch (variables::Menu_Settings::selected_page)
@@ -1638,7 +1782,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 					getMenuPos(nPos);
 					getCursorPos(nPos2);
 
-					ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x + 5, nPos.y + 48), ImVec2(nPos.x + cMenuSize.x - 10, nPos.y + 48), ImColor(150, 150, 150), 2);
+					ImGui::GetWindowDrawList()->AddLine(ImVec2(nPos.x, nPos.y + 48), ImVec2(nPos.x + cMenuSize.x, nPos.y + 48), ImColor(150, 150, 150, 60), 2);
 
 				}
 				ImGui::EndChild();
