@@ -61,7 +61,7 @@ unsigned long WINAPI initialize(void* instance) {
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
-#else	
+#else
 	// VK_END to unhook. We use IsHeld() because don't need to check the "first frame"
 	while (!variables::cheat::forceCloseCheat)
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));

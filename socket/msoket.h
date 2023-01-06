@@ -23,7 +23,7 @@
 #define DEFAULT_PORT "6655"
 
 #ifdef _RELEASE
-#define DEFAULT_IP "20.234.30.134"
+#define DEFAULT_IP "thecheatserver.proximitycsgo.com"
 #else
 #define DEFAULT_IP "127.0.0.1"
 #endif
