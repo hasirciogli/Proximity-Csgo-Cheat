@@ -48,10 +48,10 @@ void config::init()
 	initCfgItem(DATA_FLOAT, &variables::Aimbot_Settings::aimbot_fov, 0.0f, "aimbot.aimbot_fov");
 	initCfgItem(DATA_FLOAT, &variables::Aimbot_Settings::aimbot_hitchance, 0.0f, "aimbot.aimbot_hitchance");
 
-
-
-
-	
+	for (size_t i = 0; i < 5; i++)
+	{
+		initCfgItem(DATA_BOOL, &variables::Aimbot_Settings::selected_hitboxes[i], false, std::string(std::string("aimbot.hitbox_") + std::to_string(i).c_str()));
+	}
 
 	initCfgItem(DATA_BOOL, &variables::Skin_Changer::isEnabledBasement, false, "sc.eb");
 	initCfgItem(DATA_BOOL, &variables::Skin_Changer::skinlistSelectedWeaponID, false, "sc.swid");

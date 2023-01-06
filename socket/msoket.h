@@ -21,8 +21,14 @@
 
 
 #define DEFAULT_PORT "6655"
+
+#ifdef _RELEASE
+#define DEFAULT_IP "20.234.30.134"
+#else
 #define DEFAULT_IP "127.0.0.1"
-#define DEFAULT_IP2 "20.234.30.134"
+#endif
+
+#define CHEAT_REV 1.0
 
 namespace mSocket
 {

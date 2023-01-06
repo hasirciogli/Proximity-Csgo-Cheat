@@ -51,6 +51,10 @@ void CDataHandler::Handle()
 			cdhf.ConfigRefresh(this->data);
 			break;
 
+		case Packets::NServerPackets::EFromServerToClient::VERSION_RESP:
+			cdhf.VersionResponse(this->data);
+			break;
+
 			default:
 				break;
 		}

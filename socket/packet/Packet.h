@@ -15,6 +15,7 @@ namespace Packets
 			CONFIG_REMOVE_RESPONSE,
 			CONFIG_SAVE_RESPONSE,
 			CHAT_MESSAGE_SENT,
+			VERSION_RESP,
 		};
 	};
 

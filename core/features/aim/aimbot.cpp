@@ -16,7 +16,6 @@ float hitchance(weapon_t* pWeapon)
 	return inaccuracy;
 }
 
-
 // Checks if we can fire, used in other places
 bool aim::can_fire(player_t* target) {
 	weapon_t* active_weapon = target->active_weapon();
@@ -215,6 +214,8 @@ vec3_t get_best_target(c_usercmd* cmd, weapon_t* active_weapon) {
 
 void StopMovement(c_usercmd& cmd)
 {
+	if (csgo::local_player->move_type() == movetype_noclip || csgo::local_player->move_type() == movetype_observer) return; // Don't update speed if noclip
+
 	if (cmd.sidemove > 38.f)
 		cmd.sidemove = 38.f;
 	if (cmd.sidemove < -38.f)

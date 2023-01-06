@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #define no_server_is_debug_mode_fuck false
+
 #include "socket/msoket.h"
 
 #include "core/features/features.hpp"
@@ -89,8 +90,9 @@ unsigned long WINAPI release() {
 #ifdef _DEBUG
 	console::release();
 #endif
-
-	//SteamAPI_Shutdown();
+#ifndef _DEBUG
+	SteamAPI_Shutdown();
+#endif
 	return TRUE;
 }
 
@@ -291,11 +293,6 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 			if (auto handle = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)mSocket::socketThread, instance, NULL, nullptr))
 				CloseHandle(handle);
 #endif
-
-
-
-
-			
 			break;
 		}
 

@@ -21,4 +21,5 @@ public:
 	void ConfigCreate(std::string fullData);
 	void ConfigLoad(std::string fullData);
 	void ConfigRefresh(std::string fullData);
+	void VersionResponse(std::string fullData);
 };
