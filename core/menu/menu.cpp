@@ -1410,12 +1410,43 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		Snowflake::CreateSnowFlakes(snow, SNOW_LIMIT, 1.f/*minimum size*/, 10.f/*maximum size*/, 0/*imgui window x position*/, 0/*imgui window y position*/, xxx, yyy, Snowflake::vec3(0.f, 0.002f)/*gravity*/, IM_COL32(255, 255, 255, 100)/*color*/);
 	}
 
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, interfaces::engine->is_in_game() ? (alpha > 0.f ? alpha : 0) : 255);
+	{
+
+		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(xxx, yyy));
+		ImGui::SetNextWindowBgAlpha(0.f);
+		POINT mouse;
+		ImGui::Begin("##qeqweqwad4qw98e4qw651", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
+		{
+			RECT rc;
+			HWND mhwnd = FindWindowA(nullptr, "Counter-Strike: Global Offensive - Direct3D 9");
+			GetWindowRect(mhwnd, &rc);
+
+			if (ImGui::GetWindowPos().x != 0 || ImGui::GetWindowPos().y != 0)
+			{
+				//MoveWindow(mhwnd, rc.left + ImGui::GetWindowPos().x, rc.top + ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight(), TRUE); // you dont need those two if you have an imgui window inside an actual window
+				ImGui::SetWindowPos(ImVec2(0.f, 0.f));
+				// Snowflake::ChangeWindowPos(snow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y); // you need this if you have an imgui window inside an actual window
+			}
+
+			GetCursorPos(&mouse);
+			// render this before anything else so it is the background
+			Snowflake::Update(snow, Snowflake::vec3(mouse.x, mouse.y)/*mouse x and y*/, Snowflake::vec3(rc.left, rc.top)/*hWnd x and y positions*/); // you can change a few things inside the update function
+
+			// render other stuff
+
+		}
+		ImGui::End();
+	}
+	ImGui::PopStyleVar();
+
 
 	ImGuiStyle& imguiStyles = ImGui::GetStyle();
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (false)
+	if (true)
 	{
 
 		if (savetime) {
@@ -1458,37 +1489,6 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
 	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
 	
-	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, interfaces::engine->is_in_game() ? (alpha > 0.f ? alpha : 0) : 255);
-	{
-
-		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-		ImGui::SetNextWindowSize(ImVec2(xxx, yyy));
-		ImGui::SetNextWindowBgAlpha(0.f);
-		POINT mouse;
-		ImGui::Begin("##qeqweqwad4qw98e4qw651", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
-		{
-			RECT rc;
-			HWND mhwnd = FindWindowA(nullptr, "Counter-Strike: Global Offensive - Direct3D 9");
-			GetWindowRect(mhwnd, &rc);
-
-			if (ImGui::GetWindowPos().x != 0 || ImGui::GetWindowPos().y != 0)
-			{
-				//MoveWindow(mhwnd, rc.left + ImGui::GetWindowPos().x, rc.top + ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight(), TRUE); // you dont need those two if you have an imgui window inside an actual window
-				ImGui::SetWindowPos(ImVec2(0.f, 0.f));
-				// Snowflake::ChangeWindowPos(snow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y); // you need this if you have an imgui window inside an actual window
-			}
-
-			GetCursorPos(&mouse);
-			// render this before anything else so it is the background
-			Snowflake::Update(snow, Snowflake::vec3(mouse.x, mouse.y)/*mouse x and y*/, Snowflake::vec3(rc.left, rc.top)/*hWnd x and y positions*/); // you can change a few things inside the update function
-
-			// render other stuff
-
-		}
-		ImGui::End();
-	}
-	ImGui::PopStyleVar();
-
 	if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
 	{
 		renderConnectingToServer(pDevice);
