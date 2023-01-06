@@ -19,7 +19,7 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
-
+ 
 #define DEFAULT_PORT "6655"
 
 #ifdef _RELEASE
