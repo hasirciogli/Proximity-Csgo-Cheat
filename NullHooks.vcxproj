@@ -44,8 +44,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\cpplibs\steam_source_sdk_155idk\public;C:\libraries\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
     <OutDir>.\output\debug\</OutDir>
     <IntDir>.\intermediates\</IntDir>
   </PropertyGroup>

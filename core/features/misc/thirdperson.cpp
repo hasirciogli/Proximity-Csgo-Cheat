@@ -20,7 +20,7 @@ void misc::thirdperson() {
 
     static bool thirdperson_toggled = true;
     static bool spectated_thirdperson_toggle = false;
-    if (input::global_input.IsPressed(variables::misc::thirdperson_key)) {
+    if (input::global_input.IsPressed(0x56)) {
         if (csgo::local_player && csgo::local_player->is_alive())
             thirdperson_toggled = !thirdperson_toggled;
         else if (player != csgo::local_player)

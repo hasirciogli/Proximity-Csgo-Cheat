@@ -162,6 +162,13 @@ void config::init()
 		}
 	}
 
+
+
+	initCfgItem(DATA_BOOL, &variables::misc::thirdperson, false, std::string(std::string("misc.tpeb")));
+	initCfgItem(DATA_FLOAT, &variables::misc::thirdperson_dist, 31.0f, std::string(std::string("misc.tpdst")));
+	initCfgItem(DATA_INT, &variables::misc::thirdperson_key, -1, std::string(std::string("misc.tpky")));
+
+
 	c_config tfg = c_config();
 
 	loadConfig(tfg, true);

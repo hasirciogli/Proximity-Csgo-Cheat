@@ -1204,8 +1204,9 @@ void renderMiscPage() {
 		ImGui::BeginChild("#misc-state-left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
 			
 			imspaceMacro(10, 10);
-			//ImGui::CheckboxTypeB("Thirdperson", &variables::misc::thirdperson);
-			ImGui::Text("The Alpha Feature");
+			ImGui::CheckboxTypeB("Thirdperson", &variables::misc::thirdperson);
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Aimbot Fov", &variables::misc::thirdperson_dist, 30, 250.f, "%.1f");
 
 
 			ImVec2 nPos = {};
