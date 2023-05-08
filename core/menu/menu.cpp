@@ -2,15 +2,20 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#include "core/menu/hNotifier/hNotifier.hpp"
+
 #include "./chatbox/ChatBox.h"
 
 #include "socket/msoket.h"
 #include "socket/packet/Packet.h"
 
 #include "core/features/features.hpp"
+
 #include "core/menu/menu.hpp"
-#include "core/features/visuals/skin_changer/skin_changer.hpp"
 #include "core/config/config.hpp"
+
+#include "core/features/visuals/skin_changer/skin_changer.hpp"
+
 #include "dependencies/imgui/imgui_internal.h"
 #include "snowflake/snowflake.hpp"
 
@@ -19,7 +24,7 @@
 using namespace ens;
 
 
-
+HNOTIF::HNotifier hNotifierObject;
 
 #define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
 
@@ -475,6 +480,13 @@ void renderAimbotPage() {
 			imspaceMacro(10, 10);
 			ImGui::CheckboxTypeB("Auto Wall", &variables::Aimbot_Settings::auto_wall);
 
+			imspaceMacro(10, 10);
+
+			if (ImGui::Button("add me"))
+			{
+				hNotifierObject.addNotification(-1, "test", "work");
+			}
+
 
 
 
@@ -561,6 +573,29 @@ void renderAntiAimPage() {
 	ImGui::BeginChild("#AntiAimMenu", cMenuSize, false);
 	{
 		ImGui::BeginChild("#aa_state_left", ImVec2(cMenuSize.x / 2, cMenuSize.y), false); {
+
+			imspaceMacro(10, 10);
+			ImGui::CheckboxTypeB("Enabled", &variables::AA_Settings::antiaim);
+
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Pitch").x + 30));
+
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Pitch", &variables::AA_Settings::pitch, -90, 90);
+
+			ImGui::PopItemWidth();
+
+
+			ImGui::PushItemWidth(cMenuSize.x / 2 - (ImGui::CalcTextSize("Yaw").x + 30));
+
+			imspaceMacro(10, 10);
+			ImGui::SliderFloat("Yaw", &variables::AA_Settings::yaw, -360, 360);
+
+			ImGui::PopItemWidth();
+
+
+
+
+
 			/*imspaceMacro(10, 10);
 			ImGui::CheckboxTypeB("Enabled", &variables::Aimbot_Settings::enabled);
 			imspaceMacro(10, 10);
@@ -1209,6 +1244,10 @@ void renderMiscPage() {
 			ImGui::SliderFloat("Aimbot Fov", &variables::misc::thirdperson_dist, 30, 250.f, "%.1f");
 
 
+			imspaceMacro(10, 10);
+			ImGui::CheckboxTypeB("Bunny Hop", &variables::misc::bhop);
+
+
 			ImVec2 nPos = {};
 
 			getMenuPos(nPos);
@@ -1383,11 +1422,18 @@ void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 
 	imguiStyles.WindowRounding = FirstRadius;
 }
+
 char dcbText[250] = {};
 #define SNOW_LIMIT 60
 std::vector<Snowflake::Snowflake> snow;
 
+
+
 void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
+
+	hNotifierObject.runBasement(&pDevice);
+
+
 	static bool loaded = false;
 	static bool firstanim = true; 
 	int currenttime = (float)(clock() / 1000.f);
@@ -1447,7 +1493,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (true)
+	if (false)
 	{
 
 		if (savetime) {
@@ -1490,7 +1536,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
 	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
 	
-	if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed)
+	if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed && false)
 	{
 		renderConnectingToServer(pDevice);
 		//return;
@@ -1546,10 +1592,12 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImGui::GetIO().FontGlobalScale = variables::Menu_Settings::uiSelectedDPI;
 	variables::Menu_Settings::updateMenuScalar(variables::Menu_Settings::uiSelectedScalarID);
+	
 	imguiStyles.WindowRounding = 8;
+
 	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
-		if (!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat)
+		if ((!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat) && false)
 		{
 			ImVec2 nPos = {};
 			ImVec2 nPos2 = {};
@@ -1891,7 +1939,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 
 #ifdef _DEBUG
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	
+	//ImGui::SetNextWindowPos(ImVec2(0, 0));
+
 	ImGui::Begin("Debug Window");
 	{
 		if (ImGui::Button("Load Map", ImVec2(150, 50)))
@@ -1913,10 +1963,14 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		if (ImGui::Button("h_t", ImVec2(150, 50)))
 		{
 			interfaces::engine->execute_cmd("exec h_t");
-		}if (ImGui::Button("h_twice", ImVec2(150, 50)))
+		}
+		
+		if (ImGui::Button("h_twice", ImVec2(150, 50)))
 		{
 			interfaces::engine->execute_cmd("exec h_twice");
 		}
+
+		ImGui::SliderFloat("Dpi Size", &variables::Menu_Settings::DpiSize, .06, 2);
 	}
 	ImGui::End();
 #endif

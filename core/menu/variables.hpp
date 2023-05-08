@@ -118,7 +118,7 @@ namespace variables {
 	namespace NetworkUser
 	{
 		inline std::string username = "null";
-		inline bool fuckThisCheat = false;	
+		inline bool fuckThisCheat = false;
 	}
 
 	namespace cheat
@@ -198,7 +198,7 @@ namespace variables {
 		inline bool skeletonesp = false;
 		inline bool nameesp = false;
 
-		inline struct multicombo_opt_t
+		struct multicombo_opt_t
 		{
 			const char* text = "";
 			bool value = false;
@@ -416,6 +416,7 @@ namespace variables {
 			inline bool opened = false;
 			inline int x = 300, y = 200;
 			inline int w = 500, h = 450;
+			inline float DpiScale = 1;
 		}
 
 		namespace watermark {
@@ -480,6 +481,494 @@ namespace variables {
 
 
 	namespace Menu_Settings {
+		inline float DpiSize = .6;
+
+		enum nAnimStater {
+			SLIDE_REAPERING,
+			SLIDE_BOBERING,
+			TBALPHA_TETRING,
+
+			TT_JHGWAITING,
+
+
+			RE_TBALPHA_TETRING,
+			RE_SLIDE_BOBERING,
+			RE_SLIDE_REAPERING,
+
+
+			FINISH,
+		};
+
+		struct HNFAnimObject {
+			int id = 0;
+			const char* title = "";
+			const char* message = "";
+
+
+
+			float masterWidth = 300;
+			float masterHeight = 60;
+
+			float width = 0;
+			float height = 0;
+
+
+
+			float tAlpha = 0.f;
+			float Alpha = 0.f;
+
+			float baseTime = 0;
+
+			bool pleaseDeleteMe = false;
+
+			bool AnimState = false;
+
+			nAnimStater animationState = nAnimStater::SLIDE_REAPERING;
+
+
+			float LerpUnclamped(float& x, float y, float t) {
+				x = x + (y - x) * t;
+				return 1;
+			}
+
+
+			inline void animationRunner(float deltaTime) {
+				if (this->pleaseDeleteMe)
+					return;
+
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height <= this->masterHeight - .2)
+					{
+						LerpUnclamped(this->height, this->masterHeight, .2);
+					}
+					else {
+						this->height = this->masterHeight;
+					}
+
+					if (this->Alpha < 255 - .2)
+					{
+						LerpUnclamped(this->Alpha, 255.f, .2);
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->height >= this->masterHeight && this->Alpha >= 255)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->width < this->masterWidth - .2)
+					{
+						LerpUnclamped(this->width, masterWidth, .2);
+					}
+					else {
+						this->width = this->masterWidth;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255 - .2)
+					{
+						LerpUnclamped(this->tAlpha, 255.f, .2);
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0 + .2)
+					{
+						LerpUnclamped(this->tAlpha, 0, .2);
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->width > 0 + .2)
+					{
+						LerpUnclamped(this->width, 0, .2);
+					}
+					else {
+						this->width = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height > 0 + .2)
+					{
+						LerpUnclamped(this->height, 0, .2);
+					}
+					else {
+						this->height = 0;
+					}
+
+					if (this->Alpha > 0 + .2)
+					{
+						LerpUnclamped(this->Alpha, 0, .2);
+					}
+					else {
+						this->Alpha = 0;
+					}
+
+
+					if (this->height <= 0 && this->Alpha <= 0)
+					{
+						this->Alpha = 255;
+						this->Alpha = height;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					this->pleaseDeleteMe = true;
+
+				} break;
+				}
+
+
+
+
+
+
+
+
+				return;
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height < this->masterHeight)
+					{
+						this->height += 6.f;
+					}
+					else {
+						this->height = this->masterHeight;
+					}
+
+					if (this->Alpha < 255)
+					{
+						this->Alpha += 14;
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->height >= this->masterHeight && this->Alpha >= 255)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->width < this->masterWidth)
+					{
+						this->width += 16.f;
+					}
+					else {
+						this->width = this->masterWidth;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255)
+					{
+						this->tAlpha += 10;
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0)
+					{
+						this->tAlpha -= 10;
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->width > 0)
+					{
+						this->width -= 16.f;
+					}
+					else {
+						this->width = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height > 0)
+					{
+						this->height -= 6.f;
+					}
+					else {
+						this->height = 0;
+					}
+
+					if (this->Alpha > 0)
+					{
+						this->Alpha -= 14;
+					}
+					else {
+						this->Alpha = 0;
+					}
+
+
+					if (this->height <= 0 && this->Alpha <= 0)
+					{
+						this->Alpha = 255;
+						this->Alpha = height;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					this->pleaseDeleteMe = true;
+
+				} break;
+				}
+
+
+
+				return;
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					if (this->height < 3)
+					{
+						this->height += .1;
+					}
+					else {
+						this->height = 3;
+					}
+
+					if (this->width < this->masterWidth)
+					{
+						this->width += 10.f;
+					}
+					else {
+						this->width = this->masterWidth;
+					}
+
+					if (this->Alpha < 255)
+					{
+						this->Alpha += 14;
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->width >= this->masterWidth && this->Alpha >= 255 && height == 3)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->height < this->masterHeight)
+					{
+						this->height += 6.f;
+					}
+					else {
+						this->height = this->masterHeight;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255)
+					{
+						this->tAlpha += 10;
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0)
+					{
+						this->tAlpha -= 5;
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->height > 3)
+					{
+						this->height -= 6;
+					}
+					else {
+						this->height = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					if (this->width > 0)
+					{
+						this->width -= 8;
+					}
+
+					if (this->Alpha > 0)
+					{
+						this->Alpha -= 4;
+					}
+
+
+					if (this->width <= 0 && this->Alpha <= 0)
+					{
+						this->width = 0;
+						this->Alpha = 0;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					if (this->height > 0)
+					{
+						this->height -= .1;
+					}
+					else {
+						this->height = 3;
+
+						this->pleaseDeleteMe = true;
+					}
+
+				} break;
+				}
+			}
+		};
+
+		inline std::list<HNFAnimObject*> h_Notifications;
+
+		inline void addNotification(int idNumber, const char* title, const char* message) {
+			variables::Menu_Settings::HNFAnimObject* tmpObj = new variables::Menu_Settings::HNFAnimObject();
+			tmpObj->id = idNumber;
+			tmpObj->title = title;
+			tmpObj->message = message;
+			tmpObj->Alpha = 0.f;
+
+			variables::Menu_Settings::h_Notifications.push_front(tmpObj);
+		}
+
 		inline bool isOpened = true;
 		inline bool isInitialized = false;
 		inline int ui_width = 780;
@@ -608,6 +1097,17 @@ namespace variables {
 			"legs"
 		};
 	};
+	
+	namespace AA_Settings {
+		inline bool antiaim = false;
+		inline float yaw = 0.f;
+		inline float pitch = 0.f;
+		inline bool spinbot = false;
+		inline float spinbot_speed = 0.f;
+		inline bool peek_aa = false;
+		inline hotkey_t peek_aa_toggle_key(VK_XBUTTON1);
+	};
+
 
 	namespace Esp_Settings {
 		inline int selected_team = 0;  
@@ -693,7 +1193,7 @@ namespace variables {
 			"XM1014",
 		};
 
-		inline struct SkinSetSt
+		struct SkinSetSt
 		{
 			bool isEnabled = false;
 			bool isKnife = false;

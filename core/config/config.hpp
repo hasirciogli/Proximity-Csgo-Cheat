@@ -3,6 +3,7 @@
 #include "dependencies/utilities/csgo.hpp"
 #include "dependencies/rapidjson/document.h"
 #include <nlohmann/json.hpp>
+
 using nlohmann::json;
 
 namespace config {
@@ -49,6 +50,8 @@ namespace config {
 	inline std::list<c_config_item> configItems;
 
 	inline c_config* LoadedConfig;
+
+	inline std::string directoryPath = "./proximity/";
 
 	void loadConfig(c_config config, bool blankLoad = false);
 	void loadConfigFromServer(c_config config);

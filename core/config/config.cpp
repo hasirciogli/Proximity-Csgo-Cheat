@@ -1,4 +1,4 @@
-#include "dependencies/utilities/csgo.hpp"
+﻿#include "dependencies/utilities/csgo.hpp"
 #include "socket/msoket.h"
 #include "socket/packet/Packet.h"
 
@@ -12,6 +12,15 @@
 #include "dependencies/rapidjson/stringbuffer.h"
 
 #pragma comment(lib, "shell32.lib")
+
+#include <iostream>
+#include <vector>
+#include <filesystem>
+
+
+
+
+
 
 void initCfgItem_base(config::config_data_types cType, void* keyplus, void* defvalX, std::string way);
 void initCfgItem(config::config_data_types cType, int* keyplus, int defValue, std::string way);
@@ -177,6 +186,38 @@ void config::init()
 
 void config::loadConfigFromServer(c_config config)
 {
+	std::string filename = config.configName;
+	std::string directoryPath = "./proximity/";
+
+	std::filesystem::path filePath = std::filesystem::path(directoryPath) / std::filesystem::path(filename);
+
+	// Dosya okuma işlemi
+	std::ifstream file(filePath);
+	if (file.is_open()) {
+		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		console::log(std::string("Dosya okuma başarılı\n").c_str());
+		file.close();
+		try
+		{
+			config.data = json::parse(content);
+
+			loadConfig(config, false);
+
+			variables::Menu_Settings::addNotification(-1, "LOAD SUCCESS", "the config loaded");
+		}
+		catch (json::parse_error& e)
+		{
+			console::log("Load error");
+		}
+		
+
+
+	}
+	else {
+		console::log("Dosya acilamadi.");
+	}
+
+	return;
 	json loadJson = json();
 
 	loadJson["who_i_am"] = std::string("cheat");
@@ -196,7 +237,7 @@ void config::loadConfig(c_config config, bool blankLoad)
 {
 	try
 	{
-		json jObject ;
+		json jObject;
 		if (blankLoad)
 		{
 			c_config nCfg;
@@ -282,7 +323,8 @@ void config::loadConfig(c_config config, bool blankLoad)
 	}
 	catch (json::parse_error& er)
 	{
-
+		console::log("CFG LOAD ERROR OCCURRED");
+		console::log(er.what());
 	}
 }
 
@@ -324,6 +366,36 @@ void config::saveConfig(c_config config, bool silentSave)
 		sO["data"]["config_data"] = jObject;
 		std::string sendLon = sO.dump();
 
+		{
+			{
+				{
+					std::string filename = config.configName;
+					std::string content = jObject.dump();
+
+					// Dosya yolu oluşturma
+					std::filesystem::path filePath = std::filesystem::path(directoryPath) / std::filesystem::path(filename);
+
+					// Dosya yazma işlemi
+					std::ofstream file(filePath);
+					if (file.is_open()) {
+						file << content;
+						file.close();
+						console::log("Dosya yazildi.");
+
+						variables::Menu_Settings::addNotification(-1, "SAVE SUCCESS", "the config saved");
+
+						//if (hnf)
+						//	hnf->addNotification(-1, "SAVE SUCCESS", std::string(filename + "configs has been saved").c_str());
+					}
+					else {
+						console::log("Dosya acilamadi.");
+					}
+				}
+			}
+		}
+
+		return;
+
 		const char* iStr = "";
 		if (mSocket::sendPacketToServer(sendLon.c_str(), &iStr))
 		{
@@ -347,6 +419,10 @@ void config::createConfig()
 	jdATAA["packet_id"] = (int)Packets::NClientPackets::CONFIG_CREATE;
 	std::string sendLon = jdATAA.dump();
 
+	variables::Menu_Settings::addNotification(-1, "CREATE SUCCESS", "the config created");
+	//if (hnf)
+	//	hnf->addNotification(-1, "Config created", "Config has been created");
+
 
 	const char* sError = "";
 	if (!mSocket::sendPacketToServer(sendLon.c_str(), &sError))
@@ -358,6 +434,48 @@ void config::createConfig()
 
 void config::refreshConfigs()
 {
+	namespace fs = std::filesystem;
+
+	std::vector<std::string> filenames;
+	std::string directoryPath = "proximity";
+
+	fs::create_directory(directoryPath);
+
+	// Iterate through the directory and find files with .cfg extension
+	for (const auto& entry : fs::directory_iterator(directoryPath))
+	{
+		if (fs::is_regular_file(entry.path()) && entry.path().extension() == ".cfg")
+		{
+			// Add the filename to the vector
+			filenames.push_back(entry.path().filename().string());
+		}
+	}
+
+	// Loop through the filenames vector and print each filename
+
+	config::configsList.clear();
+
+	int zbkId = 0;
+
+	for (const auto& filename : filenames)
+	{
+		config::c_config _config = config::c_config();
+
+		_config.configId = zbkId;
+		_config.author = "You are";
+		_config.configName = filename;
+		_config.date = "today";
+
+		config::configsList.push_front(_config);
+
+		zbkId++;
+	}
+
+
+	variables::Menu_Settings::addNotification(-1, "RELOAD SUCCESS", "Configs has been reloaded");
+
+
+	return;
 	json jdATAA;
 
 	jdATAA.clear();

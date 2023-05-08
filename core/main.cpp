@@ -1,6 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 
-#define no_server_is_debug_mode_fuck false
+#define no_server_is_debug_mode_fuck true
 
 #include "socket/msoket.h"
 
@@ -96,6 +96,7 @@ unsigned long WINAPI release() {
 	return TRUE;
 }
 
+/*
 __forceinline std::uintptr_t ntapihide()
 {
 	using NtSetInformationThreadFn = NTSTATUS(NTAPI*)
@@ -269,6 +270,7 @@ __forceinline std::uintptr_t k0x85()
 	return status;
 }
 
+*/
 
 std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsigned long reason, const void* reserved [[maybe_unused]] ) {
 	//int fuck_you = strlen((const char*)fuck_skids);	// Need to call var so shit ass compiler does not ignore it
@@ -277,17 +279,17 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
-			ntapihide();
+			//ntapihide();
 			setlocale(LC_ALL, "Turkish");
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
 				CloseHandle(handle);
 
 #if no_server_is_debug_mode_fuck == true
 
-			mSocket::cfg::socketIsConnected = true;
+			/*mSocket::cfg::socketIsConnected = true;
 			mSocket::cfg::authed = true;
 
-			variables::NetworkUser::username = "admin";
+			variables::NetworkUser::username = "admin";*/
 
 #else
 			if (auto handle = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)mSocket::socketThread, instance, NULL, nullptr))

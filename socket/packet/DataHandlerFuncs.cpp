@@ -325,7 +325,6 @@ void CDataHandlerFuncs::ConfigLoad(std::string fullData)
 			}
 
 			interfaces::clientstate->full_update();
-
 		}
 		catch (json::parse_error& err)
 		{

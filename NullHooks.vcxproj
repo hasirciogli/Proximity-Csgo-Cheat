@@ -44,8 +44,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\my-codes\libs\boost_1_82_0;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\my-codes\libs\boost_1_82_0\libs;D:\my-codes\libs\boost_1_82_0\stage\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
     <OutDir>.\output\debug\</OutDir>
     <IntDir>.\intermediates\</IntDir>
   </PropertyGroup>
@@ -69,6 +69,12 @@
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Link>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -198,6 +204,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="core\menu\hNotifier\hNotifier.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="core\menu\menu.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -296,12 +305,14 @@
     <ClInclude Include="core\features\features.hpp" />
     <ClInclude Include="core\features\misc\backtrack.hpp" />
     <ClInclude Include="core\features\visuals\skin_changer\skin_changer.hpp" />
+    <ClInclude Include="core\helpers\globals.hpp" />
     <ClInclude Include="core\helpers\globas.hpp" />
     <ClInclude Include="core\helpers\helpers.hpp" />
     <ClInclude Include="core\features\visuals\models.hpp" />
     <ClInclude Include="core\hooks\hooks.hpp" />
     <ClInclude Include="core\menu\chatbox\ChatBox.h" />
     <ClInclude Include="core\menu\global_input.hpp" />
+    <ClInclude Include="core\menu\hNotifier\hNotifier.hpp" />
     <ClInclude Include="core\menu\menu.hpp" />
     <ClInclude Include="core\menu\snowflake\snowflake.hpp" />
     <ClInclude Include="core\menu\variables.hpp" />

@@ -429,24 +429,3 @@ bool mSocket::getHWID(std::string* iError, std::string* resultHWID)
 
 	return true;
 }
-
-std::string mSocket::getEncrypt(std::string plaintext)
-{
-	// Anahtar deðerini belirtin
-	std::string key = "PCMK";
-
-	// Þifrelenmiþ veri için yer ayýrýn
-	std::string ciphertext;
-
-	// Þifreleme iþlemini gerçekleþtirin
-	for (int i = 0; i < plaintext.length(); i++) {
-		ciphertext += plaintext[i] ^ key[i % key.length()];
-	}
-
-	return ciphertext;
-}
-
-std::string mSocket::__getDecrypt(std::string& tData)
-{
-	return "";
-}
