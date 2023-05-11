@@ -28,7 +28,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -44,16 +44,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\my-codes\libs\boost_1_82_0;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\my-codes\libs\boost_1_82_0\libs;D:\my-codes\libs\boost_1_82_0\stage\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
     <OutDir>.\output\debug\</OutDir>
     <IntDir>.\intermediates\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\output\release\</OutDir>
     <IntDir>.\intermediates\</IntDir>
-    <LibraryPath>C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\cpplibs\steam_source_sdk_155idk\public;C:\libraries\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\cpplibs\steam_source_sdk_155idk\public\steam\lib\win32;$(DXSDK_DIR)./lib/x86;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin;C:\cpplibs\steam_source_sdk_155idk\redistributable_bin\win64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\cpplibs\steam_source_sdk_155idk\public;C:\cpplibs\json-develop\include;$(DXSDK_DIR)./include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

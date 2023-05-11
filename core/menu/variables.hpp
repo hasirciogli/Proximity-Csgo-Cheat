@@ -118,6 +118,7 @@ namespace variables {
 	namespace NetworkUser
 	{
 		inline std::string username = "null";
+		inline std::string subtill = "08.07.2028 20:18:55";
 		inline bool fuckThisCheat = false;
 	}
 

@@ -68,24 +68,24 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 	ImGui::PushStyleColor(ImGuiCol_Border, CB_getZtkColor(35, 160, 35));
 
 
-	SetNextWindowSize(ImVec2(450, 600));
+	SetNextWindowSize(ImVec2(350, 480));
 	ImGui::Begin("#name", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
-		ImGui::BeginChild("#title", ImVec2(450, 40), false);
+		ImGui::BeginChild("#title", ImVec2(350, 30), false);
 		{
 			std::string text = "Proximity Chat";
 			ImVec2 textSize = ImGui::CalcTextSize(text.c_str());
-			CB_imspaceMacro(10, 40 / 2 - textSize.y / 2);
+			CB_imspaceMacro(10, 30 / 2 - textSize.y / 2);
 			ImGui::TextColored(CB_getZtkColor(20, 160, 20), text.c_str());
 		}
 		ImGui::EndChild();
 
 		ImGui::Separator();
 
-		ImGui::BeginChild("#chatbox", ImVec2(450, 500), false);
+		ImGui::BeginChild("#chatbox", ImVec2(350, 400), false);
 		{
 			CB_imspaceMacro(10, 10);
-			ImGui::BeginChild("#chatbox_inside", ImVec2(430, 480), true);
+			ImGui::BeginChild("#chatbox_inside", ImVec2(330, 380), true);
 			{
 				int bbEka = 0;
 				for (auto item : chatboxItems)
@@ -98,13 +98,13 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 		}
 		ImGui::EndChild();
 
-		ImGui::BeginChild("#bottom-tab", ImVec2(450, 60), false);
+		ImGui::BeginChild("#bottom-tab", ImVec2(350, 50), false);
 		{
 			ImGuiStyle& style = GetStyle();
 			CB_imspaceMacro(10, 0);
 			PushStyleVar(ImGuiStyleVar_ChildRounding, 3);
 			{
-				ImGui::BeginChild("#input-child", ImVec2(430 - 100 - 20, 40), true);
+				ImGui::BeginChild("#input-child", ImVec2(350 - 100 - 20, 40), false);
 				{
 					PushItemWidth(-1);
 					PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 10));
@@ -128,7 +128,7 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param) {
 
 			if (!mSocket::cfg::waiting_response)
 			{
-				if (Button("Send", ImVec2(100, 40)))
+				if (Button("Send", ImVec2(90, 40)))
 				{
 					string tMessage = DDKmessage;
 

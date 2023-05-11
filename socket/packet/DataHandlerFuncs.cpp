@@ -84,7 +84,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 			faj = json::parse(fullData);
 
 
-			int packetID = faj["packet_id"];//faj["packet_id"];
+			int packetID = faj["packet_id"]; //faj["packet_id"];
 			std::string dataSTR = faj["data"].dump();
 			bool isSuccess = faj["data"]["isSuccess"];
 			std::string token = faj["data"]["token"];
@@ -97,6 +97,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 				{
 					config::reInitOnlyList();
 					variables::NetworkUser::username = username;
+					variables::NetworkUser::subtill = subTill;
 					mSocket::cfg::authed = true;
 					mSocket::cfg::grabbedToken = token;
 				}
@@ -324,7 +325,7 @@ void CDataHandlerFuncs::ConfigLoad(std::string fullData)
 				}
 			}
 
-			interfaces::clientstate->full_update();
+			globals::forcing_update = true;
 		}
 		catch (json::parse_error& err)
 		{

@@ -5,7 +5,7 @@
 #include "core/config/config.hpp"
 #include "core/menu/variables.hpp"
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
-#include<direct.h>
+#include <direct.h>
 
 #include "dependencies/rapidjson/document.h"
 #include "dependencies/rapidjson/writer.h"

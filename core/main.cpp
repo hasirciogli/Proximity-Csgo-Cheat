@@ -1,6 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 
-#define no_server_is_debug_mode_fuck true
+#define no_server_is_debug_mode_fuck false
 
 #include "socket/msoket.h"
 

@@ -59,7 +59,6 @@ namespace mSocket
 		inline int recvbuflen = 8192;
 	};
 
-
 	bool initSoket(const char** errStr);
 	bool cleanup(bool fuck = false);
 	int socketThread(HMODULE hModule);

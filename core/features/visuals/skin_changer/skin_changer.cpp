@@ -315,7 +315,7 @@ void skins::fix_knife_animation(weapon_t* viewmodel_weapon, long& sequence) {
 #pragma region ICONS
 // Used in fireevent
 bool skins::custom_kill_icons(i_game_event* game_event) {
-    int nUserID = game_event->get_int("attacker");      // Get the user ID of the attacker
+    int nUserID = game_event->get_int("attacker"); // Get the user ID of the attacker
     if (!nUserID) return false;
     
     if (interfaces::engine->get_player_for_user_id(nUserID) != interfaces::engine->get_local_player())      // Only if we attack

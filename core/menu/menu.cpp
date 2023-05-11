@@ -480,12 +480,14 @@ void renderAimbotPage() {
 			imspaceMacro(10, 10);
 			ImGui::CheckboxTypeB("Auto Wall", &variables::Aimbot_Settings::auto_wall);
 
-			imspaceMacro(10, 10);
+			/*imspaceMacro(10, 10);
 
+			
 			if (ImGui::Button("add me"))
 			{
 				hNotifierObject.addNotification(-1, "test", "work");
 			}
+			*/
 
 
 
@@ -1222,7 +1224,7 @@ void renderSkinsPage() {
 				imspaceMacro(10, 10);
 				if (ImGui::Button("SAVE & UPDATE", ImVec2(150, 35)))
 				{
-					interfaces::clientstate->full_update();
+					globals::forcing_update = true;
 				}
 			}
 		}
@@ -1493,9 +1495,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImClamp(alpha, 0.f, 255.0f);
 
-	if (false)
-	{
+#ifndef _DEBUG
 
+	{
 		if (savetime) {
 			startedtime = (float)(clock() / 1000.f);
 			savetime = false;
@@ -1524,7 +1526,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		}
 
 		//Erasing
-		if (currenttime > startedtime + (firstanim ? 5.f : 1.f)) { 
+		if (currenttime > startedtime + (firstanim ? 5.f : 1.f)) {
 			loaded = true;
 			firstanim = false;
 		}
@@ -1532,6 +1534,9 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 		if (!loaded)
 			return;
 	}
+
+
+#endif
 
 	variables::Menu_Settings::ui_width_s = calculateUiScalar(variables::Menu_Settings::ui_width);
 	variables::Menu_Settings::ui_height_s = calculateUiScalar(variables::Menu_Settings::ui_height);
@@ -1597,7 +1602,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 
 	ImGui::Begin("NAME", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 	{
-		if ((!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat) && false)
+		if ((!mSocket::cfg::socketIsConnected || !mSocket::cfg::authed || variables::NetworkUser::fuckThisCheat) && true)
 		{
 			ImVec2 nPos = {};
 			ImVec2 nPos2 = {};
@@ -1825,7 +1830,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 								ImGui::TextColored(ImVec4(0.8, 0.8, 0.8, 1), "Till:");
 								ImGui::SameLine();
 								imspaceMacro(5, 0);
-								ImGui::TextColored(ImVec4(1, 1, 1, 1), "08.07.2028 20:18:55");
+								ImGui::TextColored(ImVec4(1, 1, 1, 1), variables::NetworkUser::subtill.c_str());
 							}
 							ImGui::PopFont();
 

@@ -23,10 +23,12 @@ void goWork(char* data2, int len)
 {
 	
 	std::string recvData = "";
+
 	std::copy(data2, data2 + len, std::back_inserter(recvData));
 	
 	console::log(recvData.c_str());
 	console::log("\n");
+
 	if (mSocket::cfg::socketNeedProxiAuth)
 	{
 		if (pc.Validate(recvData))
@@ -36,9 +38,6 @@ void goWork(char* data2, int len)
 
 		return;
 	}
-
-	console::log(recvData.c_str());
-	console::log("\n");
 
 	CDataHandler cdh = CDataHandler();
 	cdh.data = recvData;
@@ -75,12 +74,12 @@ int mSocket::socketThread(HMODULE hModule)
 		{
 			if (mSocket::cfg::socketIsConnected && !cfg::closingTO)
 			{
-				int bResult = 0;
 				char recvbuf[8192] = "";
 
-				bResult = recv(mSocket::cfg::ConnectSocket, recvbuf, 8192, 0);
+				int bResult = recv(mSocket::cfg::ConnectSocket, recvbuf, 8192, 0);
 				if (bResult > 0)
 				{
+					recvbuf[bResult] = '\0';
 					//std::string recvData = "";
 
 					//std::copy(mSocket::cfg::recvbuf, mSocket::cfg::recvbuf + mSocket::cfg::iResult, std::back_inserter(recvData));
