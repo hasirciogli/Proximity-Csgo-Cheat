@@ -15,7 +15,7 @@
 #include "core/config/config.hpp"
 
 #include "core/features/visuals/skin_changer/skin_changer.hpp"
-
+ 
 #include "dependencies/imgui/imgui_internal.h" 
 #include "snowflake/snowflake.hpp"
 
@@ -2114,8 +2114,6 @@ void renderAimbotPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
-
 void renderAntiAimPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -2328,8 +2326,6 @@ void renderAntiAimPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
-
 void renderEspPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -2735,7 +2731,6 @@ void renderEspPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
 void renderInventoryPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -2758,7 +2753,6 @@ void renderInventoryPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
 void renderMiscPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -2898,7 +2892,6 @@ void renderMiscPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
 void renderWorldPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -2921,7 +2914,6 @@ void renderWorldPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
 void renderConfigsPage(ImVec2 ts, float mpw, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -3268,7 +3260,6 @@ void renderConfigsPage(ImVec2 ts, float mpw, bool isTop = false) {
 
 	}
 }
-
 void renderScriptsPage(ImVec2 ts, bool isTop = false) {
 	float ds = variables::Menu_Settings::DpiSize;
 
@@ -3291,7 +3282,6 @@ void renderScriptsPage(ImVec2 ts, bool isTop = false) {
 
 	}
 }
-
 void renderConnectingToServer(LPDIRECT3DDEVICE9 pDevice)
 {
 
@@ -3480,10 +3470,10 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	static float m_alpha = 0.0002f;
 	m_alpha = ImClamp(m_alpha + (3.f * ImGui::GetIO().DeltaTime * (variables::Menu_Settings::isOpened ? 3.f : -3.f)), 0.0001f, 1.f);
 
+	hNotifierObject.runBasement(&pDevice, m_alpha);
 	if (m_alpha <= 0.0001f)
 		return;
 
-	hNotifierObject.runBasement(&pDevice, m_alpha);
 
 	static bool bInit = false;
 
