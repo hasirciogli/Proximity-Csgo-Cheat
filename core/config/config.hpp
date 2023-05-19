@@ -24,7 +24,7 @@ namespace config {
 		std::string author;
 		json data;
 		bool isLoaded;
-	};
+	}; 
 
 	struct c_config_item
 	{
@@ -49,15 +49,16 @@ namespace config {
 	inline std::list<c_config> configsList;
 	inline std::list<c_config_item> configItems;
 
-	inline c_config* LoadedConfig;
+	inline c_config LoadedConfig;
 
 	inline std::string directoryPath = "./proximity/";
 
 	void loadConfig(c_config config, bool blankLoad = false);
 	void loadConfigFromServer(c_config config);
 	void saveConfig(c_config config, bool silentSave = false);
-	void refreshConfigs();
-	void createConfig();
+	void refreshConfigs(bool notify = true);
+	void createConfig(const char* configName = "");
+	void deleteConfig(const char* configName, bool notify = true);
 	void init();
 	void reInitOnlyList();
 }

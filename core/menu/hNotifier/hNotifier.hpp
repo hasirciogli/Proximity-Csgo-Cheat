@@ -33,7 +33,7 @@ namespace HNOTIF {
 	public:
 		
 
-		void runBasement(LPDIRECT3DDEVICE9*);
+		void runBasement(LPDIRECT3DDEVICE9*, float m_alpha);
 
 		inline void addNotification(int idNumber, const char* title, const char* message) {
 			variables::Menu_Settings::HNFAnimObject* tmpObj = new variables::Menu_Settings::HNFAnimObject();

@@ -97,6 +97,7 @@ namespace interfaces {
 	inline iv_debug_overlay* debug_overlay;
 	inline i_console* console;
 	inline i_localize* localize;
+	inline i_base_file_system* bfsystem;
 	inline i_game_event_manager2* event_manager;
 	inline i_input_system* input_system;
 	inline IDirect3DDevice9* directx;

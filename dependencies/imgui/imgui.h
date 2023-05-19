@@ -311,6 +311,9 @@ namespace ImGui
     IMGUI_API const char*   GetVersion();                               // get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
 
     // Styles
+    IMGUI_API void          StyleColors_ProDark(ImGuiStyle* dst = NULL);    // new, recommended style (default)
+    IMGUI_API void          StyleColors_ProLight(ImGuiStyle* dst = NULL);    // new, recommended style (default)
+
     IMGUI_API void          StyleColorsDark(ImGuiStyle* dst = NULL);    // new, recommended style (default)
     IMGUI_API void          StyleColorsLight(ImGuiStyle* dst = NULL);   // best used with borders and a custom, thicker font
     IMGUI_API void          StyleColorsClassic(ImGuiStyle* dst = NULL); // classic imgui style

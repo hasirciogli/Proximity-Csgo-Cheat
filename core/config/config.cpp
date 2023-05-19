@@ -85,47 +85,35 @@ void config::init()
 	{
 
 
-		initCfgItem(DATA_BOOL, &variables::chams::general_chams_enabled, false, "chms.general"); // Chams general enabled
-		initCfgItem(DATA_BOOL, &variables::chams::draw_chams_on_top, false, "chms.d_top"); // Chams general enabled
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::weapon_chams, false, "chms.w_e"); // Enemy chams enabled
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::weapon_wireframe, false, "chms.w_wfr"); // Enemy chams only visible
+		initCfgItem(DATA_INT, &variables::Chams_Settings::weapon_chams_material, false, "chms.w_mat"); // Enemy chams material
+
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::arm_chams, false, "chms.a_e"); // Enemy chams enabled
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::arm_wireframe, false, "chms.a_wfr"); // Enemy chams only visible
+		initCfgItem(DATA_INT, &variables::Chams_Settings::arm_chams_material, false, "chms.a_mat"); // Enemy chams material
+
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::sleeve_chams, false, "chms.s_e"); // Sleeve enabled
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::sleeve_wireframe, false, "chms.s_wfr"); // Sleeve wireframe
+		initCfgItem(DATA_INT, &variables::Chams_Settings::sleeve_chams_material, false, "chms.s_mat"); // Sleeve chams material
 
 
-		initCfgItem(DATA_BOOL, &variables::chams::enemy_chams, false, "chms.e_e"); // Enemy chams enabled
-		initCfgItem(DATA_BOOL, &variables::chams::enemy_only_visible, false, "chms.e_o_v"); // Enemy chams only visible
-		initCfgItem(DATA_BOOL, &variables::chams::enemy_wireframe, false, "chms.e_wi"); // Enemy chams wireframe
-		initCfgItem(DATA_INT, &variables::chams::enemy_chams_material, false, "chms.e_mat"); // Enemy chams material
-
-		initCfgItem(DATA_BOOL, &variables::chams::team_chams, false, "chms.t_e"); // Team chams enabled
-		initCfgItem(DATA_BOOL, &variables::chams::team_only_visible, false, "chms.t_o_v"); // Team chams only visible
-		initCfgItem(DATA_BOOL, &variables::chams::team_wireframe, false, "chms.t_wi"); // Team chams wireframe
-		initCfgItem(DATA_INT, &variables::chams::team_chams_material, false, "chms.t_mat"); // Team chams material
-
-		initCfgItem(DATA_BOOL, &variables::chams::local_chams, false, "chms.l_e"); // Local chams enabled
-		initCfgItem(DATA_BOOL, &variables::chams::local_only_visible, false, "chms.l_o_v"); // Local chams only visible
-		initCfgItem(DATA_BOOL, &variables::chams::local_wireframe, false, "chms.l_wi"); // Local chams wireframe
-		initCfgItem(DATA_INT, &variables::chams::local_chams_material, false, "chms.l_mat"); // Local chams material
-
-
-
-		initCfgItem(DATA_BOOL, &variables::chams::weapon_chams, false, "chms.w_e"); // Enemy chams enabled
-		initCfgItem(DATA_BOOL, &variables::chams::weapon_wireframe, false, "chms.w_o_v"); // Enemy chams only visible
-		initCfgItem(DATA_INT, &variables::chams::weapon_chams_material, false, "chms.w_mat"); // Enemy chams material
-
-		initCfgItem(DATA_BOOL, &variables::chams::arm_chams, false, "chms.w_e"); // Enemy chams enabled
-		initCfgItem(DATA_BOOL, &variables::chams::arm_wireframe, false, "chms.w_o_v"); // Enemy chams only visible
-		initCfgItem(DATA_INT, &variables::chams::arm_chams_material, false, "chms.w_mat"); // Enemy chams material
-
-		initCfgItem(DATA_BOOL, &variables::chams::sleeve_chams, false, "chms.w_e"); // Sleeve enabled
-		initCfgItem(DATA_BOOL, &variables::chams::sleeve_wireframe, false, "chms.w_o_v"); // Sleeve wireframe
-		initCfgItem(DATA_INT, &variables::chams::sleeve_chams_material, false, "chms.w_mat"); // Sleeve chams material
-
-
-		for (size_t i = 0; i <= 3; i++)
+		for (size_t i = 0; i <= 3; i++) // 3 dahil max 3 = 0, 1, 2, 3
 		{
-			initCfgItem(DATA_FLOAT, &variables::chams::colors_weapon[i], i == 3 ? 1.0f : 0.0f, std::string("chms.wcol") + std::to_string(i)); // weapon color
-			initCfgItem(DATA_FLOAT, &variables::chams::colors_arm[i], i == 3 ? 1.0f : 0.0f, std::string("chms.acol") + std::to_string(i)); // arm color
-			initCfgItem(DATA_FLOAT, &variables::chams::colors_sleeve[i], i == 3 ? 1.0f : 0.0f, std::string("chms.scol") + std::to_string(i)); // sleeve color
+			initCfgItem(DATA_FLOAT, &variables::Chams_Settings::colors_weapon[i], i == 3 ? 1.0f : 0.0f, std::string("chms.wcol") + std::to_string(i)); // weapon color
+			initCfgItem(DATA_FLOAT, &variables::Chams_Settings::colors_arm[i], i == 3 ? 1.0f : 0.0f, std::string("chms.acol") + std::to_string(i)); // arm color
+			initCfgItem(DATA_FLOAT, &variables::Chams_Settings::colors_sleeve[i], i == 3 ? 1.0f : 0.0f, std::string("chms.scol") + std::to_string(i)); // sleeve color
 		}
 
+		for (size_t i = 0; i < 3; i++) // 3 dahil değil max 2 = 0, 1, 2
+		{
+			initCfgItem(DATA_BOOL, &variables::Chams_Settings::chams_enableds[i], false, std::string("chms.enblds-") + std::to_string(i)); // cheams enabled for teams
+			initCfgItem(DATA_BOOL, &variables::Chams_Settings::chams_onlyvisibleds[i], false, std::string("chms.ovs-") + std::to_string(i)); // Chamses only visible enabled
+			initCfgItem(DATA_BOOL, &variables::Chams_Settings::chams_wireframes[i], false, std::string("chms.wfrme-") + std::to_string(i)); // Chamses wireframe enabled
+			initCfgItem(DATA_INT, &variables::Chams_Settings::chams_materialids[i], 0, std::string("chms.matids-") + std::to_string(i)); // Chamses wireframe enabled
+		}
+
+		initCfgItem(DATA_BOOL, &variables::Chams_Settings::draw_chams_on_top, false, "chms.dtop"); // Chams on top please is enabled
 		
 
 		for (size_t i = 0; i < 3; i++) // team for 0 = enemy, 1 = team, 2 = local;
@@ -134,7 +122,7 @@ void config::init()
 			{
 				for (size_t i3 = 0; i3 <= 3; i3++) // visible or not color for | 0 = r,     1 = g,     2 = b,    3 = a;
 				{
-					initCfgItem(DATA_FLOAT, &variables::chams::player_colors_chams[i][i2][i3], i3 == 3 ? 1.0f : 0.0f, std::string(std::string("chms.col_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str() + std::string("_") + std::to_string(i3).c_str()));      // chams colors
+					initCfgItem(DATA_FLOAT, &variables::Chams_Settings::player_colors_chams[i][i2][i3], i3 == 3 ? 1.0f : 0.0f, std::string(std::string("chms.col_") + std::to_string(i).c_str() + std::string("_") + std::to_string(i2).c_str() + std::string("_") + std::to_string(i3).c_str()));      // chams colors
 				}
 			}
 		}
@@ -173,9 +161,21 @@ void config::init()
 
 
 
+	initCfgItem(DATA_BOOL, &variables::misc::bhop, false, std::string(std::string("misc.bhop_enb")));
+	initCfgItem(DATA_BOOL, &variables::misc::clean_screenshots, false, std::string(std::string("misc.scsht_clean")));
+	initCfgItem(DATA_BOOL, &variables::misc::infinite_duck, false, std::string(std::string("misc.inf_dck"))); 
+	initCfgItem(DATA_BOOL, &variables::misc::slowwalk, false, std::string(std::string("misc.slow_walk")));
+	initCfgItem(DATA_BOOL, &variables::misc::reveal_ranks, false, std::string(std::string("misc.rev_ranks")));
+	initCfgItem(DATA_INT, &variables::misc::autostrafe_target, 0, std::string(std::string("misc.as_opt")));
+
+
+	initCfgItem(DATA_FLOAT, &variables::misc_visuals::noflash_alpha, 255.f, std::string(std::string("misc.flash_alpha")));
+
+
+
+
 	initCfgItem(DATA_BOOL, &variables::misc::thirdperson, false, std::string(std::string("misc.tpeb")));
-	initCfgItem(DATA_FLOAT, &variables::misc::thirdperson_dist, 31.0f, std::string(std::string("misc.tpdst")));
-	initCfgItem(DATA_INT, &variables::misc::thirdperson_key, -1, std::string(std::string("misc.tpky")));
+
 
 
 	c_config tfg = c_config();
@@ -203,7 +203,11 @@ void config::loadConfigFromServer(c_config config)
 
 			loadConfig(config, false);
 
+			LoadedConfig = config;
+
+
 			variables::Menu_Settings::addNotification(-1, "LOAD SUCCESS", "the config loaded");
+
 		}
 		catch (json::parse_error& e)
 		{
@@ -409,8 +413,66 @@ void config::saveConfig(c_config config, bool silentSave)
 	}
 }
 
-void config::createConfig()
+
+void config::deleteConfig(const char* cfgName, bool notify) {
+
+	std::cout << "3162: " << cfgName << std::endl;
+	std::string filename = cfgName != "" ? cfgName : "cfgname";
+	std::string directoryPath = "./proximity/";
+
+	std::filesystem::path filePath = std::filesystem::path(directoryPath) / std::filesystem::path(filename);
+
+	std::error_code errorCode;
+	bool result = std::filesystem::remove(filePath, errorCode);
+
+	if (result) {
+		if (notify)
+			variables::Menu_Settings::addNotification(-1, "Removed", "The config deleted :(");
+
+		std::cout << "Dosya başarıyla silindi." << std::endl;
+	}
+	else {
+		std::cout << "Dosya silinemedi. Hata kodu: " << errorCode.value() << filePath << std::endl;
+	}
+}
+
+void config::createConfig(const char* configName)
 {
+
+	std::string filename = configName != "" ? std::string(std::string(configName) + std::string(".cfg")) : "cfgname";
+	std::string directoryPath = "./proximity/";
+
+	std::filesystem::path filePath = std::filesystem::path(directoryPath) / std::filesystem::path(filename);
+
+	std::ifstream dosya(filePath);
+
+	if (dosya.good())
+	{
+		std::cout << filename << " dosyası zaten var." << std::endl;
+		dosya.close();
+	}
+	else
+	{ 
+		std::ofstream y_dosya(filePath);
+		std::cout << filename << " dosyası oluşturuldu." << std::endl;
+
+
+		if (y_dosya.is_open()) {
+			y_dosya << "{}";
+			y_dosya.close();
+			console::log("Dosya yazildi.");
+
+			//variables::Menu_Settings::addNotification(-1, "SAVE SUCCESS", "the config saved");
+
+			//if (hnf)
+			//	hnf->addNotification(-1, "SAVE SUCCESS", std::string(filename + "configs has been saved").c_str());
+		}
+		else {
+			console::log("Dosya acilamadi.");
+		}
+	}
+
+	return;
 	json jdATAA;
 
 	jdATAA.clear();
@@ -425,14 +487,14 @@ void config::createConfig()
 
 
 	const char* sError = "";
-	if (!mSocket::sendPacketToServer(sendLon.c_str(), &sError))
+	if (!mSocket::sendPacketToServer(sendLon.c_str(), &sError)) 
 	{
 		console::log(sError);
 		// TODO: On error occurred
 	}
 }
 
-void config::refreshConfigs()
+void config::refreshConfigs(bool notify)
 {
 	namespace fs = std::filesystem;
 
@@ -471,8 +533,8 @@ void config::refreshConfigs()
 		zbkId++;
 	}
 
-
-	variables::Menu_Settings::addNotification(-1, "RELOAD SUCCESS", "Configs has been reloaded");
+	if (notify)
+		variables::Menu_Settings::addNotification(-1, "RELOAD SUCCESS", "Configs has been reloaded");
 
 
 	return;

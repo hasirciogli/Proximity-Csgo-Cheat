@@ -28,7 +28,7 @@
 #define DEFAULT_IP "127.0.0.1"
 #endif
 
-#define CHEAT_REV 1.1
+#define CHEAT_REV "1.3"
 
 namespace mSocket
 {

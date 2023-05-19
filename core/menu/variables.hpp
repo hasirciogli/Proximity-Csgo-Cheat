@@ -232,7 +232,7 @@ namespace variables {
 		inline bool nade_esp = false;
 	}
 
-	namespace chams {
+	namespace Chams_Settings {
 		inline std::vector<std::string> materials = {
 			"Transparent",
 			"Textured",
@@ -258,34 +258,11 @@ namespace variables {
 
 		// Selected material for each setting
 
-		inline bool general_chams_enabled = false;
 
-
-		inline bool enemy_chams = false; 
-		inline bool enemy_only_visible = false;
-		inline bool enemy_wireframe = false;
-		inline int enemy_chams_material = 0;
-
-
-
-
-		inline bool team_chams = false;
-		inline bool team_only_visible = false;
-		inline bool team_wireframe = false;
-		inline int team_chams_material = 0;
-
-
-
-		inline bool local_chams = false;
-		inline bool local_only_visible = false;
-		inline bool local_wireframe = false;
-		inline int local_chams_material = 0;
-
-
-
-
-
-
+		inline bool chams_enableds[3] = {false, false, false};
+		inline bool chams_onlyvisibleds[3] = {false, false, false};
+		inline bool chams_wireframes[3] = { false, false, false };
+		inline int chams_materialids[3] = { 0, 0, 0 };
 
 
 
@@ -315,7 +292,7 @@ namespace variables {
 
 
 		// Backtrack
-		inline bool backtrack_chams = false;
+		inline bool backtrack_chams[3] = { false, false, false };
 	}
 
 	namespace misc_visuals {
@@ -482,7 +459,22 @@ namespace variables {
 
 
 	namespace Menu_Settings {
-		inline float DpiSize = .6;
+
+
+		inline float DpiSize = 1;
+		inline float SelectedDpiScalar = 3;
+
+		inline int MenuWidth = 900;
+		inline int MenuHeight = 650;
+
+		inline int MenuSelectedPage = 0;
+		inline bool DarkMode = true;
+
+
+
+		inline bool notifyOnMessage = true;
+
+
 
 		enum nAnimStater {
 			SLIDE_REAPERING,
@@ -502,8 +494,8 @@ namespace variables {
 
 		struct HNFAnimObject {
 			int id = 0;
-			const char* title = "";
-			const char* message = "";
+			std::string title = "";
+			std::string message = "";
 
 
 
@@ -670,7 +662,6 @@ namespace variables {
 
 				} break;
 				}
-
 
 
 
@@ -957,10 +948,10 @@ namespace variables {
 				}
 			}
 		};
-
+		 
 		inline std::list<HNFAnimObject*> h_Notifications;
 
-		inline void addNotification(int idNumber, const char* title, const char* message) {
+		inline void addNotification(int idNumber, std::string title, std::string message) {
 			variables::Menu_Settings::HNFAnimObject* tmpObj = new variables::Menu_Settings::HNFAnimObject();
 			tmpObj->id = idNumber;
 			tmpObj->title = title;
@@ -985,10 +976,46 @@ namespace variables {
 
 		inline int selected_page = 0;
 
+		inline ImFont* fonts_gubi_8_font;
+		inline ImFont* fonts_gubi_10_font;
+		inline ImFont* fonts_gubi_12_font;
 		inline ImFont* fonts_gubi_14_font;
 		inline ImFont* fonts_gubi_16_font;
 		inline ImFont* fonts_gubi_18_font;
 		inline ImFont* fonts_gubi_20_font;
+		inline ImFont* fonts_gubi_22_font;
+		inline ImFont* fonts_gubi_24_font;
+		inline ImFont* fonts_gubi_26_font;
+		inline ImFont* fonts_gubi_28_font;
+		inline ImFont* fonts_gubi_30_font;
+		inline ImFont* fonts_gubi_32_font;
+		inline ImFont* fonts_gubi_34_font;
+		inline ImFont* fonts_gubi_36_font;
+
+
+
+		inline ImFont* fonts_kollektifb_10_font;
+		inline ImFont* fonts_kollektifb_15_font;
+		inline ImFont* fonts_kollektifb_20_font;
+		inline ImFont* fonts_kollektifb_25_font;
+		inline ImFont* fonts_kollektifb_30_font;
+		inline ImFont* fonts_kollektifb_35_font;
+		inline ImFont* fonts_kollektifb_60_font;
+		
+		
+		inline ImFont* fonts_kollektifn_10_font;
+		inline ImFont* fonts_kollektifn_15_font;
+		inline ImFont* fonts_kollektifn_20_font;
+		inline ImFont* fonts_kollektifn_25_font;
+		inline ImFont* fonts_kollektifn_30_font;
+		inline ImFont* fonts_kollektifn_35_font;
+		inline ImFont* fonts_kollektifn_60_font;
+
+
+		inline ImFont* fonts_kollektifn_arr[70];
+		inline ImFont* fonts_kollektifb_arr[70];
+		inline ImFont* fonts_gubin_arr[70];
+
 		inline ImFont* fonts_GUIBIGFONT;
 		inline ImFont* fonts_GUIBIGFONT2;
 
@@ -1015,6 +1042,10 @@ namespace variables {
 
 
 		inline LPDIRECT3DTEXTURE9 networkUserImage = nullptr;
+
+
+		inline LPDIRECT3DTEXTURE9 dark_settingsIconImageByte = nullptr;
+
 
 
 		inline int uiSelectedScalarID = 4;
@@ -1072,6 +1103,11 @@ namespace variables {
 		inline bool drawFov = false;
 		inline bool priorize_lethal_targets = false;
 		inline bool auto_wall = false;
+
+		//Exploits
+		inline bool doubletap_enabled = false;
+
+
 
 		inline int aimbotKey = -2;
 
@@ -1154,7 +1190,7 @@ namespace variables {
 
 
 
-		inline std::vector<const char*> menuSkinsItemDefins = 
+		inline std::vector<const char*> menuSkinsItemDefins =
 		{
 			"Knife",
 			"Glove",
@@ -1192,6 +1228,76 @@ namespace variables {
 			"UMP-45",
 			"USP-S",
 			"XM1014",
+		};
+		
+		struct msIDSV2 {
+			bool isEnabled = false;
+
+			int newPaintKit = -1;
+			int newSeed = 0;
+			int newStatTrak = 0;
+			int newQuality = 0;
+			float newWear = 0;
+
+			const char* newSkinName = ""; //"cu_fireserpent_ak47_bravo";
+			const char* newCustomName = "";
+
+
+			bool isKnife = false;
+			bool isGlove = false;
+
+
+			bool pleaseUpdateMeInMenu = false;
+		};
+
+		struct msIDV2 {
+			const char* weapon_name_id;
+			int menuId = 0;
+			int gameId = 0;
+
+			msIDSV2 weaponSkinConfig;
+		};
+
+		
+
+		inline std::vector<msIDV2> menuSkinsItemDefinsV2 =
+		{
+			{"knife", 0},
+			{"gloves", 1},
+			{"weapon_ak47", 2},
+			{"weapon_aug", 3},
+			{"weapon_awp", 4},
+			{"weapon_cz75a", 5},
+			{"weapon_deagle", 6},
+			{"weapon_elite", 7},
+			{"weapon_famas", 8},
+			{"weapon_fiveseven", 9},
+			{"weapon_g3sg1", 10},
+			{"weapon_galilar", 11},
+			{"weapon_glock", 12},
+			{"weapon_m249", 13},
+			{"weapon_m4a1_silencer", 14},
+			{"weapon_m4a1", 15},
+			{"weapon_mac10", 16},
+			{"weapon_mag7", 17},
+			{"weapon_mp5sd", 18},
+			{"weapon_mp7", 19},
+			{"weapon_mp9", 20},
+			{"weapon_negev", 21},
+			{"weapon_nova", 22},
+			{"weapon_hkp2000", 23},
+			{"weapon_p250", 24},
+			{"weapon_p90", 25},
+			{"weapon_bizon", 26},
+			{"weapon_revolver", 27},
+			{"weapon_sawedoff", 28},
+			{"weapon_scar20", 29},
+			{"weapon_ssg08", 30},
+			{"weapon_sg556", 31},
+			{"weapon_tec9", 32},
+			{"weapon_ump45", 33},
+			{"weapon_usp_silencer", 34},
+			{"weapon_xm1014", 35}
 		};
 
 		struct SkinSetSt

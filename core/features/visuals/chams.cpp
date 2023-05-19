@@ -40,33 +40,32 @@ void override_material(bool ignorez, bool wireframe, const color& rgba, const ch
 // Used in draw_model_execute
 void visuals::draw_chams(i_mat_render_context* ctx, const draw_model_state_t& state, const model_render_info_t& info, matrix_t* matrix) {
 	if (!csgo::local_player) return;
-	if (!variables::chams::general_chams_enabled) return;
 
 	const auto mdl = info.model;
 	if (!mdl) return;
 
 	#pragma region PLAYER
-	if (strstr(mdl->name, "models/player") && (variables::chams::general_chams_enabled || variables::chams::backtrack_chams)) {
-		const char* player_material = (variables::chams::enemy_chams_material < materials.size()) ? materials.at(variables::chams::enemy_chams_material) : materials.at(materials.size() - 1);
+	if (strstr(mdl->name, "models/player") && (variables::Chams_Settings::chams_enableds[0] || variables::Chams_Settings::chams_enableds[1] || variables::Chams_Settings::chams_enableds[2] || variables::Chams_Settings::backtrack_chams)) {
+		const char* player_material = (variables::Chams_Settings::chams_materialids[0] < materials.size()) ? materials.at(variables::Chams_Settings::chams_materialids[0]) : materials.at(materials.size() - 1);
 
 		player_t* player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(info.entity_index));
 		if (!player || !player->is_alive() || player->dormant()) return;
 
 		if (player->has_gun_game_immunity()) {
-			if (variables::chams::draw_chams_on_top) hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
+			if (variables::Chams_Settings::draw_chams_on_top) hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
 			override_material(false, false, color(255, 255, 255, 100), player_material);
 		} else {
-			// Backtrack chams
+			// Backtrack Chams_Settings
 			if (csgo::local_player == player)
 			{
 				
 			}
-			else if (variables::misc::backtrack && backtrack::records[player->index()].size() > 0 && variables::chams::backtrack_chams && (helpers::is_enemy(player) || variables::misc::backtrack_team)) {
-				if (!variables::chams::enemy_chams || !player->is_moving())
-					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);	// Draw original player before backtrack if normal player chams are disabled. Probably a bad way of doing it
+			else if (variables::misc::backtrack && backtrack::records[player->index()].size() > 0 && variables::Chams_Settings::backtrack_chams[0] && (helpers::is_enemy(player) || variables::Chams_Settings::backtrack_chams[0] || variables::Chams_Settings::backtrack_chams[1] || variables::Chams_Settings::backtrack_chams[2])) {
+				if (!variables::Chams_Settings::chams_enableds[0] || !player->is_moving())
+					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);	// Draw original player before backtrack if normal player Chams_Settings are disabled. Probably a bad way of doing it
 
-				// Colors, like chams, depend on team and not on is_enemy()
-				const color chams_col = (player->team() == csgo::local_player->team()) ? vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[ENEMY][VICIBLE]) : vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[ENEMY][VICIBLE]);
+				// Colors, like Chams_Settings, depend on team and not on is_enemy()
+				const color chams_col = (player->team() == csgo::local_player->team()) ? vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[ENEMY][VICIBLE]) : vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[ENEMY][VICIBLE]);
 				//const color chams_col_fade = (player->team() == csgo::local_player->team()) ? vfuns::getcolorofimcolor(variables::colors::bt_chams_friend_fade) : vfuns::getcolorofimcolor(variables::colors::bt_chams_enemy_fade);
 				for (uint32_t i = 0; i < backtrack::records[player->index()].size(); i++) {
 					if (!backtrack::valid_tick(backtrack::records[player->index()][i].simulation_time)
@@ -81,40 +80,40 @@ void visuals::draw_chams(i_mat_render_context* ctx, const draw_model_state_t& st
 			}
 
 			// For thirdperson
-			if (player == csgo::local_player && variables::misc::thirdperson && variables::chams::local_chams) {
-				if (variables::chams::draw_chams_on_top)
+			if (player == csgo::local_player && variables::misc::thirdperson && variables::Chams_Settings::chams_enableds[2]) {
+				if (variables::Chams_Settings::draw_chams_on_top)
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
 
-				const float localplayer_col_a = (csgo::local_player->is_scoped()) ? 30 : variables::chams::player_colors_chams[LOCAL][VICIBLE][3];
+				const float localplayer_col_a = (csgo::local_player->is_scoped()) ? 30 : variables::Chams_Settings::player_colors_chams[LOCAL][VICIBLE][3];
 				//colXMAN.a = localplayer_col_a;
-				override_material(false, variables::chams::local_wireframe, vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[LOCAL][VICIBLE]), materials[variables::chams::local_chams_material]);
+				override_material(false, variables::Chams_Settings::chams_wireframes[2], vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[LOCAL][VICIBLE]), materials[variables::Chams_Settings::chams_materialids[2]]);
 			// Enemies (color depends on team, not is_enemy())
-			} else if (variables::chams::enemy_chams && player->team() != csgo::local_player->team()) {
-				player_material = (variables::chams::enemy_chams_material < materials.size()) ? materials.at(variables::chams::enemy_chams_material) : materials.at(materials.size() - 1);
-				if (variables::chams::draw_chams_on_top)
+			} else if (variables::Chams_Settings::chams_enableds[0] && player->team() != csgo::local_player->team()) {
+				player_material = (variables::Chams_Settings::chams_materialids[0] < materials.size()) ? materials.at(variables::Chams_Settings::chams_materialids[0]) : materials.at(materials.size() - 1);
+				if (variables::Chams_Settings::draw_chams_on_top)
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
 
-				if (!variables::chams::enemy_only_visible) {
-					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[ENEMY][INVICIBLE]);
+				if (!variables::Chams_Settings::chams_onlyvisibleds[0]) {
+					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[ENEMY][INVICIBLE]);
 					// So it uses the same alpha as normal col
-					override_material(true, variables::chams::enemy_wireframe, invisible_chams_col, player_material);						// Not visible - Enemy
+					override_material(true, variables::Chams_Settings::chams_wireframes[0], invisible_chams_col, player_material);						// Not visible - Enemy
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);								// Call original to draw the ignorez one
 				}
 
-				override_material(false, variables::chams::enemy_wireframe, vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[ENEMY][VICIBLE]), player_material);			// Visible - Enemy
+				override_material(false, variables::Chams_Settings::chams_wireframes[0], vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[ENEMY][VICIBLE]), player_material);			// Visible - Enemy
 			// Friends
-			} else if (variables::chams::team_chams && player != csgo::local_player) {
-				player_material = (variables::chams::team_chams_material < materials.size()) ? materials.at(variables::chams::team_chams_material) : materials.at(materials.size() - 1);
+			} else if (variables::Chams_Settings::chams_enableds[1] && player != csgo::local_player) {
+				player_material = (variables::Chams_Settings::chams_materialids[1] < materials.size()) ? materials.at(variables::Chams_Settings::chams_materialids[1]) : materials.at(materials.size() - 1);
 
-				if (variables::chams::draw_chams_on_top)
+				if (variables::Chams_Settings::draw_chams_on_top)
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
 
-				if (!variables::chams::team_only_visible) {
-					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[TEAM][INVICIBLE]);	// So it uses the same alpha as normal col
-					override_material(true, variables::chams::team_wireframe, invisible_chams_col, player_material);						// Not visible - Friendly
+				if (!variables::Chams_Settings::chams_onlyvisibleds[1]) {
+					const color invisible_chams_col = vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[TEAM][INVICIBLE]);	// So it uses the same alpha as normal col
+					override_material(true, variables::Chams_Settings::chams_wireframes[1], invisible_chams_col, player_material);						// Not visible - Friendly
 					hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);								// Call original to draw the ignorez one
 				}
-				override_material(false, variables::chams::team_wireframe, vfuns::getcolorofimcolorF(variables::chams::player_colors_chams[TEAM][VICIBLE]), player_material);		// Visible - Friendly
+				override_material(false, variables::Chams_Settings::chams_wireframes[1], vfuns::getcolorofimcolorF(variables::Chams_Settings::player_colors_chams[TEAM][VICIBLE]), player_material);		// Visible - Friendly
 			}
 		}
 	}
@@ -123,28 +122,28 @@ void visuals::draw_chams(i_mat_render_context* ctx, const draw_model_state_t& st
 	#pragma region VIEWMODEL
 	// Sleeve
 	if (strstr(mdl->name, "sleeve")) {
-		if (variables::chams::sleeve_chams) {
-			if (variables::chams::draw_chams_on_top)
+		if (variables::Chams_Settings::sleeve_chams) {
+			if (variables::Chams_Settings::draw_chams_on_top)
 				hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
-			override_material(false, variables::chams::sleeve_wireframe, vfuns::getcolorofimcolorF(variables::chams::colors_sleeve), materials.at(variables::chams::sleeve_chams_material));
+			override_material(false, variables::Chams_Settings::sleeve_wireframe, vfuns::getcolorofimcolorF(variables::Chams_Settings::colors_sleeve), materials.at(variables::Chams_Settings::sleeve_chams_material));
 		}
 	// Arms
 	} else if (strstr(mdl->name + 17, "arms")) {
 		// Remove normal arms if we have a custom model and alive
 		if (csgo::local_player->is_alive() && skins::custom_models.find(ARMS) != skins::custom_models.end() && strstr(csgo::local_player->arms_model(), skins::custom_models.at(ARMS).worldmodel.c_str())) {
-			override_material(false, variables::chams::arm_wireframe, color{ 0,0,0,0 }, materials.at(1));
+			override_material(false, variables::Chams_Settings::arm_wireframe, color{ 0,0,0,0 }, materials.at(1));
 		// Normal arms
-		} else if (variables::chams::arm_chams) {
-			if (variables::chams::draw_chams_on_top)
+		} else if (variables::Chams_Settings::arm_chams) {
+			if (variables::Chams_Settings::draw_chams_on_top)
 				hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
-			override_material(false, variables::chams::arm_wireframe, vfuns::getcolorofimcolorF(variables::chams::colors_arm), materials.at(variables::chams::arm_chams_material));
+			override_material(false, variables::Chams_Settings::arm_wireframe, vfuns::getcolorofimcolorF(variables::Chams_Settings::colors_arm), materials.at(variables::Chams_Settings::arm_chams_material));
 		}
 	// Viewmodel weapon
 	} else if (strstr(mdl->name, "models/weapons/v")) {
-		if (variables::chams::weapon_chams && !csgo::local_player->is_scoped()) {
-			if (variables::chams::draw_chams_on_top)
+		if (variables::Chams_Settings::weapon_chams && !csgo::local_player->is_scoped()) {
+			if (variables::Chams_Settings::draw_chams_on_top)
 				hooks::draw_model_execute::original(interfaces::model_render, 0, ctx, state, info, matrix);
-			override_material(false, variables::chams::weapon_wireframe, vfuns::getcolorofimcolorF(variables::chams::colors_weapon), materials.at(variables::chams::weapon_chams_material));
+			override_material(false, variables::Chams_Settings::weapon_wireframe, vfuns::getcolorofimcolorF(variables::Chams_Settings::colors_weapon), materials.at(variables::Chams_Settings::weapon_chams_material));
 		}
 	}
 	#pragma endregion

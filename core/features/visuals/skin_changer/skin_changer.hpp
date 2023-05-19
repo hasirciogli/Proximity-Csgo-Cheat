@@ -138,6 +138,15 @@ namespace skins {
             int paintKitID;
             std::string name;
         };
+
+
+
+        struct wSkins_WeplstV2
+        {
+            int weaponGameID;
+            std::string weaponMenuName;
+            int weaponMenuID;
+        };
     };
 
     const std::vector<skins::_st::wSkins_Weplst> wItemDefs = 

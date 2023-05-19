@@ -67,7 +67,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>dependencies/utilities/csgo.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -107,6 +107,9 @@
     <ClCompile Include="core\features\aim\autowall.cpp" />
     <ClCompile Include="core\features\aim\triggerbot.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="core\features\exploits\Exploits.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="core\features\misc\animations.cpp" />
@@ -299,9 +302,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bytes\FontBytes.hpp" />
     <ClInclude Include="bytes\LeftBarIcons.h" />
     <ClInclude Include="core\config\config.hpp" />
     <ClInclude Include="core\features\aim\autowall.hpp" />
+    <ClInclude Include="core\features\exploits\Exploits.hpp" />
     <ClInclude Include="core\features\features.hpp" />
     <ClInclude Include="core\features\misc\backtrack.hpp" />
     <ClInclude Include="core\features\visuals\skin_changer\skin_changer.hpp" />
@@ -405,6 +410,7 @@
     <ClInclude Include="dependencies\rapidjson\stringbuffer.h" />
     <ClInclude Include="dependencies\rapidjson\uri.h" />
     <ClInclude Include="dependencies\rapidjson\writer.h" />
+    <ClInclude Include="dependencies\Singleton.hpp" />
     <ClInclude Include="dependencies\utilities\console\console.hpp" />
     <ClInclude Include="dependencies\utilities\csgo.hpp" />
     <ClInclude Include="dependencies\utilities\fnv.hpp" />
@@ -440,6 +446,7 @@
     <ClInclude Include="source-sdk\structs\weaponinfo.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bytes\CheatIcons.hpp" />
     <None Include="socket\packet\packet-tests.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

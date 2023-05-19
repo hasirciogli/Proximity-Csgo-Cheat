@@ -28,6 +28,8 @@ bool interfaces::initialize() {
 	engine_sound                  = get_interface<i_engine_sound, interface_type::index>("engine.dll", "IEngineSoundClient003"); 
 	panorama_engine               = get_interface<i_panoramaui_engine, interface_type::index>("panorama.dll", "PanoramaUIEngine001");
 
+	bfsystem					  = get_interface<i_base_file_system, interface_type::index>("filesystem_stdio.dll", "VBaseFileSystem011");
+
 	/* ------------------ Custom interfaces ------------------ */ 
 	 
 	clientmode = **reinterpret_cast<i_client_mode***>((*reinterpret_cast<uintptr_t**>(client))[10] + 5);

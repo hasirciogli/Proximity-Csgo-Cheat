@@ -4,7 +4,7 @@
 
 void drawNotification(int x, int y, int width, int height, void* imguiIO, void* nObject, void* drawList, float a);
 
-void HNOTIF::HNotifier::runBasement(LPDIRECT3DDEVICE9* pDevice) {
+void HNOTIF::HNotifier::runBasement(LPDIRECT3DDEVICE9* pDevice, float m_alpha) {
 
 	//auto drawList = ImGui::GetForegroundDrawList();
 	auto drawList = ImGui::GetBackgroundDrawList();
@@ -23,18 +23,20 @@ void HNOTIF::HNotifier::runBasement(LPDIRECT3DDEVICE9* pDevice) {
 				pDeleteMe.push_back(tNotify);
 				continue;
 			}
-
-			//tNotify->masterWidth = 300 * variables::Menu_Settings::DpiSize;
+#ifdef _DEBUG
+			{
+				//tNotify->masterWidth = 300 * variables::Menu_Settings::DpiSize;
 			//tNotify->masterHeight = 60 * variables::Menu_Settings::DpiSize;
 
-			ImGui::Text(std::to_string(tNotify->Alpha).c_str());
-			ImGui::Text(std::to_string(tNotify->tAlpha).c_str());
-			ImGui::Text(std::to_string(tNotify->baseTime).c_str());
+				ImGui::Text(std::to_string(tNotify->Alpha).c_str());
+				ImGui::Text(std::to_string(tNotify->tAlpha).c_str());
+				ImGui::Text(std::to_string(tNotify->baseTime).c_str());
 
 
-			ImGui::Text(std::to_string(tNotify->width).c_str());
-			ImGui::Text(std::to_string(tNotify->height).c_str());
-
+				ImGui::Text(std::to_string(tNotify->width).c_str());
+				ImGui::Text(std::to_string(tNotify->height).c_str());
+			}
+#endif
 
 			tNotify->animationRunner(io.DeltaTime);
 			drawNotification(10, lastPlusPadding, tNotify->width * variables::Menu_Settings::DpiSize, tNotify->height * variables::Menu_Settings::DpiSize, (void*)&io, (void*)tNotify, (void*)drawList, tNotify->Alpha);
@@ -64,10 +66,10 @@ void drawNotification(int x, int y, int width, int height, void* imguiIO, void* 
 	width = std::clamp(width, 0, 10500);
 	height = std::clamp(height, 0, 10500);
 
-	drawlist->AddRectFilled(ImVec2(x, y), ImVec2(x + 6, y + height), ImColor(20, 140, 20, (int)a), 4.f, ImDrawCornerFlags_Left);
+	drawlist->AddRectFilled(ImVec2(x, y), ImVec2(x + 6, y + height), ImColor(20, 140, 20, (int)a * .76), 4.f, ImDrawCornerFlags_Left);
 
-	drawlist->AddRectFilled(ImVec2(x + 6, y), ImVec2(x + 6 + width, y + height), ImColor(20, 20, 20, (int)a), 4.f, ImDrawCornerFlags_Right);
+	drawlist->AddRectFilled(ImVec2(x + 6, y), ImVec2(x + 6 + width, y + height), ImColor(20, 20, 20, a * .65), 4.f, ImDrawCornerFlags_Right);
 
-	drawlist->AddText(nullptr, 26 * variables::Menu_Settings::DpiSize, ImVec2(x + 8 + 6, y + (3 * variables::Menu_Settings::DpiSize)), ImColor(255, 255, 255, (int)notify->tAlpha), notify->title);
-	drawlist->AddText(nullptr, 20 * variables::Menu_Settings::DpiSize, ImVec2(x + 8 + 6, y + (ImGui::CalcTextSize(notify->title).y * variables::Menu_Settings::DpiSize) + (10 * variables::Menu_Settings::DpiSize)), ImColor(255, 255, 255, (int)notify->tAlpha), notify->message);
+	drawlist->AddText(nullptr, 16 * variables::Menu_Settings::DpiSize, ImVec2(x + 8 + 6, y + (10 * variables::Menu_Settings::DpiSize)), ImColor(255, 255, 255, (int)notify->tAlpha), notify->title.c_str());
+	drawlist->AddText(nullptr, 14 * variables::Menu_Settings::DpiSize, ImVec2(x + 8 + 6, y + (ImGui::CalcTextSize(notify->title.c_str()).y * variables::Menu_Settings::DpiSize) + (14 * variables::Menu_Settings::DpiSize)), ImColor(255, 255, 255, (int)notify->tAlpha), notify->message.c_str());
 }

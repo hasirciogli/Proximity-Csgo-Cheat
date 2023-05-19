@@ -26,6 +26,8 @@ using namespace nlohmann::json_abi_v3_11_2;
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll") && !GetModuleHandleA("steam_api.dll")) 
 		Sleep(150);
+	std::locale::global(std::locale("tr_TR.utf8"));
+
 	setlocale(LC_ALL, "Turkish");
 	SteamAPI_Init();
 
