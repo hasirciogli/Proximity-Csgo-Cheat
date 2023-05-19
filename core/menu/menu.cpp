@@ -1890,9 +1890,6 @@ std::vector<Snowflake::Snowflake> snow;
 
 
 
-
-
-
 void CheckboxMy(ImVec2 ts, bool* v, const char* name, const char* name_id = "") {
 	ImGui::BeginGroup();
 	{
