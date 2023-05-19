@@ -126,17 +126,26 @@ namespace skins {
 
     namespace _st
     {
-        inline struct wSkins_Weplst
+        struct wSkins_Weplst
         {
             int weaponGameID;
             std::string weaponMenuName;
             int weaponMenuID;
         };
 
-        inline struct _skinsList
+        struct _skinsList
         {
             int paintKitID;
             std::string name;
+        };
+
+
+
+        struct wSkins_WeplstV2
+        {
+            int weaponGameID;
+            std::string weaponMenuName;
+            int weaponMenuID;
         };
     };
 

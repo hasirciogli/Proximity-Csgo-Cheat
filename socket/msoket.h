@@ -28,7 +28,7 @@
 #define DEFAULT_IP "127.0.0.1"
 #endif
 
-#define CHEAT_REV 1.0
+#define CHEAT_REV "1.3"
 
 namespace mSocket
 {
@@ -58,7 +58,6 @@ namespace mSocket
 		inline int iResult;
 		inline int recvbuflen = 8192;
 	};
-
 
 	bool initSoket(const char** errStr);
 	bool cleanup(bool fuck = false);

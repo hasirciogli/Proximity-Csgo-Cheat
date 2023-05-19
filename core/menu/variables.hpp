@@ -118,7 +118,8 @@ namespace variables {
 	namespace NetworkUser
 	{
 		inline std::string username = "null";
-		inline bool fuckThisCheat = false;	
+		inline std::string subtill = "08.07.2028 20:18:55";
+		inline bool fuckThisCheat = false;
 	}
 
 	namespace cheat
@@ -198,7 +199,7 @@ namespace variables {
 		inline bool skeletonesp = false;
 		inline bool nameesp = false;
 
-		inline struct multicombo_opt_t
+		struct multicombo_opt_t
 		{
 			const char* text = "";
 			bool value = false;
@@ -231,7 +232,7 @@ namespace variables {
 		inline bool nade_esp = false;
 	}
 
-	namespace chams {
+	namespace Chams_Settings {
 		inline std::vector<std::string> materials = {
 			"Transparent",
 			"Textured",
@@ -257,34 +258,11 @@ namespace variables {
 
 		// Selected material for each setting
 
-		inline bool general_chams_enabled = false;
 
-
-		inline bool enemy_chams = false; 
-		inline bool enemy_only_visible = false;
-		inline bool enemy_wireframe = false;
-		inline int enemy_chams_material = 0;
-
-
-
-
-		inline bool team_chams = false;
-		inline bool team_only_visible = false;
-		inline bool team_wireframe = false;
-		inline int team_chams_material = 0;
-
-
-
-		inline bool local_chams = false;
-		inline bool local_only_visible = false;
-		inline bool local_wireframe = false;
-		inline int local_chams_material = 0;
-
-
-
-
-
-
+		inline bool chams_enableds[3] = {false, false, false};
+		inline bool chams_onlyvisibleds[3] = {false, false, false};
+		inline bool chams_wireframes[3] = { false, false, false };
+		inline int chams_materialids[3] = { 0, 0, 0 };
 
 
 
@@ -314,7 +292,7 @@ namespace variables {
 
 
 		// Backtrack
-		inline bool backtrack_chams = false;
+		inline bool backtrack_chams[3] = { false, false, false };
 	}
 
 	namespace misc_visuals {
@@ -416,6 +394,7 @@ namespace variables {
 			inline bool opened = false;
 			inline int x = 300, y = 200;
 			inline int w = 500, h = 450;
+			inline float DpiScale = 1;
 		}
 
 		namespace watermark {
@@ -480,6 +459,508 @@ namespace variables {
 
 
 	namespace Menu_Settings {
+
+
+		inline float DpiSize = 1;
+		inline float SelectedDpiScalar = 3;
+
+		inline int MenuWidth = 900;
+		inline int MenuHeight = 650;
+
+		inline int MenuSelectedPage = 0;
+		inline bool DarkMode = true;
+
+
+
+		inline bool notifyOnMessage = true;
+
+
+
+		enum nAnimStater {
+			SLIDE_REAPERING,
+			SLIDE_BOBERING,
+			TBALPHA_TETRING,
+
+			TT_JHGWAITING,
+
+
+			RE_TBALPHA_TETRING,
+			RE_SLIDE_BOBERING,
+			RE_SLIDE_REAPERING,
+
+
+			FINISH,
+		};
+
+		struct HNFAnimObject {
+			int id = 0;
+			std::string title = "";
+			std::string message = "";
+
+
+
+			float masterWidth = 300;
+			float masterHeight = 60;
+
+			float width = 0;
+			float height = 0;
+
+
+
+			float tAlpha = 0.f;
+			float Alpha = 0.f;
+
+			float baseTime = 0;
+
+			bool pleaseDeleteMe = false;
+
+			bool AnimState = false;
+
+			nAnimStater animationState = nAnimStater::SLIDE_REAPERING;
+
+
+			float LerpUnclamped(float& x, float y, float t) {
+				x = x + (y - x) * t;
+				return 1;
+			}
+
+
+			inline void animationRunner(float deltaTime) {
+				if (this->pleaseDeleteMe)
+					return;
+
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height <= this->masterHeight - .2)
+					{
+						LerpUnclamped(this->height, this->masterHeight, .2);
+					}
+					else {
+						this->height = this->masterHeight;
+					}
+
+					if (this->Alpha < 255 - .2)
+					{
+						LerpUnclamped(this->Alpha, 255.f, .2);
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->height >= this->masterHeight && this->Alpha >= 255)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->width < this->masterWidth - .2)
+					{
+						LerpUnclamped(this->width, masterWidth, .2);
+					}
+					else {
+						this->width = this->masterWidth;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255 - .2)
+					{
+						LerpUnclamped(this->tAlpha, 255.f, .2);
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0 + .2)
+					{
+						LerpUnclamped(this->tAlpha, 0, .2);
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->width > 0 + .2)
+					{
+						LerpUnclamped(this->width, 0, .2);
+					}
+					else {
+						this->width = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height > 0 + .2)
+					{
+						LerpUnclamped(this->height, 0, .2);
+					}
+					else {
+						this->height = 0;
+					}
+
+					if (this->Alpha > 0 + .2)
+					{
+						LerpUnclamped(this->Alpha, 0, .2);
+					}
+					else {
+						this->Alpha = 0;
+					}
+
+
+					if (this->height <= 0 && this->Alpha <= 0)
+					{
+						this->Alpha = 255;
+						this->Alpha = height;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					this->pleaseDeleteMe = true;
+
+				} break;
+				}
+
+
+
+
+
+
+
+				return;
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height < this->masterHeight)
+					{
+						this->height += 6.f;
+					}
+					else {
+						this->height = this->masterHeight;
+					}
+
+					if (this->Alpha < 255)
+					{
+						this->Alpha += 14;
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->height >= this->masterHeight && this->Alpha >= 255)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->width < this->masterWidth)
+					{
+						this->width += 16.f;
+					}
+					else {
+						this->width = this->masterWidth;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255)
+					{
+						this->tAlpha += 10;
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0)
+					{
+						this->tAlpha -= 10;
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->width > 0)
+					{
+						this->width -= 16.f;
+					}
+					else {
+						this->width = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					this->width = 0;
+
+					if (this->height > 0)
+					{
+						this->height -= 6.f;
+					}
+					else {
+						this->height = 0;
+					}
+
+					if (this->Alpha > 0)
+					{
+						this->Alpha -= 14;
+					}
+					else {
+						this->Alpha = 0;
+					}
+
+
+					if (this->height <= 0 && this->Alpha <= 0)
+					{
+						this->Alpha = 255;
+						this->Alpha = height;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					this->pleaseDeleteMe = true;
+
+				} break;
+				}
+
+
+
+				return;
+				switch (this->animationState)
+				{
+				case nAnimStater::SLIDE_REAPERING:
+				{
+					if (this->height < 3)
+					{
+						this->height += .1;
+					}
+					else {
+						this->height = 3;
+					}
+
+					if (this->width < this->masterWidth)
+					{
+						this->width += 10.f;
+					}
+					else {
+						this->width = this->masterWidth;
+					}
+
+					if (this->Alpha < 255)
+					{
+						this->Alpha += 14;
+					}
+					else {
+						this->Alpha = 255;
+					}
+
+
+					if (this->width >= this->masterWidth && this->Alpha >= 255 && height == 3)
+					{
+						this->Alpha = 255;
+						this->animationState = nAnimStater::SLIDE_BOBERING;
+					}
+				} break;
+
+				case nAnimStater::SLIDE_BOBERING:
+				{
+					if (this->height < this->masterHeight)
+					{
+						this->height += 6.f;
+					}
+					else {
+						this->height = this->masterHeight;
+						this->animationState = nAnimStater::TBALPHA_TETRING;
+					}
+				} break;
+
+				case nAnimStater::TBALPHA_TETRING:
+				{
+					if (this->tAlpha < 255)
+					{
+						this->tAlpha += 10;
+					}
+					else {
+						this->tAlpha = 255;
+						this->animationState = nAnimStater::TT_JHGWAITING;
+					}
+				} break;
+
+
+
+
+
+
+				case nAnimStater::TT_JHGWAITING:
+				{
+					this->baseTime += deltaTime;
+					if (this->baseTime >= 3)
+						this->animationState = nAnimStater::RE_TBALPHA_TETRING;
+				} break;
+
+
+
+
+
+
+				case nAnimStater::RE_TBALPHA_TETRING:
+				{
+					if (this->tAlpha > 0)
+					{
+						this->tAlpha -= 5;
+					}
+					else {
+						this->tAlpha = 0;
+						this->animationState = nAnimStater::RE_SLIDE_BOBERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_BOBERING:
+				{
+					if (this->height > 3)
+					{
+						this->height -= 6;
+					}
+					else {
+						this->height = 0;
+						this->animationState = nAnimStater::RE_SLIDE_REAPERING;
+					}
+				} break;
+
+
+				case nAnimStater::RE_SLIDE_REAPERING:
+				{
+					if (this->width > 0)
+					{
+						this->width -= 8;
+					}
+
+					if (this->Alpha > 0)
+					{
+						this->Alpha -= 4;
+					}
+
+
+					if (this->width <= 0 && this->Alpha <= 0)
+					{
+						this->width = 0;
+						this->Alpha = 0;
+						this->animationState = nAnimStater::FINISH;
+					}
+				} break;
+
+
+				case nAnimStater::FINISH:
+				{
+					if (this->height > 0)
+					{
+						this->height -= .1;
+					}
+					else {
+						this->height = 3;
+
+						this->pleaseDeleteMe = true;
+					}
+
+				} break;
+				}
+			}
+		};
+		 
+		inline std::list<HNFAnimObject*> h_Notifications;
+
+		inline void addNotification(int idNumber, std::string title, std::string message) {
+			variables::Menu_Settings::HNFAnimObject* tmpObj = new variables::Menu_Settings::HNFAnimObject();
+			tmpObj->id = idNumber;
+			tmpObj->title = title;
+			tmpObj->message = message;
+			tmpObj->Alpha = 0.f;
+
+			variables::Menu_Settings::h_Notifications.push_front(tmpObj);
+		}
+
 		inline bool isOpened = true;
 		inline bool isInitialized = false;
 		inline int ui_width = 780;
@@ -495,10 +976,46 @@ namespace variables {
 
 		inline int selected_page = 0;
 
+		inline ImFont* fonts_gubi_8_font;
+		inline ImFont* fonts_gubi_10_font;
+		inline ImFont* fonts_gubi_12_font;
 		inline ImFont* fonts_gubi_14_font;
 		inline ImFont* fonts_gubi_16_font;
 		inline ImFont* fonts_gubi_18_font;
 		inline ImFont* fonts_gubi_20_font;
+		inline ImFont* fonts_gubi_22_font;
+		inline ImFont* fonts_gubi_24_font;
+		inline ImFont* fonts_gubi_26_font;
+		inline ImFont* fonts_gubi_28_font;
+		inline ImFont* fonts_gubi_30_font;
+		inline ImFont* fonts_gubi_32_font;
+		inline ImFont* fonts_gubi_34_font;
+		inline ImFont* fonts_gubi_36_font;
+
+
+
+		inline ImFont* fonts_kollektifb_10_font;
+		inline ImFont* fonts_kollektifb_15_font;
+		inline ImFont* fonts_kollektifb_20_font;
+		inline ImFont* fonts_kollektifb_25_font;
+		inline ImFont* fonts_kollektifb_30_font;
+		inline ImFont* fonts_kollektifb_35_font;
+		inline ImFont* fonts_kollektifb_60_font;
+		
+		
+		inline ImFont* fonts_kollektifn_10_font;
+		inline ImFont* fonts_kollektifn_15_font;
+		inline ImFont* fonts_kollektifn_20_font;
+		inline ImFont* fonts_kollektifn_25_font;
+		inline ImFont* fonts_kollektifn_30_font;
+		inline ImFont* fonts_kollektifn_35_font;
+		inline ImFont* fonts_kollektifn_60_font;
+
+
+		inline ImFont* fonts_kollektifn_arr[70];
+		inline ImFont* fonts_kollektifb_arr[70];
+		inline ImFont* fonts_gubin_arr[70];
+
 		inline ImFont* fonts_GUIBIGFONT;
 		inline ImFont* fonts_GUIBIGFONT2;
 
@@ -525,6 +1042,10 @@ namespace variables {
 
 
 		inline LPDIRECT3DTEXTURE9 networkUserImage = nullptr;
+
+
+		inline LPDIRECT3DTEXTURE9 dark_settingsIconImageByte = nullptr;
+
 
 
 		inline int uiSelectedScalarID = 4;
@@ -583,6 +1104,11 @@ namespace variables {
 		inline bool priorize_lethal_targets = false;
 		inline bool auto_wall = false;
 
+		//Exploits
+		inline bool doubletap_enabled = false;
+
+
+
 		inline int aimbotKey = -2;
 
 		inline float aimbot_smoothing = 0.f;
@@ -608,6 +1134,17 @@ namespace variables {
 			"legs"
 		};
 	};
+	
+	namespace AA_Settings {
+		inline bool antiaim = false;
+		inline float yaw = 0.f;
+		inline float pitch = 0.f;
+		inline bool spinbot = false;
+		inline float spinbot_speed = 0.f;
+		inline bool peek_aa = false;
+		inline hotkey_t peek_aa_toggle_key(VK_XBUTTON1);
+	};
+
 
 	namespace Esp_Settings {
 		inline int selected_team = 0;  
@@ -653,7 +1190,7 @@ namespace variables {
 
 
 
-		inline std::vector<const char*> menuSkinsItemDefins = 
+		inline std::vector<const char*> menuSkinsItemDefins =
 		{
 			"Knife",
 			"Glove",
@@ -692,8 +1229,78 @@ namespace variables {
 			"USP-S",
 			"XM1014",
 		};
+		
+		struct msIDSV2 {
+			bool isEnabled = false;
 
-		inline struct SkinSetSt
+			int newPaintKit = -1;
+			int newSeed = 0;
+			int newStatTrak = 0;
+			int newQuality = 0;
+			float newWear = 0;
+
+			const char* newSkinName = ""; //"cu_fireserpent_ak47_bravo";
+			const char* newCustomName = "";
+
+
+			bool isKnife = false;
+			bool isGlove = false;
+
+
+			bool pleaseUpdateMeInMenu = false;
+		};
+
+		struct msIDV2 {
+			const char* weapon_name_id;
+			int menuId = 0;
+			int gameId = 0;
+
+			msIDSV2 weaponSkinConfig;
+		};
+
+		
+
+		inline std::vector<msIDV2> menuSkinsItemDefinsV2 =
+		{
+			{"knife", 0},
+			{"gloves", 1},
+			{"weapon_ak47", 2},
+			{"weapon_aug", 3},
+			{"weapon_awp", 4},
+			{"weapon_cz75a", 5},
+			{"weapon_deagle", 6},
+			{"weapon_elite", 7},
+			{"weapon_famas", 8},
+			{"weapon_fiveseven", 9},
+			{"weapon_g3sg1", 10},
+			{"weapon_galilar", 11},
+			{"weapon_glock", 12},
+			{"weapon_m249", 13},
+			{"weapon_m4a1_silencer", 14},
+			{"weapon_m4a1", 15},
+			{"weapon_mac10", 16},
+			{"weapon_mag7", 17},
+			{"weapon_mp5sd", 18},
+			{"weapon_mp7", 19},
+			{"weapon_mp9", 20},
+			{"weapon_negev", 21},
+			{"weapon_nova", 22},
+			{"weapon_hkp2000", 23},
+			{"weapon_p250", 24},
+			{"weapon_p90", 25},
+			{"weapon_bizon", 26},
+			{"weapon_revolver", 27},
+			{"weapon_sawedoff", 28},
+			{"weapon_scar20", 29},
+			{"weapon_ssg08", 30},
+			{"weapon_sg556", 31},
+			{"weapon_tec9", 32},
+			{"weapon_ump45", 33},
+			{"weapon_usp_silencer", 34},
+			{"weapon_xm1014", 35}
+		};
+
+		struct SkinSetSt
 		{
 			bool isEnabled = false;
 			bool isKnife = false;

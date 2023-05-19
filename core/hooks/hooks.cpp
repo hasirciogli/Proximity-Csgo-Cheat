@@ -89,10 +89,10 @@ bool hooks::initialize() {
 	/* ------------------------------------------------------------------------ */
 
 	// Reset crosshair
-	if (!variables::misc_visuals::crosshair) {
+	/*if (!variables::misc_visuals::crosshair) {
 		interfaces::engine->execute_cmd("crosshair 1");
 		helpers::console::state_to_console_color("Crosshair", "Crosshair reset!");
-	}
+	}*/
 	
 
 	interfaces::console->color_printf(valve_color_t{ 255, 255, 255, 255 }, "--------------- ");

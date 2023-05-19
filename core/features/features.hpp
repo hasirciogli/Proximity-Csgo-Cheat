@@ -8,7 +8,7 @@ namespace antiaim {
 }
 
 namespace animations {
-	// @todo: resolver
+	// @Todo: resolver
 	namespace local {
 		void run_local_animations();
 	}

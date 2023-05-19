@@ -1,4 +1,4 @@
-#undef UTF8_WINAPI
+﻿#undef UTF8_WINAPI
 #define UTF8_WINAPI
 
 #include <steam/isteamfriends.h>
@@ -10,6 +10,9 @@
 #include "dependencies/imgui/imgui.h"
 #include "core/config/config.hpp"
 #include "core/menu/variables.hpp"
+#include <locale>
+#include <locale>
+#include <codecvt>
 
 
 #include "steam/isteamuser.h"
@@ -60,7 +63,7 @@ void CDataHandlerFuncs::NeedUserAuth(std::string fullData)
 			}
 
 			j["who_i_am"] = "cheat";
-			j["cver"] = 1.0f;
+			j["cver"] = CHEAT_REV;
 			j["packet_id"] = Packets::NClientPackets::USER_AUTH;
 			j["data"]["hwid"] = resstr; // Your hwid data
 			j["data"]["steam_id"] = SteamUser()->GetSteamID().ConvertToUint64();
@@ -84,7 +87,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 			faj = json::parse(fullData);
 
 
-			int packetID = faj["packet_id"];//faj["packet_id"];
+			int packetID = faj["packet_id"]; //faj["packet_id"];
 			std::string dataSTR = faj["data"].dump();
 			bool isSuccess = faj["data"]["isSuccess"];
 			std::string token = faj["data"]["token"];
@@ -97,6 +100,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 				{
 					config::reInitOnlyList();
 					variables::NetworkUser::username = username;
+					variables::NetworkUser::subtill = subTill;
 					mSocket::cfg::authed = true;
 					mSocket::cfg::grabbedToken = token;
 				}
@@ -126,6 +130,7 @@ void CDataHandlerFuncs::UserAuth(std::string fullData)
 		}
 	}
 
+
 void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 	{
 		try
@@ -145,12 +150,39 @@ void CDataHandlerFuncs::ChatMessageSent(std::string fullData)
 				return;
 			}
 
+			auto utf8_to_wstring = [](const std::string& str) {
+
+				int wideCharLength = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+				if (wideCharLength > 0) {
+					std::wstring wideString(wideCharLength, L'\0');
+					MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wideString[0], wideCharLength);
+
+					// Wide string'i kullanarak işlemler yapabilirsiniz.
+					// ...
+
+					// Wide string'i çok baytlı (multi-byte) string'e dönüştürme
+					int multiByteLength = WideCharToMultiByte(CP_UTF8, 0, wideString.c_str(), -1, NULL, 0, NULL, NULL);
+					if (multiByteLength > 0) {
+						std::string multiByteString(multiByteLength, '\0');
+						WideCharToMultiByte(CP_UTF8, 0, wideString.c_str(), -1, &multiByteString[0], multiByteLength, NULL, NULL);
+
+						return multiByteString;
+					}
+				}
+				return std::string("");
+			};
+
 			int packetID = faj["packet_id"]; //faj["packet_id"];
 			std::string dataSTR = faj["data"].dump();
 			int message_id = faj["data"]["message_id"];
 			std::string message_author = faj["data"]["message_author"];
 			std::string message_content = faj["data"]["message_content"];
 			std::string message_date = faj["data"]["message_date"];
+
+
+			if (variables::Menu_Settings::notifyOnMessage)
+				variables::Menu_Settings::addNotification(-1, message_author, message_content);
+			
 
 
 			float message_color_x = faj["data"]["message_content_color"]["x"];
@@ -324,8 +356,7 @@ void CDataHandlerFuncs::ConfigLoad(std::string fullData)
 				}
 			}
 
-			interfaces::clientstate->full_update();
-
+			globals::forcing_update = true;
 		}
 		catch (json::parse_error& err)
 		{

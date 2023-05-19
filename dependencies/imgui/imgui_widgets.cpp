@@ -85,6 +85,32 @@ Index of this file:
 #pragma GCC diagnostic ignored "-Wdeprecated-enum-enum-conversion"  // warning: bitwise operation between different enumeration types ('XXXFlags_' and 'XXXFlagsPrivate_') is deprecated
 #endif
 
+
+
+
+
+static const char* PatchFormatStringFloatToInt(const char* fmt)
+{
+    if (fmt[0] == '%' && fmt[1] == '.' && fmt[2] == '0' && fmt[3] == 'f' && fmt[4] == 0) // Fast legacy path for "%.0f" which is expected to be the most common case.
+        return "%d";
+    const char* fmt_start = ImParseFormatFindStart(fmt);    // Find % (if any, and ignore %%)
+    const char* fmt_end = ImParseFormatFindEnd(fmt_start);  // Find end of format specifier, which itself is an exercise of confidence/recklessness (because snprintf is dependent on libc or user).
+    if (fmt_end > fmt_start && fmt_end[-1] == 'f')
+    {
+#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
+        if (fmt_start == fmt && fmt_end[0] == 0)
+            return "%d";
+        const char* tmp_format;
+        ImFormatStringToTempBuffer(&tmp_format, NULL, "%.*s%%d%s", (int)(fmt_start - fmt), fmt, fmt_end); // Honor leading and trailing decorations, but lose alignment/precision.
+        return tmp_format;
+#else
+        IM_ASSERT(0 && "DragInt(): Invalid format string!"); // Old versions used a default parameter of "%.0f", please replace with e.g. "%d"
+#endif
+    }
+    return fmt;
+}
+
+
 //-------------------------------------------------------------------------
 // Data
 //-------------------------------------------------------------------------
@@ -2741,6 +2767,8 @@ float ImGui::ScaleRatioFromValueT(ImGuiDataType data_type, TYPE v, TYPE v_min, T
     }
 }
 
+
+
 // Convert a parametric position on a slider into a value v in the output space (the logical opposite of ScaleRatioFromValueT)
 template<typename TYPE, typename SIGNEDTYPE, typename FLOATTYPE>
 TYPE ImGui::ScaleValueFromRatioT(ImGuiDataType data_type, float t, TYPE v_min, TYPE v_max, bool is_logarithmic, float logarithmic_zero_epsilon, float zero_deadzone_halfsize)
@@ -3026,6 +3054,10 @@ bool ImGui::SliderBehavior(const ImRect& bb, ImGuiID id, ImGuiDataType data_type
     return false;
 }
 
+struct slider_element {
+    float opacity;
+};
+
 // Note: p_data, p_min and p_max are _pointers_ to a memory address holding the data. For a slider, they are all required.
 // Read code of e.g. SliderFloat(), SliderInt() etc. or examples in 'Demo->Widgets->Data Types' to understand how to use this function directly.
 bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags)
@@ -3037,80 +3069,62 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
     const ImGuiID id = window->GetID(label);
-    const float w = CalcItemWidth();
+    const float w = GetWindowWidth() - 30;
 
     const ImVec2 label_size = CalcTextSize(label, NULL, true);
-    const ImRect frame_bb(window->DC.CursorPos, window->DC.CursorPos + ImVec2(w, label_size.y + style.FramePadding.y * 2.0f));
-    const ImRect total_bb(frame_bb.Min, frame_bb.Max + ImVec2(label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f, 0.0f));
+    const ImRect total_bb(window->DC.CursorPos, window->DC.CursorPos + ImVec2(w, label_size.y + 16));
+    const ImRect frame_bb(total_bb.Min + ImVec2(0, label_size.y + 10), total_bb.Max);
 
-    const bool temp_input_allowed = (flags & ImGuiSliderFlags_NoInput) == 0;
     ItemSize(total_bb, style.FramePadding.y);
-    if (!ItemAdd(total_bb, id, &frame_bb, temp_input_allowed ? ImGuiItemFlags_Inputable : 0))
+    if (!ItemAdd(total_bb, id, &frame_bb))
         return false;
 
     // Default format string when passing NULL
     if (format == NULL)
         format = DataTypeGetInfo(data_type)->PrintFmt;
+    else if (data_type == ImGuiDataType_S32 && strcmp(format, "%d") != 0) // (FIXME-LEGACY: Patch old "%.0f" format string to use "%d", read function more details.)
+        format = PatchFormatStringFloatToInt(format);
 
+    // Tabbing or CTRL-clicking on Slider turns it into an input box
     const bool hovered = ItemHoverable(frame_bb, id);
-    bool temp_input_is_active = temp_input_allowed && TempInputIsActive(id);
-    if (!temp_input_is_active)
+    const bool clicked = (hovered && g.IO.MouseClicked[0]);
+    if (clicked)
     {
-        // Tabbing or CTRL-clicking on Slider turns it into an input box
-        const bool input_requested_by_tabbing = temp_input_allowed && (g.LastItemData.StatusFlags & ImGuiItemStatusFlags_FocusedByTabbing) != 0;
-        const bool clicked = hovered && IsMouseClicked(0, id);
-        const bool make_active = (input_requested_by_tabbing || clicked || g.NavActivateId == id || g.NavActivateInputId == id);
-        if (make_active && clicked)
-            SetKeyOwner(ImGuiKey_MouseLeft, id);
-        if (make_active && temp_input_allowed)
-            if (input_requested_by_tabbing || (clicked && g.IO.KeyCtrl) || g.NavActivateInputId == id)
-                temp_input_is_active = true;
-
-        if (make_active && !temp_input_is_active)
-        {
-            SetActiveID(id, window);
-            SetFocusID(id, window);
-            FocusWindow(window);
-            g.ActiveIdUsingNavDirMask |= (1 << ImGuiDir_Left) | (1 << ImGuiDir_Right);
-        }
+        SetActiveID(id, window);
+        SetFocusID(id, window);
+        FocusWindow(window);
+        g.ActiveIdUsingNavDirMask |= (1 << ImGuiDir_Left) | (1 << ImGuiDir_Right);
     }
 
-    if (temp_input_is_active)
+    static std::map <ImGuiID, slider_element> anim;
+    auto it_anim = anim.find(id);
+    if (it_anim == anim.end())
     {
-        // Only clamp CTRL+Click input when ImGuiSliderFlags_AlwaysClamp is set
-        const bool is_clamp_input = (flags & ImGuiSliderFlags_AlwaysClamp) != 0;
-        return TempInputScalar(frame_bb, id, label, data_type, p_data, format, is_clamp_input ? p_min : NULL, is_clamp_input ? p_max : NULL);
+        anim.insert({ id, { 0.0f } });
+        it_anim = anim.find(id);
     }
 
-    // Draw frame
-    const ImU32 frame_col = GetColorU32(g.ActiveId == id ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg);
-    RenderNavHighlight(frame_bb, id);
-    RenderFrame(frame_bb.Min, frame_bb.Max, frame_col, true, g.Style.FrameRounding);
+    it_anim->second.opacity = ImLerp(it_anim->second.opacity, IsItemActive() ? 1.0f : 0.4f, 0.08f * (1.0f - ImGui::GetIO().DeltaTime));
 
-    // Slider behavior
     ImRect grab_bb;
     const bool value_changed = SliderBehavior(frame_bb, id, data_type, p_data, p_min, p_max, format, flags, &grab_bb);
     if (value_changed)
         MarkItemEdited(id);
 
-    // Render grab
-    if (grab_bb.Max.x > grab_bb.Min.x)
-    {
-    	//window->DrawList->AddRectFilled(grab_bb.Min, grab_bb.Max, GetColorU32(g.ActiveId == id ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab), style.GrabRounding);
-        window->DrawList->AddRectFilled(frame_bb.Min, ImVec2((grab_bb.Min.x + grab_bb.Max.x) / 2, frame_bb.Max.y), GetColorU32(g.ActiveId == id ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab));
-    }
-
-    // Display value using user-provided display format so user can add prefix/suffix/decorations to the value.
     char value_buf[64];
     const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), data_type, p_data, format);
-    if (g.LogEnabled)
-        LogSetNextTextDecoration("{", "}");
-    RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
-    if (label_size.x > 0.0f)
-        RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label);
+    window->DrawList->AddRectFilled(frame_bb.Min, frame_bb.Max, ImColor(15, 15, 16), 5.0f);
+    window->DrawList->AddRectFilled(frame_bb.Min, ImVec2(grab_bb.Min.x + 3, frame_bb.Max.y), ImColor(147, 190, 66), 5.0f);
+    window->DrawList->AddCircleFilled(ImVec2(grab_bb.Min.x + (grab_bb.GetWidth() / 2), grab_bb.Min.y + 1), 6.0f, ImColor(1.0f, 1.0f, 1.0f), 30);
 
-    IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
+    RenderText(total_bb.Min, label);
+
+    PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, it_anim->second.opacity)); {
+        RenderTextClipped(total_bb.Min, total_bb.Max, value_buf, value_buf_end, NULL, ImVec2(1.f, 0.f));
+    } PopStyleColor();
+
+    IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.ItemFlags);
     return value_changed;
 }
 
@@ -3292,6 +3306,7 @@ bool ImGui::VSliderInt(const char* label, const ImVec2& size, int* v, int v_min,
 // - InputInt4()
 // - InputDouble()
 //-------------------------------------------------------------------------
+
 
 // We don't use strchr() because our strings are usually very short and often start with '%'
 const char* ImParseFormatFindStart(const char* fmt)

@@ -4,7 +4,7 @@
 
 // Used in create_move hook. Inside prediction
 void antiaim::run_antiaim(c_usercmd* cmd, bool& send_packet) {
-	if (!variables::antiaim::antiaim) return;
+	if (!variables::AA_Settings::antiaim) return;
 	if (!csgo::local_player || !csgo::local_player->is_alive()) return;
 	const int move_type = csgo::local_player->move_type();
 	if (move_type == movetype_ladder || move_type == movetype_noclip || move_type == movetype_observer) return;     // Ladder or noclip
@@ -37,7 +37,7 @@ void antiaim::run_antiaim(c_usercmd* cmd, bool& send_packet) {
 	}
 
 	// Pitch
-	cmd->viewangles.x = variables::antiaim::pitch;
+	cmd->viewangles.x = variables::AA_Settings::pitch;
 
 	// Use different var for yaw in case we are spinning or with peek aa
 	static bool peek_right = true;
@@ -45,12 +45,12 @@ void antiaim::run_antiaim(c_usercmd* cmd, bool& send_packet) {
 	constexpr float left_peek_yaw = -140.f;
 	static float yaw = 0.f;
 
-	if (variables::antiaim::spinbot) {
-		yaw += variables::antiaim::spinbot_speed / 2;       // Half speed for more control
-	} else if (variables::antiaim::peek_aa) {
+	if (variables::AA_Settings::spinbot) {
+		yaw += variables::AA_Settings::spinbot_speed / 2;       // Half speed for more control
+	} else if (variables::AA_Settings::peek_aa) {
 		// Toggle peek aa direction. We need to make a "manual IsPressed()" because we are checking the key in create_move
 		static bool was_pressed = false;
-		if (input::global_input.IsHeld(variables::antiaim::peek_aa_toggle_key)) {
+		if (input::global_input.IsHeld(variables::AA_Settings::peek_aa_toggle_key)) {
 			if (!was_pressed) peek_right = !peek_right;
 			was_pressed = true;
 		} else {
@@ -60,7 +60,7 @@ void antiaim::run_antiaim(c_usercmd* cmd, bool& send_packet) {
 		// Change yaw to peek dir
 		yaw = peek_right ? right_peek_yaw : left_peek_yaw;
 	} else {
-		yaw = variables::antiaim::yaw;
+		yaw = variables::AA_Settings::yaw;
 	}
 
 	// Yaw
@@ -84,6 +84,6 @@ void antiaim::run_antiaim(c_usercmd* cmd, bool& send_packet) {
 	}
 
 	// @todo: lby and fakelag
-	// @note: https://github.com/LWSS/Fuzion/blob/0a4d775e17aba7a723aadce5b80898705e0bd6ff/src/Hacks/antiaim.cpp#L240
+	// @note: https://github.com/LWSS/Fuzion/blob/0a4d775e17aba7a723aadce5b80898705e0bd6ff/src/Hacks/AA_Settings.cpp#L240
 	// @note: https://github.com/LWSS/Fuzion/blob/master/src/Hacks/fakelag.cpp
 }

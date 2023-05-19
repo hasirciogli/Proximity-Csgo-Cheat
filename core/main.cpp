@@ -26,6 +26,8 @@ using namespace nlohmann::json_abi_v3_11_2;
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll") && !GetModuleHandleA("steam_api.dll")) 
 		Sleep(150);
+	std::locale::global(std::locale("tr_TR.utf8"));
+
 	setlocale(LC_ALL, "Turkish");
 	SteamAPI_Init();
 
@@ -96,6 +98,7 @@ unsigned long WINAPI release() {
 	return TRUE;
 }
 
+/*
 __forceinline std::uintptr_t ntapihide()
 {
 	using NtSetInformationThreadFn = NTSTATUS(NTAPI*)
@@ -269,6 +272,7 @@ __forceinline std::uintptr_t k0x85()
 	return status;
 }
 
+*/
 
 std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsigned long reason, const void* reserved [[maybe_unused]] ) {
 	//int fuck_you = strlen((const char*)fuck_skids);	// Need to call var so shit ass compiler does not ignore it
@@ -277,17 +281,17 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
-			ntapihide();
+			//ntapihide();
 			setlocale(LC_ALL, "Turkish");
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))
 				CloseHandle(handle);
 
 #if no_server_is_debug_mode_fuck == true
 
-			mSocket::cfg::socketIsConnected = true;
+			/*mSocket::cfg::socketIsConnected = true;
 			mSocket::cfg::authed = true;
 
-			variables::NetworkUser::username = "admin";
+			variables::NetworkUser::username = "admin";*/
 
 #else
 			if (auto handle = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)mSocket::socketThread, instance, NULL, nullptr))
