@@ -32,11 +32,11 @@ auto getZtkColor = [](int red, int green, int blue, int alpha = 255)
 
 void setOurCustomImguiColorsAndEtc(LPDIRECT3DDEVICE9);
 struct windowSize {
-	float width;
+	float width; 
 	float height;
 };
 auto getMenuPos = [](ImVec2& pos) {
-	pos = ImGui::GetWindowPos();
+	pos = ImGui::GetWindowPos(); 
 };
 auto getCursorPos = [](ImVec2& pos) {
 	pos = ImGui::GetCursorPos();
