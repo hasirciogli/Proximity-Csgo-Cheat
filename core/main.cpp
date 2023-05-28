@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN
+﻿#define WIN32_LEAN_AND_MEAN
 
 #define no_server_is_debug_mode_fuck false
 
@@ -22,6 +22,26 @@
 #include <bcrypt.h>
 
 using namespace nlohmann::json_abi_v3_11_2;
+
+LONG WINAPI CrashHandler(EXCEPTION_POINTERS* exceptionInfo)
+{
+
+	// Hata adresine erişim
+	PVOID exceptionAddress = exceptionInfo->ExceptionRecord->ExceptionAddress;
+
+	// Hata bilgilerini log dosyasına yazma
+	std::ofstream logFile("error_log.txt", std::ios::app);
+	if (logFile.is_open())
+	{
+		logFile << "Hata oluştu! Adres: " << exceptionAddress << std::endl;
+		logFile.close();
+	}
+
+	console::log("[EXCEPTION HANDLER] - %s\n", exceptionInfo->ExceptionRecord->ExceptionCode);
+
+	// Uygulamanın çökmesini engellemek için EXCEPTION_CONTINUE_EXECUTION değerini döndürün
+	return EXCEPTION_CONTINUE_EXECUTION;
+}
 
 unsigned long WINAPI initialize(void* instance) {
 	while (!GetModuleHandleA("serverbrowser.dll") && !GetModuleHandleA("steam_api.dll")) 
@@ -281,6 +301,8 @@ std::int32_t WINAPI DllMain(const HMODULE instance [[maybe_unused]], const unsig
 
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: {
+
+			SetUnhandledExceptionFilter(CrashHandler);
 			//ntapihide();
 			setlocale(LC_ALL, "Turkish");
 			if (auto handle = CreateThread(nullptr, NULL, initialize, instance, NULL, nullptr))

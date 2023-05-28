@@ -71,10 +71,20 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param, float m_alpha)
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, m_alpha);
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 6);
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, CB_getZtkColor(20, 20, 20, 205));
-		ImGui::PushStyleColor(ImGuiCol_BorderShadow, CB_getZtkColor(50, 50, 50));
-		ImGui::PushStyleColor(ImGuiCol_Border, CB_getZtkColor(50, 50, 50));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(.013, .013, .013, 1));
+		ImGui::PushStyleColor(ImGuiCol_BorderShadow, ImVec4(50, 50, 50, 160));
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.45f, 0.45f, 0.45f, 0.45f));
 
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6 * ds);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10 * ds, 5 * ds));
+
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.25f, 0.25f, 0.25f, .3));
+		ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.2f, 0.3f, 0.2f, .3));
+		ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.2f, 0.4f, 0.2f, .3));
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.4f, 0.4f, 0.4f, .3));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, .3));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.3f, 0.9f, 0.3f, .3));
 
 		SetNextWindowSize(ImVec2(350, 480));
 		ImGui::SetNextWindowBgAlpha(zbdckClamp(m_alpha, 0.f, .67f));
@@ -201,7 +211,16 @@ void ChatBox::runCustomGui(LPDIRECT3DDEVICE9 pDevice, bool param, float m_alpha)
 		ImGui::PopStyleColor();
 		ImGui::PopStyleVar();
 
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
 
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 	}
 	ImGui::PopStyleVar();
 }

@@ -2975,8 +2975,6 @@ void renderConfigsPage(ImVec2 ts, float mpw, bool isTop = false) {
 		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, mpw == 1.f ? previewAlpha : mpw);
 		{
 
-
-
 			if (targetting)
 			{
 				static char newConfigName[20] = "";
@@ -3368,7 +3366,7 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 	setOurCustomImguiColorsAndEtc(pDevice);
 	
 
-#ifndef _DEBUG
+#if _DEBUG && true
 	if (initializingMode)
 	{
 		ImGui::PushFont(variables::Menu_Settings::fonts_gubi_14_font);
@@ -3786,10 +3784,10 @@ void iXmenu::renderImguiBasedMenu(LPDIRECT3DDEVICE9 pDevice, bool isActive) {
 				ImGui::PopFont();
 			}
 			ImGui::End();
+
+			ChatBox::runCustomGui(pDevice, false, m_alpha);
 		}
 		ImGui::PopStyleVar();
-
-		ChatBox::runCustomGui(pDevice, false, m_alpha);
 
 	}
 	else {
